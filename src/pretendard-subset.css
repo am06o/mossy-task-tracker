@@ -1,0 +1,26 @@
+/* 전체 굵기(9종 x woff/woff2)를 다 담으면 설치 용량이 커져서, 실제 쓰는 4가지 굵기의
+   woff2만 직접 선언한다. */
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 400;
+  font-display: swap;
+  src: url('pretendard/dist/web/static/woff2/Pretendard-Regular.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 500;
+  font-display: swap;
+  src: url('pretendard/dist/web/static/woff2/Pretendard-Medium.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 600;
+  font-display: swap;
+  src: url('pretendard/dist/web/static/woff2/Pretendard-SemiBold.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Pretendard';
+  font-weight: 700;
+  font-display: swap;
+  src: url('pretendard/dist/web/static/woff2/Pretendard-Bold.woff2') format('woff2');
+}

@@ -1,0 +1,169 @@
+.archive-root {
+  position: fixed;
+  z-index: 40;
+}
+
+.archive-fab {
+  position: relative;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: none;
+  background: var(--accent);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 40%, transparent);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.archive-fab:hover {
+  transform: scale(1.06);
+}
+
+.archive-fab.is-active {
+  box-shadow: 0 6px 18px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+.archive-root.is-dragging .archive-fab {
+  cursor: grabbing;
+  transform: scale(1.12);
+  box-shadow: 0 10px 26px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+
+/* 누르고 있는 동안 링이 차오르며 곧 "옮기기"로 바뀐다는 걸 보여준다.
+   시간은 ArchivePanel.jsx의 LONG_PRESS_MS와 맞춘다. */
+.archive-root.is-pressing .archive-fab::after {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  animation: archive-press 0.55s linear forwards;
+}
+
+@keyframes archive-press {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+}
+
+.archive-panel {
+  position: fixed;
+  width: 300px;
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: 0 12px 32px rgba(17, 24, 39, 0.16);
+  overflow: hidden;
+}
+
+.archive-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 14px 0;
+  flex-shrink: 0;
+}
+
+.archive-panel-title {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.archive-panel-close {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  display: flex;
+  padding: 3px;
+  border-radius: 6px;
+}
+
+.archive-panel-close:hover {
+  background: var(--bg);
+  color: var(--text-dim);
+}
+
+.archive-panel-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0 10px 10px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.archive-panel-list .todo-empty {
+  color: var(--text-faint);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 12.5px;
+}
+
+.archive-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 8px;
+  border-radius: 10px;
+  cursor: grab;
+}
+
+.archive-item:hover {
+  background: var(--bg);
+}
+
+.archive-item-handle {
+  color: var(--text-faint);
+  flex-shrink: 0;
+  display: flex;
+}
+
+.archive-item-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: text;
+  font-size: 13px;
+}
+
+.archive-item-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  padding: 3px 6px;
+  outline: none;
+  font-size: 13px;
+}
+
+.archive-item-delete {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  padding: 3px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  opacity: 0;
+}
+
+.archive-item:hover .archive-item-delete {
+  opacity: 1;
+}
+
+.archive-item-delete:hover {
+  color: var(--danger);
+  background: var(--border);
+}

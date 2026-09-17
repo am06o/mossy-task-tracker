@@ -1,0 +1,87 @@
+.todo-add-row {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  list-style: none;
+  margin-top: 2px;
+}
+
+/* 앞의 드래그 손잡이(15px)와 간격(8px)만큼 밀어서, +가 위 항목들의 체크박스 바로 아래에 오게 한다. */
+.todo-add-row-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px 8px 35px;
+  border: none;
+  border-radius: 10px;
+  background: none;
+  text-align: left;
+  opacity: 0.5;
+  transition: opacity 0.15s ease, background 0.15s ease;
+}
+
+.todo-add-row-btn:hover {
+  opacity: 1;
+  background: color-mix(in srgb, var(--bg) 100%, black 5%);
+}
+
+.todo-add-row-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 7px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--proj-color, var(--text-faint));
+}
+
+.todo-add-row-label {
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+  color: var(--text-dim);
+  font-size: 13px;
+  transition: max-width 0.15s ease, opacity 0.15s ease;
+}
+
+.todo-add-row-btn:hover .todo-add-row-label {
+  max-width: 140px;
+  opacity: 1;
+}
+
+.todo-add-row-popover {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 30px;
+  z-index: 20;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 6px 20px rgba(17, 24, 39, 0.14);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 110px;
+}
+
+.todo-add-row-popover.is-up {
+  top: auto;
+  bottom: calc(100% + 4px);
+}
+
+.todo-add-row-popover button {
+  border: none;
+  background: none;
+  text-align: left;
+  padding: 9px 12px;
+  font-size: 12.5px;
+  color: var(--text-dim);
+  white-space: nowrap;
+}
+
+.todo-add-row-popover button:hover {
+  background: var(--bg);
+  color: var(--text);
+}

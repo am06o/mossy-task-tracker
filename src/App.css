@@ -1,0 +1,64 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden;
+}
+
+/* 윈도우 기본 제목표시줄(강조색 테두리) 대신 앱 배경과 같은 색의 제목표시줄을 직접 그린다.
+   오른쪽 최소화/최대화/닫기 버튼은 Electron의 titleBarOverlay가 이 위에 올려준다. */
+.titlebar {
+  height: 32px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  padding-left: 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-dim);
+  background: var(--panel);
+  border-bottom: 1px solid var(--border);
+  -webkit-app-region: drag;
+  user-select: none;
+}
+
+.app {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  background: var(--bg);
+  transition: background 0.2s ease;
+}
+
+/* 지난 프로젝트를 볼 때는 사이드바와 프로젝트 화면을 함께 한 톤만 어둡게 한다.
+   색 변수 자체를 바꿔서, 그 안의 카드·버튼 배경도 같은 비율로 따라 어두워진다. */
+.app.is-past-projects .sidebar,
+.app.is-past-projects .app-main {
+  --panel: #f3f4f6;
+  --bg: #eceef1;
+}
+
+.loading-screen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: var(--text-dim);
+}
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-faint);
+}

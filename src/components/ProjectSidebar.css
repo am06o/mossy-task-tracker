@@ -1,0 +1,142 @@
+.sidebar {
+  width: 240px;
+  min-width: 180px;
+  max-width: 420px;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  resize: horizontal;
+  overflow: hidden;
+  transition: background 0.2s ease;
+}
+
+.sidebar-header-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.sidebar-empty {
+  padding: 16px 8px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--text-faint);
+  text-align: center;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 16px 10px;
+}
+
+.sidebar-title {
+  font-weight: 700;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.sidebar-add-btn {
+  border: none;
+  background: var(--bg);
+  color: var(--text-dim);
+  border-radius: 8px;
+  width: 26px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.sidebar-add-btn:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.sidebar-add-btn.is-active {
+  background: var(--text-dim);
+  color: var(--panel);
+}
+
+.sidebar-add-input {
+  margin: 0 16px 10px;
+  padding: 7px 10px;
+  border: 1px solid var(--accent);
+  border-radius: 10px;
+  outline: none;
+}
+
+.project-list {
+  list-style: none;
+  margin: 0;
+  padding: 4px 8px;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.project-item {
+  position: relative;
+  padding: 10px 12px;
+  border-radius: 12px;
+  cursor: pointer;
+  margin-bottom: 3px;
+}
+
+.project-item.is-child {
+  margin-left: 18px;
+}
+
+.project-item:hover {
+  background: var(--bg);
+}
+
+.project-item.is-selected {
+  background: var(--accent-bg);
+}
+
+.project-item-main {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 6px;
+}
+
+.project-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.project-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 500;
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-pct {
+  font-size: 12px;
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.project-bar {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--border);
+  overflow: hidden;
+}
+
+.project-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.15s ease;
+}
+
+

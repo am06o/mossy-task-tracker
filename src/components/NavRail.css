@@ -1,0 +1,39 @@
+.nav-rail {
+  width: 56px;
+  flex-shrink: 0;
+  background: var(--panel);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 8px;
+}
+
+.nav-rail-items {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.nav-rail-item {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: none;
+  color: var(--text-dim);
+  border-radius: var(--radius);
+}
+
+.nav-rail-item:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.nav-rail-item.is-active {
+  background: var(--accent-bg);
+  color: var(--accent-strong);
+}

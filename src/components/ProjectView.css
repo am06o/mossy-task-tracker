@@ -1,0 +1,536 @@
+.project-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.project-view-header {
+  padding: 22px 28px 16px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.project-name-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 14px;
+  margin-bottom: 12px;
+}
+
+/* 창이 좁아지면 제목을 먼저 지키고, 날짜 칸은 다음 줄로 내려간다. */
+.project-name-title {
+  margin: 0;
+  font-size: 26px;
+  font-weight: 700;
+  cursor: text;
+  flex: 1;
+  min-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-name-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 26px;
+  font-weight: 700;
+  border: 1px solid var(--proj-color);
+  border-radius: var(--radius-sm);
+  padding: 4px 8px;
+  outline: none;
+}
+
+.project-note {
+  margin: -6px 0 10px;
+  font-size: 12px;
+  color: var(--text-faint);
+  cursor: text;
+}
+
+.project-note-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin: -6px 0 10px;
+  padding: 2px 0;
+  border: none;
+  background: none;
+  font-size: 12px;
+  color: var(--text-faint);
+  opacity: 0.4;
+  transition: opacity 0.15s ease;
+}
+
+.project-note-add:hover {
+  color: var(--text-dim);
+  opacity: 1;
+}
+
+.project-note-add-label {
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  white-space: nowrap;
+  transition: max-width 0.15s ease, opacity 0.15s ease;
+}
+
+.project-note-add:hover .project-note-add-label {
+  max-width: 80px;
+  opacity: 1;
+}
+
+.project-note-input {
+  display: block;
+  width: 100%;
+  margin: -4px 0 10px;
+  font-size: 12px;
+  color: var(--text-dim);
+  border: 1px solid var(--proj-color);
+  border-radius: var(--radius-sm);
+  padding: 3px 6px;
+  outline: none;
+}
+
+.project-dates {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.project-date-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.project-date-label {
+  font-size: 11px;
+  color: var(--text-dim);
+  border: none;
+  background: var(--bg);
+  padding: 3px 8px 3px 0;
+  border-radius: 999px;
+  font-weight: 500;
+}
+
+.project-date-label:hover {
+  background: var(--border);
+  color: var(--text);
+}
+
+.project-overall {
+  display: flex;
+  align-items: center;
+  margin: 8px 0 4px;
+}
+
+.project-child-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  margin-bottom: 3px;
+  background: var(--bg);
+}
+
+.project-child-row:hover {
+  background: var(--border);
+}
+
+.project-child-row.is-drop-target {
+  outline: 2px dashed var(--proj-color);
+  outline-offset: -2px;
+}
+
+.project-child-icon {
+  display: flex;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+.project-child-toggle {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  display: flex;
+  padding: 2px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.project-child-toggle:hover {
+  background: var(--panel);
+  color: var(--text-dim);
+}
+
+.project-child-count {
+  font-size: 11px;
+  color: var(--text-faint);
+  flex-shrink: 0;
+  min-width: 14px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.project-child-action {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  display: flex;
+  padding: 3px;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+.project-child-action:hover {
+  background: var(--panel);
+  color: var(--text);
+}
+
+/* 펼친 하위 프로젝트의 할 일들 — 폴더 안에 들어있다는 게 보이도록 안내선을 긋는다. */
+.project-child-body {
+  list-style: none;
+  margin: 0 0 6px 18px;
+  padding-left: 4px;
+  border-left: 2px solid var(--border);
+}
+
+.project-child-name {
+  flex: 1;
+  min-width: 0;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: text;
+}
+
+
+.todo-list {
+  list-style: none;
+  margin: 0;
+  padding: 10px 20px 0;
+  overflow-y: auto;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  container-type: inline-size;
+}
+
+/* 목록 폭이 좁을 때는 줄마다 붙은 진척도 슬라이더를 숨기고 퍼센트 숫자만 남겨서
+   할 일 이름이 보일 자리를 남긴다(슬라이더는 넓힐 때 다시 나타난다). */
+@container (max-width: 560px) {
+  .todo-item .progress-slider,
+  .project-child-row .progress-slider {
+    display: none;
+  }
+}
+
+.todo-group {
+  margin-bottom: 2px;
+}
+
+.todo-group-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 10px;
+  border-radius: 10px;
+}
+
+.todo-group-header:hover {
+  background: var(--panel);
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.06);
+}
+
+.todo-group-collapse {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  display: flex;
+  padding: 2px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+.todo-group-collapse:hover {
+  background: var(--bg);
+}
+
+.todo-group-title {
+  font-weight: 600;
+  cursor: text;
+  flex-shrink: 0;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.todo-group-bar {
+  flex: 1;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--border);
+  overflow: hidden;
+  max-width: 140px;
+}
+
+.todo-group-bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.15s ease;
+}
+
+.todo-group-pct {
+  font-size: 11px;
+  color: var(--text-dim);
+  width: 32px;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  flex-shrink: 0;
+}
+
+.todo-group-action {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  display: flex;
+  padding: 3px;
+  border-radius: 6px;
+  opacity: 0;
+  flex-shrink: 0;
+}
+
+.todo-group-header:hover .todo-group-action {
+  opacity: 1;
+}
+
+.todo-group-action:hover {
+  background: var(--bg);
+  color: var(--text-dim);
+}
+
+.todo-group-delete:hover {
+  color: var(--danger);
+}
+
+.todo-group-children {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.todo-empty {
+  color: var(--text-faint);
+  text-align: center;
+  padding: 40px 0;
+  line-height: 1.6;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 12px;
+  border-radius: 12px;
+  margin-bottom: 3px;
+}
+
+.todo-item:hover {
+  background: var(--panel);
+  box-shadow: 0 1px 2px rgba(17, 24, 39, 0.06);
+}
+
+.todo-drag-handle {
+  color: var(--text-faint);
+  cursor: grab;
+  flex-shrink: 0;
+  display: flex;
+}
+
+.todo-checkbox {
+  width: 20px;
+  height: 20px;
+  border-radius: 7px;
+  border: 1.5px solid var(--border-strong);
+  background: #fff;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+}
+
+.todo-checkbox:hover {
+  border-color: var(--proj-color);
+}
+
+.todo-postpone {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+}
+
+.todo-item:hover .todo-postpone {
+  opacity: 1;
+}
+
+.todo-postpone:hover {
+  background: var(--bg);
+  color: var(--text-dim);
+}
+
+.todo-title {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  cursor: text;
+}
+
+.todo-title.is-untitled,
+.todo-group-title.is-untitled {
+  color: var(--text-faint);
+  font-style: italic;
+}
+
+.todo-item.is-done .todo-title {
+  color: var(--text-faint);
+  text-decoration: line-through;
+}
+
+.todo-title-input {
+  flex: 1;
+  min-width: 0;
+  border: 1px solid var(--proj-color);
+  border-radius: var(--radius-sm);
+  padding: 3px 6px;
+  outline: none;
+}
+
+.todo-link-slot {
+  width: 26px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.todo-date-slot {
+  width: 64px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.date-chip-add {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  padding: 3px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  opacity: 0;
+}
+
+.todo-item:hover .date-chip-add {
+  opacity: 1;
+}
+
+.date-chip-add:hover {
+  background: var(--bg);
+  color: var(--text-dim);
+}
+
+.date-chip {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  border: none;
+  border-radius: 999px;
+  padding: 3px 8px;
+  font-size: 11px;
+  background: var(--bg);
+  color: var(--text-dim);
+  flex-shrink: 0;
+}
+
+.date-chip.is-overdue {
+  background: #fbe7ee;
+  color: var(--danger);
+}
+
+.date-chip-clear {
+  display: flex;
+  opacity: 0.6;
+}
+
+.date-chip-clear:hover {
+  opacity: 1;
+}
+
+.date-chip-input {
+  border: 1px solid var(--proj-color);
+  border-radius: var(--radius-sm);
+  padding: 2px 4px;
+  font-size: 11px;
+  flex-shrink: 0;
+  outline: none;
+}
+
+.todo-promote {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  padding: 3px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  opacity: 0;
+}
+
+.todo-item:hover .todo-promote {
+  opacity: 1;
+}
+
+.todo-promote:hover {
+  color: var(--proj-color);
+  background: var(--bg);
+}
+
+.todo-delete {
+  border: none;
+  background: none;
+  color: var(--text-faint);
+  padding: 3px;
+  border-radius: 6px;
+  flex-shrink: 0;
+  display: flex;
+  opacity: 0;
+}
+
+.todo-item:hover .todo-delete {
+  opacity: 1;
+}
+
+.todo-delete:hover {
+  color: var(--danger);
+  background: var(--bg);
+}
+

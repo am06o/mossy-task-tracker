@@ -1,0 +1,102 @@
+.progress-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.progress-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background-color: var(--border);
+  background-image: var(--fill);
+  background-size: var(--pct) 100%;
+  background-repeat: no-repeat;
+  outline: none;
+  flex: 1;
+  min-width: 80px;
+}
+
+.progress-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--color);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.progress-slider:hover::-webkit-slider-thumb,
+.progress-slider:focus::-webkit-slider-thumb,
+.progress-slider:active::-webkit-slider-thumb {
+  opacity: 1;
+}
+
+.progress-slider::-moz-range-thumb {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #fff;
+  border: 2px solid var(--color);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.progress-slider:hover::-moz-range-thumb,
+.progress-slider:focus::-moz-range-thumb,
+.progress-slider:active::-moz-range-thumb {
+  opacity: 1;
+}
+
+.progress-slider:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color) 25%, transparent);
+}
+
+.progress-pct {
+  font-size: 12px;
+  color: var(--text-dim);
+  width: 34px;
+  text-align: right;
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-control--sm .progress-slider {
+  min-width: 60px;
+}
+
+.progress-control--xl {
+  width: 100%;
+  gap: 12px;
+}
+
+.progress-control--xl .progress-slider {
+  height: 10px;
+  border-radius: 5px;
+  min-width: 0;
+}
+
+.progress-control--xl .progress-slider::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  border-width: 2px;
+}
+
+.progress-control--xl .progress-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  border-width: 2px;
+}
+
+.progress-control--xl .progress-pct {
+  font-size: 15px;
+  font-weight: 700;
+  width: auto;
+  color: var(--text);
+}

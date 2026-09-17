@@ -1,0 +1,71 @@
+.color-picker {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.color-picker-trigger {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 1px rgba(17, 24, 39, 0.15);
+  padding: 0;
+  cursor: pointer;
+}
+
+.color-picker-trigger:hover {
+  box-shadow: 0 0 0 1px rgba(17, 24, 39, 0.35);
+}
+
+.color-picker-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(17, 24, 39, 0.12);
+}
+
+.color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-faint);
+  opacity: 0.75;
+  transition: transform 0.1s ease, opacity 0.1s ease;
+}
+
+.color-swatch:hover {
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+.color-swatch.is-active {
+  opacity: 1;
+  box-shadow: 0 0 0 2px #fff, 0 0 0 4px rgba(17, 24, 39, 0.35);
+}
+
+.color-swatch--custom {
+  background: none;
+  border: 2px dashed var(--border-strong);
+}
+
+.color-picker-native {
+  position: absolute;
+  width: 0;
+  height: 0;
+  opacity: 0;
+  pointer-events: none;
+}

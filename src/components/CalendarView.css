@@ -1,0 +1,260 @@
+.calendar-view {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+  padding: 0 24px 20px;
+}
+
+.calendar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 4px 14px;
+  flex-shrink: 0;
+}
+
+.calendar-title {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.calendar-nav button {
+  border: 1px solid var(--border);
+  background: var(--panel);
+  border-radius: 8px;
+  padding: 6px;
+  color: var(--text-dim);
+  display: flex;
+}
+
+.calendar-nav button:hover {
+  background: var(--bg);
+  color: var(--text);
+}
+
+.calendar-today-btn {
+  font-size: 12px;
+  padding: 6px 10px !important;
+}
+
+.calendar-body {
+  flex: 1;
+  display: flex;
+  gap: 16px;
+  min-height: 0;
+}
+
+.calendar-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.calendar-weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  flex-shrink: 0;
+  padding: 0 2px;
+}
+
+.calendar-weekday {
+  text-align: center;
+  font-size: 11px;
+  color: var(--text-faint);
+  padding-bottom: 6px;
+}
+
+.calendar-grid {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-auto-rows: 1fr;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.calendar-cell {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 6px;
+  min-height: 76px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: var(--panel);
+}
+
+.calendar-cell.is-outside {
+  background: var(--bg);
+  opacity: 0.6;
+}
+
+.calendar-cell.is-today {
+  border-color: var(--text);
+}
+
+.calendar-cell.is-drop-target {
+  border-color: var(--accent);
+  background: var(--accent-bg);
+}
+
+.calendar-day-num {
+  font-size: 11px;
+  color: var(--text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-cell.is-today .calendar-day-num {
+  font-weight: 700;
+  color: var(--text);
+}
+
+.calendar-day-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  overflow: hidden;
+}
+
+.calendar-chip {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  border: none;
+  border-radius: 5px;
+  padding: 2px 5px;
+  font-size: 10.5px;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  background: color-mix(in srgb, var(--chip-color) 22%, white);
+  color: color-mix(in srgb, var(--chip-color) 65%, black);
+}
+
+.calendar-chip.is-done {
+  opacity: 0.5;
+  text-decoration: line-through;
+}
+
+.calendar-chip--deadline {
+  font-weight: 600;
+}
+
+.calendar-more {
+  font-size: 10px;
+  color: var(--text-faint);
+  padding-left: 5px;
+}
+
+.calendar-side {
+  width: 220px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  padding-top: 4px;
+  overflow-y: auto;
+}
+
+.calendar-side-section {
+  flex-shrink: 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--border);
+}
+
+.calendar-side-section:first-child {
+  padding-top: 0;
+  border-top: none;
+}
+
+.calendar-side-title {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.calendar-side-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.calendar-side-empty {
+  color: var(--text-faint);
+  font-size: 11.5px;
+}
+
+.calendar-side-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.calendar-side-row .calendar-chip {
+  flex: 1;
+  min-width: 0;
+}
+
+.calendar-side-date {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--text-faint);
+  flex-shrink: 0;
+  min-width: 28px;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-unscheduled-list {
+  list-style: none;
+  margin: 6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.calendar-unscheduled-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel);
+  cursor: grab;
+}
+
+.calendar-unscheduled-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.calendar-unscheduled-text {
+  flex: 1;
+  min-width: 0;
+  font-size: 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+

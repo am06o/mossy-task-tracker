@@ -9,8 +9,13 @@ import ProgressControl from './ProgressControl.jsx'
 import { projectDisplayProgress, clampProgress } from '../lib/progress.js'
 import { makeTodo } from '../lib/projectsData.js'
 import { mapNode, removeNode, addChild, addSiblingAfter, moveNode } from '../lib/tree.js'
-import { isOverdue } from '../lib/dateFormat.js'
+import { buildTopEntries, anchorAboveTodo, anchorBelowTodo } from '../lib/topOrder.js'
+import { isOverdue, todayStr } from '../lib/dateFormat.js'
 import './ProjectView.css'
+
+// 드래그중인 할 일을 하위 프로젝트 줄의 왼쪽 끝에서 이 픽셀 이내로 가져가면
+// "프로젝트에 편입"이 아니라 "이 프로젝트 위/아래로 순서만 바꾸기"로 본다.
+const REORDER_ZONE_PX = 28
 
 // 한 프로젝트의 할 일 트리를 고치는 조작 모음. 지금 보는 프로젝트뿐 아니라, 그 안에 펼쳐 보이는
 // 하위 프로젝트의 할 일도 같은 방식으로 다루기 위해 onChange만 바꿔 끼워 쓴다.
@@ -96,11 +101,14 @@ export default function ProjectView({
   const [dueEditing, setDueEditing] = useState(false)
   const [newestId, setNewestId] = useState(null)
   const [dropTargetId, setDropTargetId] = useState(null)
+  const [reorderPreview, setReorderPreview] = useState(null) // { childId, place: 'above' | 'below' }
   const [editingChildId, setEditingChildId] = useState(null)
   const [childMenu, setChildMenu] = useState(null)
 
-  const childPcts = childProjects.map((c) => projectDisplayProgress(c, linkedTodosByProject?.get(c.id) || []))
-  const pct = projectDisplayProgress(project, linkedTodos, childPcts)
+  const childPctById = new Map(
+    childProjects.map((c) => [c.id, projectDisplayProgress(c, linkedTodosByProject?.get(c.id) || [])])
+  )
+  const pct = projectDisplayProgress(project, linkedTodos, [...childPctById.values()])
   const color = project.color
   // 하위 프로젝트는 폴더처럼 2단계까지만 — 이미 하위인 프로젝트 안에서는 더 만들지 않는다.
   const canAddChild = !project.parentProjectId
@@ -138,20 +146,57 @@ export default function ProjectView({
     })
   }
 
+  // 하위 프로젝트 줄 왼쪽 가장자리 근처로 드래그를 가져가면 "이 프로젝트에 편입"이 아니라
+  // "이 프로젝트 위/아래로 순서만 바꾸기"로 본다 — 세로 위치로 위/아래를 가른다.
+  function resolveDragZone(e) {
+    const rect = e.currentTarget.getBoundingClientRect()
+    const offsetX = e.clientX - rect.left
+    if (offsetX >= REORDER_ZONE_PX) return { mode: 'nest' }
+    const place = e.clientY - rect.top < rect.height / 2 ? 'above' : 'below'
+    return { mode: 'reorder', place }
+  }
+
+  function handleChildDragOver(e, childId) {
+    e.preventDefault()
+    const { mode, place } = resolveDragZone(e)
+    if (mode === 'reorder') {
+      setDropTargetId(null)
+      setReorderPreview({ childId, place })
+    } else {
+      setReorderPreview((cur) => (cur?.childId === childId ? null : cur))
+      setDropTargetId(childId)
+    }
+  }
+
+  function handleChildDragLeave(childId) {
+    setDropTargetId((cur) => (cur === childId ? null : cur))
+    setReorderPreview((cur) => (cur?.childId === childId ? null : cur))
+  }
+
   function handleChildDrop(e, childId) {
     e.preventDefault()
     e.stopPropagation()
+    const { mode, place } = resolveDragZone(e)
     setDropTargetId(null)
+    setReorderPreview(null)
+    let data
     try {
-      const data = JSON.parse(e.dataTransfer.getData('text/plain'))
-      if (data.childProjectId) {
-        if (data.childProjectId !== childId) onReorderChildProject(data.childProjectId, childId)
-        return
-      }
-      if (data.nodeId) onMoveNodeToProject(data.nodeId, childId)
+      data = JSON.parse(e.dataTransfer.getData('text/plain'))
     } catch {
-      // 드래그 데이터가 없으면 무시
+      return // 드래그 데이터가 없으면 무시
     }
+
+    if (mode === 'reorder' && data.nodeId) {
+      const anchor = place === 'above' ? anchorAboveTodo(project.todos, data.nodeId) : anchorBelowTodo(project.todos, data.nodeId)
+      if (anchor !== null) onUpdateProject(childId, (c) => ({ ...c, insertBeforeId: anchor }))
+      return
+    }
+
+    if (data.childProjectId) {
+      if (data.childProjectId !== childId) onReorderChildProject(data.childProjectId, childId)
+      return
+    }
+    if (data.nodeId) onMoveNodeToProject(data.nodeId, childId)
   }
 
   function childMenuItems(child) {
@@ -171,22 +216,21 @@ export default function ProjectView({
     ]
   }
 
-  function renderChild(child, i) {
+  function renderChild(child) {
     const childChange = (updater) => onUpdateProject(child.id, updater)
     const childActions = createTreeActions(childChange, setNewestId)
     const toggle = () => childChange((p) => ({ ...p, expanded: !p.expanded }))
+    const preview = reorderPreview?.childId === child.id ? reorderPreview.place : null
 
     return (
       <Fragment key={child.id}>
+        {preview === 'above' && <li className="todo-divider" />}
         <li
           className={`project-child-row ${dropTargetId === child.id ? 'is-drop-target' : ''}`}
           draggable
           onDragStart={(e) => e.dataTransfer.setData('text/plain', JSON.stringify({ childProjectId: child.id }))}
-          onDragOver={(e) => {
-            e.preventDefault()
-            setDropTargetId(child.id)
-          }}
-          onDragLeave={() => setDropTargetId((cur) => (cur === child.id ? null : cur))}
+          onDragOver={(e) => handleChildDragOver(e, child.id)}
+          onDragLeave={() => handleChildDragLeave(child.id)}
           onDrop={(e) => handleChildDrop(e, child.id)}
           onContextMenu={(e) => {
             e.preventDefault()
@@ -225,7 +269,7 @@ export default function ProjectView({
           </button>
           <ProgressControl
             size="sm"
-            value={childPcts[i]}
+            value={childPctById.get(child.id)}
             color={child.color}
             onChange={(value) => childChange((p) => ({ ...p, progressOverride: value }))}
           />
@@ -238,6 +282,7 @@ export default function ProjectView({
             </ul>
           </li>
         )}
+        {preview === 'below' && <li className="todo-divider" />}
       </Fragment>
     )
   }
@@ -269,7 +314,13 @@ export default function ProjectView({
 
           <div className="project-dates">
             <span className="project-date-field">
-              <button className="project-date-label" onClick={() => setStartEditing(true)}>
+              <button
+                className="project-date-label"
+                onClick={() => {
+                  if (!project.startDate) onChange((p) => ({ ...p, startDate: todayStr() }))
+                  setStartEditing(true)
+                }}
+              >
                 시작
               </button>
               <DateChip
@@ -281,7 +332,13 @@ export default function ProjectView({
               />
             </span>
             <span className="project-date-field">
-              <button className="project-date-label" onClick={() => setDueEditing(true)}>
+              <button
+                className="project-date-label"
+                onClick={() => {
+                  if (!project.dueDate) onChange((p) => ({ ...p, dueDate: todayStr() }))
+                  setDueEditing(true)
+                }}
+              >
                 마감
               </button>
               <DateChip
@@ -343,9 +400,29 @@ export default function ProjectView({
       </header>
 
       <ul className="todo-list">
-        {childProjects.map(renderChild)}
-
-        <TodoTree nodes={project.todos} actions={actions} color={color} depth={0} newestId={newestId} />
+        {buildTopEntries(project.todos, childProjects).map((entry) =>
+          entry.type === 'child' ? (
+            renderChild(entry.child)
+          ) : (
+            <TodoNode
+              key={entry.node.id}
+              node={entry.node}
+              parentId={null}
+              index={entry.index}
+              depth={0}
+              color={color}
+              onUpdateTask={actions.updateTask}
+              onAdjustProgress={actions.adjustTodoProgress}
+              onDeleteNode={actions.deleteNode}
+              onToggleCollapse={actions.toggleCollapse}
+              onAddTask={actions.addTaskAt}
+              onAddAfter={actions.addTaskAfter}
+              onRenameGroup={actions.renameGroup}
+              onMove={actions.move}
+              autoEditId={newestId}
+            />
+          )
+        )}
 
         <AddRow
           onAdd={canAddChild ? undefined : () => actions.addTaskAt(null)}

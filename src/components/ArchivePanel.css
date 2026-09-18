@@ -40,7 +40,7 @@
   inset: -4px;
   border-radius: 50%;
   border: 2px solid var(--accent);
-  animation: archive-press 0.55s linear forwards;
+  animation: archive-press 0.3s linear forwards;
 }
 
 @keyframes archive-press {

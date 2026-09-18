@@ -140,7 +140,9 @@ export default function App() {
   function addProject(name, parentProjectId = null) {
     const trimmed = name.trim()
     if (!trimmed) return null
-    const p = { ...makeProject(trimmed), parentProjectId }
+    const parent = parentProjectId ? projects.find((p) => p.id === parentProjectId) : null
+    const color = parent ? parent.color : settings.themeColor
+    const p = { ...makeProject(trimmed), parentProjectId, color }
     setProjects((prev) => [...prev, p])
     return p
   }
@@ -213,19 +215,27 @@ export default function App() {
     setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, parentProjectId: null } : p)))
   }
 
-  // 같은 상위 프로젝트 아래 하위 프로젝트끼리 순서를 바꾼다 — 끌어놓은 항목이 목표 항목 바로 앞으로 온다.
-  function reorderChildProject(draggedId, targetId) {
+  // 같은 상위 프로젝트 아래 하위 프로젝트끼리, 또는 사이드바의 최상위 프로젝트끼리 순서를
+  // 바꾼다 — 끌어놓은 항목이 목표 항목 바로 앞(또는 placeAfter면 바로 뒤)으로 온다.
+  function reorderChildProject(draggedId, targetId, placeAfter = false) {
     setProjects((prev) => {
       if (draggedId === targetId) return prev
       const dragged = prev.find((p) => p.id === draggedId)
       if (!dragged) return prev
       const without = prev.filter((p) => p.id !== draggedId)
-      const targetIndex = without.findIndex((p) => p.id === targetId)
+      let targetIndex = without.findIndex((p) => p.id === targetId)
       if (targetIndex === -1) return prev
+      if (placeAfter) targetIndex += 1
       const next = [...without]
       next.splice(targetIndex, 0, dragged)
       return next
     })
+  }
+
+  // 사이드바에서 "이 프로젝트 아래 하위 프로젝트들 보이기/접기" — ProjectView 안에서 하위
+  // 프로젝트 자신의 할 일을 펼치는 project.expanded와는 다른 필드라, 기본값이 서로 안 엉킨다.
+  function toggleChildrenVisible(id) {
+    updateProject(id, (p) => ({ ...p, childrenVisible: p.childrenVisible === false }))
   }
 
   function setTodoDueDate(projectId, todoId, dateStr) {
@@ -313,6 +323,8 @@ export default function App() {
             onDelete={deleteProject}
             onNest={nestProject}
             onUnnest={unnestProject}
+            onReorder={reorderChildProject}
+            onToggleChildren={toggleChildrenVisible}
             linkedTodosByProject={linkedTodosByProject}
           />
         )}
@@ -355,6 +367,7 @@ export default function App() {
             <TodosView
               project={todosProject}
               onChange={(updater) => updateProject(TODOS_ID, updater)}
+              onUpdateProject={updateProject}
               linkableProjects={activeProjects}
               allProjects={projects}
               themeColor={settings.themeColor}

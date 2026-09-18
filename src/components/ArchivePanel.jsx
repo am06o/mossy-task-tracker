@@ -5,7 +5,7 @@ import ContextMenu from './ContextMenu.jsx'
 import { makeTodo, TODOS_ID } from '../lib/projectsData.js'
 import './ArchivePanel.css'
 
-const LONG_PRESS_MS = 550
+const LONG_PRESS_MS = 300
 const FAB_SIZE = 46
 const EDGE = 8
 const TOP_INSET = 32 + EDGE // 제목표시줄 아래로만 다니게 한다

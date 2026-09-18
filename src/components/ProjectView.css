@@ -153,6 +153,15 @@
   outline-offset: -2px;
 }
 
+/* 할 일을 하위 프로젝트 위/아래로 순서만 바꿀 때의 안내선 — 테두리 박스가 아니라
+   가는 선 하나로만 "여기로 온다"는 걸 보여준다. */
+.todo-divider {
+  height: 3px;
+  margin: 1px 12px;
+  border-radius: 2px;
+  background: var(--proj-color);
+}
+
 .project-child-icon {
   display: flex;
   flex-shrink: 0;
@@ -429,6 +438,18 @@
   outline: none;
 }
 
+.todo-project-tag {
+  flex-shrink: 0;
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 7px;
+  border-radius: 999px;
+}
+
 .todo-link-slot {
   width: 26px;
   flex-shrink: 0;
@@ -463,6 +484,11 @@
   color: var(--text-dim);
 }
 
+.date-chip-anchor {
+  position: relative;
+  display: inline-flex;
+}
+
 .date-chip {
   display: flex;
   align-items: center;
@@ -483,20 +509,15 @@
 
 .date-chip-clear {
   display: flex;
+  opacity: 0;
+}
+
+.date-chip:hover .date-chip-clear {
   opacity: 0.6;
 }
 
 .date-chip-clear:hover {
   opacity: 1;
-}
-
-.date-chip-input {
-  border: 1px solid var(--proj-color);
-  border-radius: var(--radius-sm);
-  padding: 2px 4px;
-  font-size: 11px;
-  flex-shrink: 0;
-  outline: none;
 }
 
 .todo-promote {

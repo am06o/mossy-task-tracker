@@ -23,6 +23,8 @@ export function makeProject(name) {
     progressOverride: null,
     archived: null,
     expanded: false,
+    childrenVisible: true,
+    insertBeforeId: null,
     todos: []
   }
 }
@@ -121,6 +123,8 @@ export function normalizeProjects(rawProjects) {
       progressOverride: isReal && typeof p.progressOverride === 'number' ? p.progressOverride : null,
       archived: isReal && typeof p.archived === 'boolean' ? p.archived : null,
       expanded: isReal && !!p.expanded,
+      childrenVisible: !isReal || typeof p.childrenVisible !== 'boolean' ? true : p.childrenVisible,
+      insertBeforeId: isReal && typeof p.insertBeforeId === 'string' ? p.insertBeforeId : null,
       todos: Array.isArray(p.todos)
         ? isReal
           ? p.todos.map(normalizeTreeNode)

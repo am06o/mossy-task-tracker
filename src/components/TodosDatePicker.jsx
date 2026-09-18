@@ -16,10 +16,12 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import './TodosDatePicker.css'
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토']
+const EMPTY_MAP = new Map()
 
 // 할 일 화면 날짜 라벨을 누르면 뜨는 작은 캘린더. 어느 날에 뭔가 있는지 점으로만 보여주고
 // (내용 텍스트는 안 보여준다), 날을 고르면 바로 그 날짜로 이동한다.
-export default function TodosDatePicker({ value, itemsByDate, onSelect }) {
+// DateChip(프로젝트 시작/마감일, 할 일 마감일)도 같은 달력 UI를 그대로 가져다 쓴다.
+export default function TodosDatePicker({ value, itemsByDate = EMPTY_MAP, onSelect }) {
   const [monthCursor, setMonthCursor] = useState(value)
 
   const days = useMemo(() => {

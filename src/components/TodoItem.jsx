@@ -22,7 +22,8 @@ export default function TodoItem({
   promoteTitle = '프로젝트로 전환',
   onEnterAddNext,
   style,
-  autoEdit
+  autoEdit,
+  projectTag
 }) {
   const [editing, setEditing] = useState(!!autoEdit)
   const [draftTitle, setDraftTitle] = useState(todo.title)
@@ -116,6 +117,16 @@ export default function TodoItem({
       ) : (
         <span className={`todo-title ${todo.title ? '' : 'is-untitled'}`} onClick={() => setEditing(true)}>
           {todo.title || '이름 없음'}
+        </span>
+      )}
+
+      {projectTag && (
+        <span
+          className="todo-project-tag"
+          style={{ color: projectTag.color, background: `color-mix(in srgb, ${projectTag.color} 18%, transparent)` }}
+          title={projectTag.name}
+        >
+          {projectTag.name}
         </span>
       )}
 

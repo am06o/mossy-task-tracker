@@ -1,21 +1,55 @@
-import { useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { addDays, format, isToday } from 'date-fns'
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토']
 import TodoItem from './TodoItem.jsx'
 import AddRow from './AddRow.jsx'
+import TodosDatePicker from './TodosDatePicker.jsx'
 import { clampProgress } from '../lib/progress.js'
 import { makeTodo } from '../lib/projectsData.js'
-import { toDateStr } from '../lib/dateFormat.js'
+import { toDateStr, parseLocalDate } from '../lib/dateFormat.js'
+import { getItemsByDate } from '../lib/calendarData.js'
 import './ProjectView.css'
 import './TodosView.css'
 
-export default function TodosView({ project, onChange, linkableProjects, themeColor, onAssignDate }) {
-  const [cursor, setCursor] = useState(new Date())
+const DOUBLE_CLICK_WINDOW_MS = 250
+
+export default function TodosView({
+  project,
+  onChange,
+  linkableProjects,
+  allProjects,
+  themeColor,
+  onAssignDate,
+  initialDate,
+  onConsumeInitialDate
+}) {
+  const [cursor, setCursor] = useState(() => (initialDate ? parseLocalDate(initialDate) : new Date()))
   const [newestId, setNewestId] = useState(null)
+  const [pickerOpen, setPickerOpen] = useState(false)
   const color = themeColor
   const selectedDate = toDateStr(cursor)
+  const dateFieldRef = useRef(null)
+  const clickTimer = useRef(null)
+
+  useEffect(() => {
+    if (initialDate) onConsumeInitialDate?.()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (!pickerOpen) return
+    function handleClick(e) {
+      if (dateFieldRef.current && !dateFieldRef.current.contains(e.target)) setPickerOpen(false)
+    }
+    document.addEventListener('mousedown', handleClick)
+    return () => document.removeEventListener('mousedown', handleClick)
+  }, [pickerOpen])
+
+  useEffect(() => () => clearTimeout(clickTimer.current), [])
+
+  const itemsByDate = useMemo(() => getItemsByDate(allProjects), [allProjects])
 
   const dayTodos = project.todos.filter((t) => t.dueDate === selectedDate)
 
@@ -62,6 +96,21 @@ export default function TodosView({ project, onChange, linkableProjects, themeCo
     }
   }
 
+  // 한 번 누르면(약간의 지연 후) 미니 캘린더, 그 안에 두 번째 클릭이 오면 더블클릭으로 보고 오늘로 이동.
+  function handleDateClick() {
+    if (clickTimer.current) {
+      clearTimeout(clickTimer.current)
+      clickTimer.current = null
+      setCursor(new Date())
+      setPickerOpen(false)
+      return
+    }
+    clickTimer.current = setTimeout(() => {
+      clickTimer.current = null
+      setPickerOpen((o) => !o)
+    }, DOUBLE_CLICK_WINDOW_MS)
+  }
+
   return (
     <main className="project-view" style={{ '--proj-color': color }}>
       <header className="project-view-header">
@@ -69,22 +118,32 @@ export default function TodosView({ project, onChange, linkableProjects, themeCo
           <h1 className="project-name-title">할 일</h1>
 
           <div className="todos-day-nav">
-            <button onClick={() => setCursor((c) => addDays(c, -1))}>
+            <button className="todos-nav-arrow" onClick={() => setCursor((c) => addDays(c, -1))}>
               <ChevronLeft size={16} />
             </button>
-            <span className="todos-day-label">
-              {format(cursor, 'M월 d일')} ({WEEKDAY_LABELS[cursor.getDay()]})
-              {isToday(cursor) && <span className="todos-day-today-badge">오늘</span>}
-            </span>
-            <button onClick={() => setCursor((c) => addDays(c, 1))}>
+
+            <div className="todos-date-field" ref={dateFieldRef}>
+              <button
+                type="button"
+                className={`todos-day-label ${isToday(cursor) ? 'is-today' : ''}`}
+                onClick={handleDateClick}
+              >
+                {format(cursor, 'M월 d일')} ({WEEKDAY_LABELS[cursor.getDay()]})
+              </button>
+              {pickerOpen && (
+                <TodosDatePicker
+                  value={cursor}
+                  itemsByDate={itemsByDate}
+                  onSelect={(dateStr) => {
+                    setCursor(parseLocalDate(dateStr))
+                    setPickerOpen(false)
+                  }}
+                />
+              )}
+            </div>
+
+            <button className="todos-nav-arrow" onClick={() => setCursor((c) => addDays(c, 1))}>
               <ChevronRight size={16} />
-            </button>
-            <button
-              className={`todos-day-today-btn ${isToday(cursor) ? 'is-hidden' : ''}`}
-              onClick={() => setCursor(new Date())}
-              tabIndex={isToday(cursor) ? -1 : 0}
-            >
-              오늘로
             </button>
           </div>
         </div>

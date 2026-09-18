@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Minus, Square, X } from 'lucide-react'
 import NavRail from './components/NavRail.jsx'
 import ProjectSidebar from './components/ProjectSidebar.jsx'
 import ProjectView from './components/ProjectView.jsx'
@@ -7,7 +8,9 @@ import TodosView from './components/TodosView.jsx'
 import CalendarView from './components/CalendarView.jsx'
 import SettingsView from './components/SettingsView.jsx'
 import ArchivePanel from './components/ArchivePanel.jsx'
+import ResizeHandles from './components/ResizeHandles.jsx'
 import { normalizeSettings } from './lib/theme.js'
+import { loadData, saveData, exportBackup as exportBackupData, importBackup as importBackupData, windowControls } from './lib/platform.js'
 import { findNode, removeNode } from './lib/tree.js'
 import { todayStr } from './lib/dateFormat.js'
 import {
@@ -27,11 +30,12 @@ export default function App() {
   const [activeView, setActiveView] = useState('todos')
   const [selectedProjectId, setSelectedProjectId] = useState(null)
   const [showPastProjects, setShowPastProjects] = useState(false)
+  const [todosJumpDate, setTodosJumpDate] = useState(null)
   const [loaded, setLoaded] = useState(false)
   const saveTimer = useRef(null)
 
   useEffect(() => {
-    window.electronAPI.loadData().then((data) => {
+    loadData().then((data) => {
       setProjects(normalizeProjects(data.projects))
       setSettings(normalizeSettings(data.settings))
       setLoaded(true)
@@ -42,7 +46,7 @@ export default function App() {
     if (!loaded) return
     clearTimeout(saveTimer.current)
     saveTimer.current = setTimeout(() => {
-      window.electronAPI.saveData({ projects, settings })
+      saveData({ projects, settings })
     }, 400)
     return () => clearTimeout(saveTimer.current)
   }, [projects, settings, loaded])
@@ -183,6 +187,21 @@ export default function App() {
     setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, parentProjectId: null } : p)))
   }
 
+  // 같은 상위 프로젝트 아래 하위 프로젝트끼리 순서를 바꾼다 — 끌어놓은 항목이 목표 항목 바로 앞으로 온다.
+  function reorderChildProject(draggedId, targetId) {
+    setProjects((prev) => {
+      if (draggedId === targetId) return prev
+      const dragged = prev.find((p) => p.id === draggedId)
+      if (!dragged) return prev
+      const without = prev.filter((p) => p.id !== draggedId)
+      const targetIndex = without.findIndex((p) => p.id === targetId)
+      if (targetIndex === -1) return prev
+      const next = [...without]
+      next.splice(targetIndex, 0, dragged)
+      return next
+    })
+  }
+
   function setTodoDueDate(projectId, todoId, dateStr) {
     updateProject(projectId, (p) => ({
       ...p,
@@ -191,11 +210,11 @@ export default function App() {
   }
 
   async function exportBackup() {
-    await window.electronAPI.exportBackup({ projects, settings })
+    await exportBackupData({ projects, settings })
   }
 
   async function importBackup() {
-    const res = await window.electronAPI.importBackup()
+    const res = await importBackupData()
     if (res.ok) {
       setProjects(normalizeProjects(res.data.projects))
       setSettings(normalizeSettings(res.data.settings))
@@ -217,6 +236,12 @@ export default function App() {
     }
   }
 
+  // 캘린더에서 날짜 칸을 누르면 그 날짜의 할 일 화면으로 넘어간다.
+  function jumpToDate(dateStr) {
+    setTodosJumpDate(dateStr)
+    setActiveView('todos')
+  }
+
   function toggleShowPastProjects() {
     setShowPastProjects((v) => !v)
     setSelectedProjectId(null)
@@ -228,7 +253,21 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <div className="titlebar">mossy</div>
+      <ResizeHandles />
+      <div className="titlebar" data-tauri-drag-region>
+        <span className="titlebar-title" data-tauri-drag-region>mossy</span>
+        <div className="titlebar-controls">
+          <button type="button" className="titlebar-btn" onClick={() => windowControls.minimize()} aria-label="최소화">
+            <Minus size={14} />
+          </button>
+          <button type="button" className="titlebar-btn" onClick={() => windowControls.toggleMaximize()} aria-label="최대화">
+            <Square size={11} />
+          </button>
+          <button type="button" className="titlebar-btn titlebar-btn-close" onClick={() => windowControls.close()} aria-label="닫기">
+            <X size={14} />
+          </button>
+        </div>
+      </div>
 
       <div className={`app ${activeView === 'projects' && showPastProjects ? 'is-past-projects' : ''}`}>
         <NavRail activeView={activeView} onChangeView={setActiveView} />
@@ -270,6 +309,9 @@ export default function App() {
                 onMoveNodeToProject={(nodeId, toProjectId) =>
                   moveNodeToProject(selectedProject.id, nodeId, toProjectId)
                 }
+                onReorderChildProject={reorderChildProject}
+                onCloseChildProject={closeProject}
+                onDeleteChildProject={deleteProject}
               />
             ) : (
               <div className="empty-state" />
@@ -289,8 +331,11 @@ export default function App() {
               project={todosProject}
               onChange={(updater) => updateProject(TODOS_ID, updater)}
               linkableProjects={activeProjects}
+              allProjects={projects}
               themeColor={settings.themeColor}
               onAssignDate={setTodoDueDate}
+              initialDate={todosJumpDate}
+              onConsumeInitialDate={() => setTodosJumpDate(null)}
             />
           )}
 
@@ -299,6 +344,7 @@ export default function App() {
               projects={projects}
               archiveTodos={todosProject.todos.filter((t) => !t.dueDate)}
               onJumpTo={goToOwner}
+              onJumpToDate={jumpToDate}
               onAssignDate={setTodoDueDate}
               themeColor={settings.themeColor}
             />

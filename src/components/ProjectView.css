@@ -113,7 +113,7 @@
   color: var(--text-dim);
   border: none;
   background: var(--bg);
-  padding: 3px 8px 3px 0;
+  padding: 3px 8px;
   border-radius: 999px;
   font-weight: 500;
 }
@@ -137,6 +137,11 @@
   border-radius: 12px;
   margin-bottom: 3px;
   background: var(--bg);
+  cursor: grab;
+}
+
+.project-child-row:active {
+  cursor: grabbing;
 }
 
 .project-child-row:hover {

@@ -133,24 +133,30 @@ mossy는 Windows용 데스크톱 앱입니다. 설치 파일(.exe)로 설치해�
 
 | 영역 | 선택 | 이유 |
 | --- | --- | --- |
-| 데스크톱 | Electron 31 | Windows 설치형 앱, 로컬 파일 저장 |
+| 데스크톱 | Tauri 2 (Rust) | Windows에 이미 있는 WebView2를 그대로 쓰기 때문에 설치 용량과 메모리 사용량이 Electron보다 훨씬 작음 |
 | 화면 | React 18 + Vite 5 | 빠른 개발 서버, 가벼운 번들 |
 | 날짜 | date-fns | 필요한 함수만 가져다 씀 |
 | 아이콘 | lucide-react | 선 굵기가 일정한 라인 아이콘으로 톤 통일 |
 | 글꼴 | Pretendard (4개 굵기만 내장) | 오프라인에서도 동일하게 보이도록, 전체 패키지 대비 용량 약 1/5 |
-| 설치 파일 | electron-builder (NSIS) | 설치 경로 선택 가능한 일반 설치 프로그램 |
+| 설치 파일 | Tauri bundler (NSIS) | 설치 경로 선택 가능한 일반 설치 프로그램 |
 
 - 드래그 앤 드롭은 라이브러리 없이 브라우저 기본 HTML5 DnD로 구현했습니다.
-- 창 제목표시줄은 Windows 기본 표시줄(시스템 강조색을 따라감) 대신 숨기고, 앱 배경색과 같은 제목 줄을 직접 그립니다(`titleBarOverlay`).
+- 창은 시스템 기본 제목표시줄 없이(`decorations: false`) 띄우고, 앱 배경색과 같은 제목 줄과 최소화/최대화/닫기 버튼을 직접 그립니다(`src/App.jsx`의 `.titlebar`).
 - 날짜 문자열(`yyyy-MM-dd`)은 항상 **로컬 자정 기준**으로 해석합니다. `new Date('2026-09-18')`처럼 UTC로 해석하면 시간대에 따라 하루가 어긋나기 때문입니다(`parseLocalDate`).
+
+> 이전에는 Electron으로 만들었지만, 사양이 낮은 노트북에서도 가볍게 뜨도록 Tauri로 옮겼습니다. Chromium과 Node.js를 통째로 담는 대신 Windows에 이미 설치된 WebView2를 그대로 쓰기 때문에 설치 파일과 메모리 사용량이 크게 줄어듭니다. 옛 Electron 버전에서 쓰던 `data.json`은 처음 실행할 때 자동으로 새 위치로 옮겨집니다(아래 "데이터 이전" 참고).
 
 ### 폴더 구조
 
 ```
 task-tracker/
-├─ electron/
-│  ├─ main.cjs            창 생성, data.json 읽기/쓰기, 백업 내보내기/불러오기
-│  └─ preload.cjs         렌더러에 electronAPI 노출
+├─ src-tauri/
+│  ├─ src/
+│  │  ├─ lib.rs            창 생성 설정, data.json 읽기/쓰기, 백업 내보내기/불러오기, 옛 Electron 데이터 이전
+│  │  └─ main.rs           진입점
+│  ├─ icons/                앱 아이콘(여러 크기)
+│  ├─ capabilities/          창에 허용한 권한(dialog 등)
+│  └─ tauri.conf.json        창 크기, 번들(NSIS) 설정
 ├─ src/
 │  ├─ App.jsx             전체 상태(프로젝트·설정), 화면 전환, 프로젝트 생명주기
 │  ├─ components/
@@ -167,25 +173,29 @@ task-tracker/
 │  │  ├─ ContextMenu      우클릭 메뉴(할 일 · 그룹 · 프로젝트 공용)
 │  │  └─ DateChip, LinkMenu, ProjectMenu, SettingsView
 │  └─ lib/
+│     ├─ platform.js      Rust(Tauri) 명령 호출 — 데이터 읽기/쓰기, 창 조작
 │     ├─ projectsData.js  데이터 생성·정규화, 지난 프로젝트 판단
 │     ├─ progress.js      진척도 계산
 │     ├─ tree.js          할 일 트리 조작(추가·이동·삭제)
 │     ├─ dateFormat.js    로컬 날짜 처리
 │     └─ theme.js         색, 설정 정규화
 ├─ scripts/
-│  ├─ dev.mjs             Vite + Electron 동시 실행
 │  ├─ make-icon.mjs       build/icon.png, icon.ico 생성
 │  └─ icon-raw/           아이콘 크기별 원본 PNG
-└─ build/                 앱 아이콘
+└─ build/                 앱 아이콘 원본(Tauri 아이콘 생성 시 입력으로 사용)
 ```
 
 ## 7. 설치해서 쓰기
 
-`npm run dist`로 만든 `release\mossy Setup 1.0.0.exe`를 실행하면 설치됩니다(설치 위치를 고를 수 있는 일반 설치 프로그램). 서명하지 않은 앱이라 Windows SmartScreen이 막으면 **추가 정보 → 실행**을 누르면 됩니다.
+`npm run dist`로 만든 `src-tauri/target/release/bundle/nsis/mossy_1.0.0_x64-setup.exe`를 실행하면 설치됩니다(설치 위치를 고를 수 있는 일반 설치 프로그램). 서명하지 않은 앱이라 Windows SmartScreen이 막으면 **추가 정보 → 실행**을 누르면 됩니다.
 
 ## 8. 실행과 빌드
 
-Node.js 18 이상이 필요합니다.
+### 준비물
+
+- Node.js 18 이상
+- [Rust](https://www.rust-lang.org/tools/install) (rustup으로 설치)
+- Windows에서는 **Microsoft C++ Build Tools**([Visual Studio 설치 관리자](https://visualstudio.microsoft.com/downloads/)에서 "C++를 사용한 데스크톱 개발" 워크로드)와 **WebView2 런타임**이 필요합니다. WebView2는 Windows 10 이후 버전에는 대부분 이미 설치되어 있습니다. 자세한 내용은 [Tauri 사전 준비 문서](https://v2.tauri.app/start/prerequisites/) 참고.
 
 ```bash
 npm install
@@ -194,36 +204,29 @@ npm install
 ```bash
 npm run dev
 ```
-개발 모드로 실행합니다(Vite 개발 서버 + Electron 창).
+개발 모드로 실행합니다(Vite 개발 서버 + Tauri 창). 처음 실행할 때는 Rust 의존성을 내려받고 빌드하느라 조금 오래 걸립니다.
 
 ```bash
 npm run dist
 ```
-화면을 빌드하고 `release/` 폴더에 Windows 설치 파일을 만듭니다.
+화면과 Rust 앱을 빌드해 `src-tauri/target/release/bundle/nsis/`에 Windows 설치 파일을 만듭니다.
 
 > **PowerShell에서 `npm`이 막힐 때** — "이 시스템에서 스크립트를 실행할 수 없으므로…" 오류가 나면 `npm.cmd run dev`처럼 `.cmd`를 붙여 쓰거나, `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`를 한 번 실행합니다.
 
-> **`npm run dist`가 winCodeSign 압축 해제에서 실패할 때** — 압축 안에 macOS용 심볼릭 링크가 들어 있어 일반 권한으로는 풀리지 않습니다. 셋 중 하나로 해결됩니다.
-> 1. Windows 설정 → 개발자용 → **개발자 모드** 켜기
-> 2. 터미널을 **관리자 권한**으로 열고 다시 실행
-> 3. 심볼릭 링크만 빼고 캐시에 미리 풀어두기(권한 변경 없이 가능)
->    ```powershell
->    $cache = "$env:LOCALAPPDATA\electron-builder\Cache\winCodeSign"
->    $7za = ".\node_modules\7zip-bin\win\x64\7za.exe"
->    $src = Get-ChildItem $cache -Filter *.7z | Select-Object -First 1
->    & $7za x -bd $src.FullName "-o$cache\winCodeSign-2.6.0" '-xr!libcrypto.dylib' '-xr!libssl.dylib'
->    ```
->    (빠지는 파일은 macOS 빌드용이라 Windows 설치 파일에는 영향이 없습니다.)
-
-앱 아이콘을 바꿀 때는 `scripts/icon-raw/`의 크기별 PNG(256·64·48·32·16)를 교체한 뒤 아래를 실행합니다.
+앱 아이콘을 바꿀 때는 `scripts/icon-raw/`의 크기별 PNG(256·64·48·32·16)를 교체해 `build/icon.png`를 새로 만든 뒤, Tauri용 아이콘 세트를 다시 생성합니다.
 
 ```bash
 node scripts/make-icon.mjs
+npx tauri icon build/icon.png
 ```
+
+### 데이터 이전 (Electron → Tauri)
+
+Electron 버전은 `%APPDATA%\mossy\data.json`에, Tauri 버전은 `%APPDATA%\com.local.mossy\data.json`에 데이터를 저장합니다(폴더 이름이 제품명에서 앱 식별자로 바뀌었습니다). 새 버전을 처음 실행할 때 새 위치에 파일이 없으면 자동으로 옛 Electron 위치를 찾아 데이터를 그대로 복사해 옵니다. 옛 폴더는 지우지 않으므로 필요하면 나중에 직접 정리하면 됩니다.
 
 ## 9. 알려진 한계
 
-- Windows 설정에서 "제목 표시줄 및 창 테두리에 강조색 표시"가 켜져 있으면, 창 가장자리 1px 테두리는 여전히 시스템 강조색으로 그려질 수 있습니다(제목 줄 자체는 앱 색으로 바뀝니다).
+- 최소화/최대화/닫기 버튼을 직접 그리기 때문에, Windows 11의 스냅 레이아웃(최대화 버튼에 마우스를 올렸을 때 나오는 배치 미리보기)은 지원하지 않습니다.
 - 예전 버전에서 만든 **그룹**은 그대로 보이고 쓸 수 있지만, 새로 만들 때는 하위 프로젝트를 사용합니다.
 - 하위 프로젝트는 2단계까지만 만들 수 있습니다(의도된 제한).
 

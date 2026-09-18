@@ -70,7 +70,6 @@
 .archive-panel-header {
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 14px 14px 0;
   flex-shrink: 0;
 }
@@ -78,20 +77,6 @@
 .archive-panel-title {
   font-size: 15px;
   font-weight: 700;
-}
-
-.archive-panel-close {
-  border: none;
-  background: none;
-  color: var(--text-faint);
-  display: flex;
-  padding: 3px;
-  border-radius: 6px;
-}
-
-.archive-panel-close:hover {
-  background: var(--bg);
-  color: var(--text-dim);
 }
 
 .archive-panel-list {

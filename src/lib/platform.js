@@ -23,5 +23,6 @@ const appWindow = getCurrentWindow()
 export const windowControls = {
   minimize: () => appWindow.minimize(),
   toggleMaximize: () => appWindow.toggleMaximize(),
-  close: () => appWindow.close()
+  close: () => appWindow.close(),
+  startResizeDragging: (direction) => appWindow.startResizeDragging(direction)
 }

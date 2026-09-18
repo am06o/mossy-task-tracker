@@ -62,7 +62,7 @@
   height: 26px;
   border: none;
   background: none;
-  border-radius: 7px;
+  border-radius: 50%;
   font-size: 11px;
   color: var(--text);
 }
@@ -81,8 +81,8 @@
 }
 
 .todos-date-picker-day.is-selected {
-  background: var(--proj-color);
-  color: #fff;
+  background: color-mix(in srgb, var(--proj-color) 20%, transparent);
+  color: color-mix(in srgb, var(--proj-color) 75%, black);
   font-weight: 700;
 }
 
@@ -100,8 +100,4 @@
 
 .todos-date-picker-dot.is-visible {
   opacity: 1;
-}
-
-.todos-date-picker-day.is-selected .todos-date-picker-dot.is-visible {
-  background: #fff;
 }

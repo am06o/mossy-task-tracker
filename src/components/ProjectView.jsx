@@ -1,7 +1,8 @@
 import { Fragment, useState } from 'react'
-import { ChevronDown, ChevronRight, Folder, FolderOpen, Plus, SquareArrowOutUpRight } from 'lucide-react'
+import { ChevronDown, ChevronRight, Folder, FolderOpen, Plus } from 'lucide-react'
 import TodoNode from './TodoNode.jsx'
 import ProjectMenu from './ProjectMenu.jsx'
+import ContextMenu from './ContextMenu.jsx'
 import DateChip from './DateChip.jsx'
 import AddRow from './AddRow.jsx'
 import ProgressControl from './ProgressControl.jsx'
@@ -82,7 +83,10 @@ export default function ProjectView({
   onSelectProject,
   onAddChildProject,
   onUpdateProject,
-  onMoveNodeToProject
+  onMoveNodeToProject,
+  onReorderChildProject,
+  onCloseChildProject,
+  onDeleteChildProject
 }) {
   const [editingName, setEditingName] = useState(false)
   const [nameDraft, setNameDraft] = useState(project.name)
@@ -92,6 +96,8 @@ export default function ProjectView({
   const [dueEditing, setDueEditing] = useState(false)
   const [newestId, setNewestId] = useState(null)
   const [dropTargetId, setDropTargetId] = useState(null)
+  const [editingChildId, setEditingChildId] = useState(null)
+  const [childMenu, setChildMenu] = useState(null)
 
   const childPcts = childProjects.map((c) => projectDisplayProgress(c, linkedTodosByProject?.get(c.id) || []))
   const pct = projectDisplayProgress(project, linkedTodos, childPcts)
@@ -137,11 +143,32 @@ export default function ProjectView({
     e.stopPropagation()
     setDropTargetId(null)
     try {
-      const { nodeId } = JSON.parse(e.dataTransfer.getData('text/plain'))
-      if (nodeId) onMoveNodeToProject(nodeId, childId)
+      const data = JSON.parse(e.dataTransfer.getData('text/plain'))
+      if (data.childProjectId) {
+        if (data.childProjectId !== childId) onReorderChildProject(data.childProjectId, childId)
+        return
+      }
+      if (data.nodeId) onMoveNodeToProject(data.nodeId, childId)
     } catch {
       // 드래그 데이터가 없으면 무시
     }
+  }
+
+  function childMenuItems(child) {
+    return [
+      { label: '이름수정', onClick: () => setEditingChildId(child.id) },
+      { label: '프로젝트 열기', onClick: () => onSelectProject(child.id) },
+      { label: '프로젝트 마감', onClick: () => onCloseChildProject(child.id) },
+      {
+        label: '프로젝트 삭제',
+        danger: true,
+        onClick: () => {
+          if (confirm(`"${child.name}" 프로젝트를 완전히 삭제할까요?\n캘린더에서도 사라지고 되돌릴 수 없어요.`)) {
+            onDeleteChildProject(child.id)
+          }
+        }
+      }
+    ]
   }
 
   function renderChild(child, i) {
@@ -153,24 +180,42 @@ export default function ProjectView({
       <Fragment key={child.id}>
         <li
           className={`project-child-row ${dropTargetId === child.id ? 'is-drop-target' : ''}`}
+          draggable
+          onDragStart={(e) => e.dataTransfer.setData('text/plain', JSON.stringify({ childProjectId: child.id }))}
           onDragOver={(e) => {
             e.preventDefault()
             setDropTargetId(child.id)
           }}
           onDragLeave={() => setDropTargetId((cur) => (cur === child.id ? null : cur))}
           onDrop={(e) => handleChildDrop(e, child.id)}
+          onContextMenu={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            setChildMenu({ x: e.clientX, y: e.clientY, child })
+          }}
         >
-          <button className="project-child-toggle" title={child.expanded ? '접기' : '펼치기'} onClick={toggle}>
+          <button
+            className="project-child-toggle"
+            title={child.expanded ? '접기' : '펼치기'}
+            draggable={false}
+            onClick={toggle}
+          >
             {child.expanded ? <ChevronDown size={15} /> : <ChevronRight size={15} />}
           </button>
           <span className="project-child-icon" style={{ color: child.color }} onClick={toggle}>
             {child.expanded ? <FolderOpen size={15} /> : <Folder size={15} />}
           </span>
-          <ChildName project={child} onRename={(name) => childChange((p) => ({ ...p, name }))} />
+          <ChildName
+            project={child}
+            onRename={(name) => childChange((p) => ({ ...p, name }))}
+            editing={editingChildId === child.id}
+            onEditingChange={(v) => setEditingChildId(v ? child.id : null)}
+          />
           <span className="project-child-count">{child.todos.length > 0 ? child.todos.length : ''}</span>
           <button
             className="project-child-action"
             title="이 하위 프로젝트에 할 일 추가"
+            draggable={false}
             onClick={() => {
               if (!child.expanded) childChange((p) => ({ ...p, expanded: true }))
               childActions.addTaskAt(null)
@@ -184,9 +229,6 @@ export default function ProjectView({
             color={child.color}
             onChange={(value) => childChange((p) => ({ ...p, progressOverride: value }))}
           />
-          <button className="project-child-action" title="하위 프로젝트 열기" onClick={() => onSelectProject(child.id)}>
-            <SquareArrowOutUpRight size={14} />
-          </button>
         </li>
 
         {child.expanded && (
@@ -311,12 +353,24 @@ export default function ProjectView({
           onAddProject={canAddChild ? onAddChildProject : undefined}
         />
       </ul>
+
+      {childMenu && (
+        <ContextMenu
+          x={childMenu.x}
+          y={childMenu.y}
+          items={childMenuItems(childMenu.child)}
+          onClose={() => setChildMenu(null)}
+        />
+      )}
     </main>
   )
 }
 
-function ChildName({ project, onRename }) {
-  const [editing, setEditing] = useState(false)
+function ChildName({ project, onRename, editing, onEditingChange }) {
+  const [internalEditing, setInternalEditing] = useState(false)
+  const isControlled = editing !== undefined
+  const isEditing = isControlled ? editing : internalEditing
+  const setEditing = isControlled ? onEditingChange : setInternalEditing
   const [draft, setDraft] = useState(project.name)
 
   function commit() {
@@ -326,10 +380,11 @@ function ChildName({ project, onRename }) {
     else setDraft(project.name)
   }
 
-  if (editing) {
+  if (isEditing) {
     return (
       <input
         className="todo-title-input"
+        draggable={false}
         autoFocus
         value={draft}
         onChange={(e) => setDraft(e.target.value)}

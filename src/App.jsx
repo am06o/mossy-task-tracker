@@ -8,6 +8,7 @@ import TodosView from './components/TodosView.jsx'
 import CalendarView from './components/CalendarView.jsx'
 import SettingsView from './components/SettingsView.jsx'
 import ArchivePanel from './components/ArchivePanel.jsx'
+import ResizeHandles from './components/ResizeHandles.jsx'
 import { normalizeSettings } from './lib/theme.js'
 import { loadData, saveData, exportBackup as exportBackupData, importBackup as importBackupData, windowControls } from './lib/platform.js'
 import { findNode, removeNode } from './lib/tree.js'
@@ -186,6 +187,21 @@ export default function App() {
     setProjects((prev) => prev.map((p) => (p.id === id ? { ...p, parentProjectId: null } : p)))
   }
 
+  // 같은 상위 프로젝트 아래 하위 프로젝트끼리 순서를 바꾼다 — 끌어놓은 항목이 목표 항목 바로 앞으로 온다.
+  function reorderChildProject(draggedId, targetId) {
+    setProjects((prev) => {
+      if (draggedId === targetId) return prev
+      const dragged = prev.find((p) => p.id === draggedId)
+      if (!dragged) return prev
+      const without = prev.filter((p) => p.id !== draggedId)
+      const targetIndex = without.findIndex((p) => p.id === targetId)
+      if (targetIndex === -1) return prev
+      const next = [...without]
+      next.splice(targetIndex, 0, dragged)
+      return next
+    })
+  }
+
   function setTodoDueDate(projectId, todoId, dateStr) {
     updateProject(projectId, (p) => ({
       ...p,
@@ -237,6 +253,7 @@ export default function App() {
 
   return (
     <div className="app-shell">
+      <ResizeHandles />
       <div className="titlebar" data-tauri-drag-region>
         <span className="titlebar-title" data-tauri-drag-region>mossy</span>
         <div className="titlebar-controls">
@@ -292,6 +309,9 @@ export default function App() {
                 onMoveNodeToProject={(nodeId, toProjectId) =>
                   moveNodeToProject(selectedProject.id, nodeId, toProjectId)
                 }
+                onReorderChildProject={reorderChildProject}
+                onCloseChildProject={closeProject}
+                onDeleteChildProject={deleteProject}
               />
             ) : (
               <div className="empty-state" />

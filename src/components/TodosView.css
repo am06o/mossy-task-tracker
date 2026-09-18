@@ -13,20 +13,20 @@
 .todos-day-nav {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 4px;
 }
 
-.todos-day-nav button {
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: 8px;
+.todos-nav-arrow {
+  border: none;
+  background: none;
+  border-radius: 6px;
   padding: 5px;
   color: var(--text-dim);
   display: flex;
   flex-shrink: 0;
 }
 
-.todos-day-nav button:hover {
+.todos-nav-arrow:hover {
   background: var(--bg);
   color: var(--text);
 }
@@ -44,18 +44,16 @@
   color: var(--text);
   min-width: 120px;
   white-space: nowrap;
+  border: none;
+  background: none;
+  padding: 5px 8px;
+  border-radius: 6px;
+}
+
+.todos-day-label:hover {
+  background: var(--bg);
 }
 
 .todos-day-label.is-today {
-  background: color-mix(in srgb, var(--proj-color) 16%, transparent);
-  border-color: transparent;
-  color: color-mix(in srgb, var(--proj-color) 80%, var(--text));
-}
-
-/* .todos-day-nav button:hover보다 우선하도록 명시적으로 둔다(안 그러면 오늘 강조색이
-   마우스를 올렸을 때 회색 hover 배경에 덮인다 — 더블클릭 직후처럼 마우스가 버튼 위에
-   남아있는 상황에서 특히 두드러졌다). */
-.todos-day-label.is-today:hover {
-  background: color-mix(in srgb, var(--proj-color) 24%, transparent);
-  color: color-mix(in srgb, var(--proj-color) 80%, var(--text));
+  color: color-mix(in srgb, var(--proj-color) 75%, black);
 }

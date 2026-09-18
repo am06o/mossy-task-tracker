@@ -137,6 +137,11 @@
   border-radius: 12px;
   margin-bottom: 3px;
   background: var(--bg);
+  cursor: grab;
+}
+
+.project-child-row:active {
+  cursor: grabbing;
 }
 
 .project-child-row:hover {

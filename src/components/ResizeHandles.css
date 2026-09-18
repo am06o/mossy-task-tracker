@@ -1,0 +1,68 @@
+.resize-handle {
+  position: fixed;
+  z-index: 100;
+}
+
+.resize-handle-n,
+.resize-handle-s {
+  left: 6px;
+  right: 6px;
+  height: 4px;
+  cursor: ns-resize;
+}
+
+.resize-handle-n {
+  top: 0;
+}
+
+.resize-handle-s {
+  bottom: 0;
+}
+
+.resize-handle-e,
+.resize-handle-w {
+  top: 6px;
+  bottom: 6px;
+  width: 4px;
+  cursor: ew-resize;
+}
+
+.resize-handle-e {
+  right: 0;
+}
+
+.resize-handle-w {
+  left: 0;
+}
+
+.resize-handle-ne,
+.resize-handle-nw,
+.resize-handle-se,
+.resize-handle-sw {
+  width: 8px;
+  height: 8px;
+}
+
+.resize-handle-ne {
+  top: 0;
+  right: 0;
+  cursor: nesw-resize;
+}
+
+.resize-handle-nw {
+  top: 0;
+  left: 0;
+  cursor: nwse-resize;
+}
+
+.resize-handle-se {
+  bottom: 0;
+  right: 0;
+  cursor: nwse-resize;
+}
+
+.resize-handle-sw {
+  bottom: 0;
+  left: 0;
+  cursor: nesw-resize;
+}

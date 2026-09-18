@@ -118,7 +118,7 @@ export default function TodosView({
           <h1 className="project-name-title">할 일</h1>
 
           <div className="todos-day-nav">
-            <button onClick={() => setCursor((c) => addDays(c, -1))}>
+            <button className="todos-nav-arrow" onClick={() => setCursor((c) => addDays(c, -1))}>
               <ChevronLeft size={16} />
             </button>
 
@@ -142,7 +142,7 @@ export default function TodosView({
               )}
             </div>
 
-            <button onClick={() => setCursor((c) => addDays(c, 1))}>
+            <button className="todos-nav-arrow" onClick={() => setCursor((c) => addDays(c, 1))}>
               <ChevronRight size={16} />
             </button>
           </div>

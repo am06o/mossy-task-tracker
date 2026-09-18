@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
+import { Minus, Square, X } from 'lucide-react'
 import NavRail from './components/NavRail.jsx'
 import ProjectSidebar from './components/ProjectSidebar.jsx'
 import ProjectView from './components/ProjectView.jsx'
@@ -8,6 +9,7 @@ import CalendarView from './components/CalendarView.jsx'
 import SettingsView from './components/SettingsView.jsx'
 import ArchivePanel from './components/ArchivePanel.jsx'
 import { normalizeSettings } from './lib/theme.js'
+import { loadData, saveData, exportBackup as exportBackupData, importBackup as importBackupData, windowControls } from './lib/platform.js'
 import { findNode, removeNode } from './lib/tree.js'
 import { todayStr } from './lib/dateFormat.js'
 import {
@@ -31,7 +33,7 @@ export default function App() {
   const saveTimer = useRef(null)
 
   useEffect(() => {
-    window.electronAPI.loadData().then((data) => {
+    loadData().then((data) => {
       setProjects(normalizeProjects(data.projects))
       setSettings(normalizeSettings(data.settings))
       setLoaded(true)
@@ -42,7 +44,7 @@ export default function App() {
     if (!loaded) return
     clearTimeout(saveTimer.current)
     saveTimer.current = setTimeout(() => {
-      window.electronAPI.saveData({ projects, settings })
+      saveData({ projects, settings })
     }, 400)
     return () => clearTimeout(saveTimer.current)
   }, [projects, settings, loaded])
@@ -191,11 +193,11 @@ export default function App() {
   }
 
   async function exportBackup() {
-    await window.electronAPI.exportBackup({ projects, settings })
+    await exportBackupData({ projects, settings })
   }
 
   async function importBackup() {
-    const res = await window.electronAPI.importBackup()
+    const res = await importBackupData()
     if (res.ok) {
       setProjects(normalizeProjects(res.data.projects))
       setSettings(normalizeSettings(res.data.settings))
@@ -228,7 +230,20 @@ export default function App() {
 
   return (
     <div className="app-shell">
-      <div className="titlebar">mossy</div>
+      <div className="titlebar" data-tauri-drag-region>
+        <span className="titlebar-title" data-tauri-drag-region>mossy</span>
+        <div className="titlebar-controls">
+          <button type="button" className="titlebar-btn" onClick={() => windowControls.minimize()} aria-label="최소화">
+            <Minus size={14} />
+          </button>
+          <button type="button" className="titlebar-btn" onClick={() => windowControls.toggleMaximize()} aria-label="최대화">
+            <Square size={11} />
+          </button>
+          <button type="button" className="titlebar-btn titlebar-btn-close" onClick={() => windowControls.close()} aria-label="닫기">
+            <X size={14} />
+          </button>
+        </div>
+      </div>
 
       <div className={`app ${activeView === 'projects' && showPastProjects ? 'is-past-projects' : ''}`}>
         <NavRail activeView={activeView} onChangeView={setActiveView} />

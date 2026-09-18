@@ -139,14 +139,6 @@ export default function TodoItem({
         </span>
       )}
 
-      <ProgressControl
-        size="sm"
-        value={todo.progress}
-        color={color}
-        onChange={(value) => onChange({ ...todo, progress: value })}
-        onAdjust={(delta) => onAdjustProgress(todo.id, delta)}
-      />
-
       <span className="todo-date-slot">
         <DateChip
           value={todo.dueDate}
@@ -155,6 +147,14 @@ export default function TodoItem({
           title="일정"
         />
       </span>
+
+      <ProgressControl
+        size="sm"
+        value={todo.progress}
+        color={color}
+        onChange={(value) => onChange({ ...todo, progress: value })}
+        onAdjust={(delta) => onAdjustProgress(todo.id, delta)}
+      />
 
       {onPromote && (
         <button className="todo-promote" title={promoteTitle} onClick={onPromote}>

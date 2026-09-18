@@ -137,11 +137,6 @@
   border-radius: 12px;
   margin-bottom: 3px;
   background: var(--bg);
-  cursor: grab;
-}
-
-.project-child-row:active {
-  cursor: grabbing;
 }
 
 .project-child-row:hover {
@@ -370,7 +365,6 @@
 
 .todo-drag-handle {
   color: var(--text-faint);
-  cursor: grab;
   flex-shrink: 0;
   display: flex;
 }

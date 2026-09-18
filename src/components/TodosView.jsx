@@ -115,6 +115,29 @@ export default function TodosView({
     }))
   }
 
+  // 같은 날짜 목록 안에서 할 일 순서를 바꾼다 — 끌어놓은 항목이 목표 항목 바로 앞으로 온다.
+  function reorderTodo(draggedId, targetId) {
+    if (draggedId === targetId) return
+    onChange((p) => {
+      const dragged = p.todos.find((t) => t.id === draggedId)
+      if (!dragged) return p
+      const without = p.todos.filter((t) => t.id !== draggedId)
+      const targetIndex = without.findIndex((t) => t.id === targetId)
+      if (targetIndex === -1) return p
+      const next = [...without]
+      next.splice(targetIndex, 0, dragged)
+      return { ...p, todos: next }
+    })
+  }
+
+  function readNodeId(e) {
+    try {
+      return JSON.parse(e.dataTransfer.getData('text/plain')).nodeId
+    } catch {
+      return null
+    }
+  }
+
   // 보관함에서 이 날짜 칸으로 끌어다 놓으면 그 항목이 오늘(선택된 날짜)의 할 일이 된다.
   function handleDrop(e) {
     e.preventDefault()
@@ -191,6 +214,16 @@ export default function TodosView({
             onEnterAddNext={() => addTodo(todo.id)}
             linkableProjects={linkableProjects}
             autoEdit={todo.id === newestId}
+            draggable
+            onDragStart={(e) => e.dataTransfer.setData('text/plain', JSON.stringify({ nodeId: todo.id }))}
+            onDragOver={(e) => e.preventDefault()}
+            onDrop={(e) => {
+              const draggedId = readNodeId(e)
+              if (!draggedId || draggedId === todo.id) return
+              e.preventDefault()
+              e.stopPropagation()
+              reorderTodo(draggedId, todo.id)
+            }}
           />
         ))}
 

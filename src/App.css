@@ -70,11 +70,13 @@
 }
 
 /* 지난 프로젝트를 볼 때는 사이드바와 프로젝트 화면을 함께 한 톤만 어둡게 한다.
-   색 변수 자체를 바꿔서, 그 안의 카드·버튼 배경도 같은 비율로 따라 어두워진다. */
+   색 변수 자체를 바꿔서, 그 안의 카드·버튼 배경도 같은 비율로 따라 어두워진다.
+   --dim-bg/--dim-panel은 라이트/다크 모드마다 다른 값을 index.css에서 정의해두어서,
+   다크 모드에서 여기만 밝아지는 일이 없다(글자색은 --text를 그대로 쓰므로 안전). */
 .app.is-past-projects .sidebar,
 .app.is-past-projects .app-main {
-  --panel: #f3f4f6;
-  --bg: #eceef1;
+  --panel: var(--dim-panel);
+  --bg: var(--dim-bg);
 }
 
 .loading-screen {

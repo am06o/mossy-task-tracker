@@ -169,21 +169,14 @@
   text-decoration: line-through;
 }
 
-/* 드래그가 실제로 시작되면(할 일을 다른 날로 옮기는 중) 살짝 튀어오르는 느낌으로
-   "이제 잡혔다"는 걸 보여준다. */
+/* 드래그가 실제로 시작되면(할 일을 다른 날로 옮기는 중) 원래 자리의 항목은 살짝
+   어두워지고 작아져서 "손에 잡혀서 빠져나갔다"는 잔상처럼 보인다. 드롭할 때까지 유지된다. */
 .calendar-chip.is-dragging,
 .calendar-unscheduled-item.is-dragging {
-  animation: calendar-drag-pickup 0.18s ease;
-  box-shadow: 0 3px 10px rgba(17, 24, 39, 0.22);
-}
-
-@keyframes calendar-drag-pickup {
-  from {
-    transform: scale(0.92);
-  }
-  to {
-    transform: scale(1);
-  }
+  opacity: 0.4;
+  filter: grayscale(0.4) brightness(0.85);
+  transform: scale(0.94);
+  transition: opacity 0.12s ease, transform 0.12s ease, filter 0.12s ease;
 }
 
 .calendar-chip--deadline {
@@ -278,7 +271,6 @@
   border: 1px solid var(--border);
   border-radius: 10px;
   background: var(--panel);
-  cursor: grab;
 }
 
 .calendar-unscheduled-dot {

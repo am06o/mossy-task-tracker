@@ -6,6 +6,11 @@ export default defineConfig({
   base: './',
   server: {
     port: 5173,
-    strictPort: true
+    strictPort: true,
+    watch: {
+      // src-tauri/target은 Rust 빌드 산출물 — 컴파일 중에 파일이 계속 생성/잠기므로
+      // Vite가 같이 감시하면 Windows에서 EBUSY로 죽는다.
+      ignored: ['**/src-tauri/**']
+    }
   }
 })

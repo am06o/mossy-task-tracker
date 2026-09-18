@@ -1,13 +1,13 @@
 # mossy
 
-> 내 컴퓨터 안에서만 돌아가는, 조용한 할 일 / 프로젝트 관리 앱
+> 내 컴퓨터 안에서만, 조용하고 가벼운 할 일 / 프로젝트 관리 앱
 >
 > *A quiet to-do / project tracker that runs only on your own computer.*
 
 *(이 문서는 한국어 문단 다음에 이탤릭체로 영어 번역을 병기합니다. · Each Korean paragraph in this document is followed by its English translation in italics.)*
 
 mossy는 Windows용 데스크톱 앱입니다. 설치 파일(.exe)로 설치해서 따로 실행하고, 인터넷이나 계정 없이 모든 데이터를 내 컴퓨터에만 저장합니다.
-이 문서는 사용 설명서이자, 별도의 기획서를 대신해 **무엇을 왜 이렇게 만들었는지**를 정리한 문서입니다.
+이 문서는 사용 설명서이자 기획서를 대신합니다. 
 
 *mossy is a Windows desktop app. You install it from an .exe and run it standalone — no internet connection or account needed, and everything is stored only on your own computer.
 This document is both a user guide and, in place of a separate spec, a record of **what was built and why**.*
@@ -32,7 +32,7 @@ And honestly, I just wanted to make a ton of to-dos and click a ton of checkboxe
 
 1. **로컬 우선 · Local-first** — 서버·계정·동기화가 없습니다. 웹앱이 아니라 설치형 프로그램이고, 데이터는 내 PC의 파일 하나에 들어갑니다.
    *No server, account, or sync. It's an installed program, not a web app, and all data lives in a single file on your own PC.*
-2. **덜어내기 · Cutting things out** — 포모도로, 사진 헤더, 외부 캘린더 연동, 뮤직 플레이어, 꾸미기 기능 등이 없습니다. 기능은 "실제로 쓰는가"를 기준으로 추가합니다.
+2. **덜어내기 · Cutting things out** — 연동도 꾸미기도 타이머도 쓰지 않아서 넣지 않았습니다.
    *No pomodoro timer, photo headers, external calendar sync, music player, or decorative extras. Features are added only if they're actually used.*
 3. **할 일이 첫 화면 · Todos are the home screen** — 앱을 열면 오늘의 할 일이 바로 보입니다.
    *Opening the app shows today's to-dos immediately.*

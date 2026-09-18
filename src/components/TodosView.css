@@ -31,35 +31,31 @@
   color: var(--text);
 }
 
-.todos-day-label {
+.todos-date-field {
+  position: relative;
   display: flex;
-  align-items: center;
+}
+
+.todos-day-label {
   justify-content: center;
   gap: 6px;
   font-size: 13px;
   font-weight: 600;
   color: var(--text);
-  width: 120px;
-  flex-shrink: 0;
-}
-
-.todos-day-today-badge {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--proj-color);
-  background: color-mix(in srgb, var(--proj-color) 15%, white);
-  padding: 2px 6px;
-  border-radius: 999px;
-}
-
-.todos-day-today-btn {
-  width: auto !important;
-  padding: 5px 10px !important;
-  font-size: 11.5px;
+  min-width: 120px;
   white-space: nowrap;
 }
 
-.todos-day-today-btn.is-hidden {
-  visibility: hidden;
-  pointer-events: none;
+.todos-day-label.is-today {
+  background: color-mix(in srgb, var(--proj-color) 16%, transparent);
+  border-color: transparent;
+  color: color-mix(in srgb, var(--proj-color) 80%, var(--text));
+}
+
+/* .todos-day-nav button:hover보다 우선하도록 명시적으로 둔다(안 그러면 오늘 강조색이
+   마우스를 올렸을 때 회색 hover 배경에 덮인다 — 더블클릭 직후처럼 마우스가 버튼 위에
+   남아있는 상황에서 특히 두드러졌다). */
+.todos-day-label.is-today:hover {
+  background: color-mix(in srgb, var(--proj-color) 24%, transparent);
+  color: color-mix(in srgb, var(--proj-color) 80%, var(--text));
 }

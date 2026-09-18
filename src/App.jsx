@@ -29,6 +29,7 @@ export default function App() {
   const [activeView, setActiveView] = useState('todos')
   const [selectedProjectId, setSelectedProjectId] = useState(null)
   const [showPastProjects, setShowPastProjects] = useState(false)
+  const [todosJumpDate, setTodosJumpDate] = useState(null)
   const [loaded, setLoaded] = useState(false)
   const saveTimer = useRef(null)
 
@@ -219,6 +220,12 @@ export default function App() {
     }
   }
 
+  // 캘린더에서 날짜 칸을 누르면 그 날짜의 할 일 화면으로 넘어간다.
+  function jumpToDate(dateStr) {
+    setTodosJumpDate(dateStr)
+    setActiveView('todos')
+  }
+
   function toggleShowPastProjects() {
     setShowPastProjects((v) => !v)
     setSelectedProjectId(null)
@@ -304,8 +311,11 @@ export default function App() {
               project={todosProject}
               onChange={(updater) => updateProject(TODOS_ID, updater)}
               linkableProjects={activeProjects}
+              allProjects={projects}
               themeColor={settings.themeColor}
               onAssignDate={setTodoDueDate}
+              initialDate={todosJumpDate}
+              onConsumeInitialDate={() => setTodosJumpDate(null)}
             />
           )}
 
@@ -314,6 +324,7 @@ export default function App() {
               projects={projects}
               archiveTodos={todosProject.todos.filter((t) => !t.dueDate)}
               onJumpTo={goToOwner}
+              onJumpToDate={jumpToDate}
               onAssignDate={setTodoDueDate}
               themeColor={settings.themeColor}
             />

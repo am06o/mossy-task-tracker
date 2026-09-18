@@ -14,9 +14,9 @@ import {
   subMonths
 } from 'date-fns'
 import { CalendarClock, CalendarCheck2, ChevronLeft, ChevronRight, Flag } from 'lucide-react'
-import { flattenTasks } from '../lib/tree.js'
 import { TODOS_ID } from '../lib/projectsData.js'
 import { parseLocalDate } from '../lib/dateFormat.js'
+import { getItemsByDate } from '../lib/calendarData.js'
 import './CalendarView.css'
 
 const WEEKDAY_LABELS = ['일', '월', '화', '수', '목', '금', '토']
@@ -27,7 +27,7 @@ function dragPayload(projectId, todoId) {
   return JSON.stringify({ projectId, todoId })
 }
 
-export default function CalendarView({ projects, archiveTodos, onJumpTo, onAssignDate, themeColor }) {
+export default function CalendarView({ projects, archiveTodos, onJumpTo, onJumpToDate, onAssignDate, themeColor }) {
   const [cursor, setCursor] = useState(new Date())
   const [dragOverKey, setDragOverKey] = useState(null)
 
@@ -40,23 +40,7 @@ export default function CalendarView({ projects, archiveTodos, onJumpTo, onAssig
     return item.project.color
   }
 
-  const itemsByDate = useMemo(() => {
-    const map = new Map()
-    const add = (key, item) => {
-      const list = map.get(key) || []
-      list.push(item)
-      map.set(key, list)
-    }
-    for (const project of projects) {
-      for (const todo of flattenTasks(project.todos)) {
-        if (todo.dueDate) add(todo.dueDate, { kind: 'todo', todo, project })
-      }
-      if (!project.isTodos && project.dueDate) {
-        add(project.dueDate, { kind: 'deadline', project })
-      }
-    }
-    return map
-  }, [projects])
+  const itemsByDate = useMemo(() => getItemsByDate(projects), [projects])
 
   const archiveItems = archiveTodos.filter((t) => t.progress < 100)
 
@@ -112,9 +96,13 @@ export default function CalendarView({ projects, archiveTodos, onJumpTo, onAssig
           className="calendar-chip calendar-chip--deadline"
           style={{ '--chip-color': colorOf(item) }}
           title={`${item.project.name} 마감일`}
-          onClick={() => onJumpTo(item.project.id)}
+          onClick={(e) => {
+            e.stopPropagation()
+            onJumpTo(item.project.id)
+          }}
         >
-          <Flag size={9} /> {item.project.name}
+          <Flag size={9} className="calendar-chip-icon" />
+          <span className="calendar-chip-label">{item.project.name}</span>
         </button>
       )
     }
@@ -128,9 +116,12 @@ export default function CalendarView({ projects, archiveTodos, onJumpTo, onAssig
         onDragStart={(e) => {
           e.dataTransfer.setData('text/plain', dragPayload(item.project.id, item.todo.id))
         }}
-        onClick={() => onJumpTo(item.project.id)}
+        onClick={(e) => {
+          e.stopPropagation()
+          onJumpTo(item.project.id)
+        }}
       >
-        {item.todo.title}
+        <span className="calendar-chip-label">{item.todo.title}</span>
       </button>
     )
   }
@@ -177,6 +168,9 @@ export default function CalendarView({ projects, archiveTodos, onJumpTo, onAssig
                   onDragEnter={() => setDragOverKey(key)}
                   onDragLeave={() => setDragOverKey((cur) => (cur === key ? null : cur))}
                   onDrop={(e) => handleDrop(e, key)}
+                  onClick={() => onJumpToDate(key)}
+                  role="button"
+                  tabIndex={0}
                 >
                   <span className="calendar-day-num">{format(day, 'd')}</span>
                   <div className="calendar-day-items">

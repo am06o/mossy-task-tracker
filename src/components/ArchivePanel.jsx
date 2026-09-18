@@ -274,9 +274,6 @@ export default function ArchivePanel({ project, onChange, visible, position, onM
         <div className="archive-panel" style={panelStyleFor(fab, vw, vh)}>
           <div className="archive-panel-header">
             <span className="archive-panel-title">보관함</span>
-            <button className="archive-panel-close" onClick={() => setOpen(false)}>
-              <X size={16} />
-            </button>
           </div>
           <ul className="archive-panel-list">
             {undated.map((todo) => (
@@ -290,7 +287,6 @@ export default function ArchivePanel({ project, onChange, visible, position, onM
               />
             ))}
             <AddRow onAdd={() => addItem()} label="추가" />
-            {undated.length === 0 && <li className="todo-empty">비어 있어요.</li>}
           </ul>
         </div>
       )}

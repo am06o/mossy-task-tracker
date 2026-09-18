@@ -24,7 +24,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--panel);
   border: 2px solid var(--color);
   cursor: pointer;
   opacity: 0;
@@ -41,7 +41,7 @@
   width: 14px;
   height: 14px;
   border-radius: 50%;
-  background: #fff;
+  background: var(--panel);
   border: 2px solid var(--color);
   cursor: pointer;
   opacity: 0;
@@ -69,6 +69,18 @@
 
 .progress-control--sm .progress-slider {
   min-width: 60px;
+}
+
+/* 프로젝트 화면 목록에는 숫자가 줄마다 붙어서 너무 빽빽해 보이므로, 그 줄에 마우스를
+   올렸을 때만 퍼센트 숫자를 보여준다(전체 진척도 슬라이더는 예외로 항상 보인다). */
+.progress-control--sm .progress-pct {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.todo-item:hover .progress-control--sm .progress-pct,
+.project-child-row:hover .progress-control--sm .progress-pct {
+  opacity: 1;
 }
 
 .progress-control--xl {

@@ -309,6 +309,12 @@
   text-align: right;
   font-variant-numeric: tabular-nums;
   flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.todo-group-header:hover .todo-group-pct {
+  opacity: 1;
 }
 
 .todo-group-action {
@@ -374,7 +380,7 @@
   height: 20px;
   border-radius: 7px;
   border: 1.5px solid var(--border-strong);
-  background: #fff;
+  background: var(--panel);
   flex-shrink: 0;
   display: flex;
   align-items: center;
@@ -436,18 +442,6 @@
   border-radius: var(--radius-sm);
   padding: 3px 6px;
   outline: none;
-}
-
-.todo-project-tag {
-  flex-shrink: 0;
-  max-width: 100px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 10.5px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 999px;
 }
 
 .todo-link-slot {

@@ -19,6 +19,22 @@
   color: var(--text-dim);
 }
 
+/* 평소엔 색 점만 보이고, 줄에 마우스를 올렸을 때만 "누르면 바뀐다"는 화살표가 보인다. */
+.link-menu-trigger svg {
+  opacity: 0;
+  transition: opacity 0.1s ease;
+}
+
+.link-menu-trigger:hover svg,
+.link-menu-trigger:focus-visible svg,
+.todo-item:hover .link-menu-trigger svg {
+  opacity: 1;
+}
+
+.link-menu-trigger--static {
+  cursor: default;
+}
+
 .link-menu-popover {
   position: absolute;
   top: calc(100% + 4px);

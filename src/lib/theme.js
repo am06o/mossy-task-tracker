@@ -13,7 +13,8 @@ export function normalizeSettings(raw) {
   const pos = raw && raw.fabPosition
   const isRatio = (v) => typeof v === 'number' && v >= 0 && v <= 1
   const fabPosition = pos && isRatio(pos.fx) && isRatio(pos.fy) ? { fx: pos.fx, fy: pos.fy } : null
-  return { themeColor, palette, fabPosition }
+  const darkMode = !!(raw && raw.darkMode)
+  return { themeColor, palette, fabPosition, darkMode }
 }
 
 export function progressGradient(hex) {

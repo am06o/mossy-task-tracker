@@ -27,6 +27,17 @@ function dragPayload(projectId, todoId) {
   return JSON.stringify({ projectId, todoId })
 }
 
+// 드래그가 실제로 시작됐다는 걸 보여주는 클래스를 붙인다 — 다음 프레임에 붙여야
+// 브라우저가 드래그 고스트 이미지를 캡처한 "이전" 모습(애니메이션 전) 그대로 가져간다.
+function markDragging(e) {
+  const el = e.currentTarget
+  requestAnimationFrame(() => el.classList.add('is-dragging'))
+}
+
+function unmarkDragging(e) {
+  e.currentTarget.classList.remove('is-dragging')
+}
+
 export default function CalendarView({ projects, archiveTodos, onJumpTo, onJumpToDate, onAssignDate, themeColor }) {
   const [cursor, setCursor] = useState(new Date())
   const [dragOverKey, setDragOverKey] = useState(null)
@@ -115,7 +126,9 @@ export default function CalendarView({ projects, archiveTodos, onJumpTo, onJumpT
         draggable
         onDragStart={(e) => {
           e.dataTransfer.setData('text/plain', dragPayload(item.project.id, item.todo.id))
+          markDragging(e)
         }}
+        onDragEnd={unmarkDragging}
         onClick={(e) => {
           e.stopPropagation()
           onJumpTo(item.project.id)
@@ -168,7 +181,8 @@ export default function CalendarView({ projects, archiveTodos, onJumpTo, onJumpT
                   onDragEnter={() => setDragOverKey(key)}
                   onDragLeave={() => setDragOverKey((cur) => (cur === key ? null : cur))}
                   onDrop={(e) => handleDrop(e, key)}
-                  onClick={() => onJumpToDate(key)}
+                  onDoubleClick={() => onJumpToDate(key)}
+                  title="더블클릭하면 이 날짜의 할 일로 이동해요"
                   role="button"
                   tabIndex={0}
                 >
@@ -227,7 +241,9 @@ export default function CalendarView({ projects, archiveTodos, onJumpTo, onJumpT
                   draggable
                   onDragStart={(e) => {
                     e.dataTransfer.setData('text/plain', dragPayload(TODOS_ID, todo.id))
+                    markDragging(e)
                   }}
+                  onDragEnd={unmarkDragging}
                 >
                   <span className="calendar-unscheduled-dot" style={{ backgroundColor: themeColor }} />
                   <span className="calendar-unscheduled-text">{todo.title}</span>

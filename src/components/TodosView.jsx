@@ -202,7 +202,7 @@ export default function TodosView({
             onChange={(updated) => updateProjectTodo(owner.id, updated)}
             onAdjustProgress={(id, delta) => adjustProjectTodoProgress(owner.id, id, delta)}
             onDelete={(id) => deleteProjectTodo(owner.id, id)}
-            projectTag={{ name: owner.name, color: owner.color }}
+            projectDot={{ name: owner.name, color: owner.color }}
           />
         ))}
 

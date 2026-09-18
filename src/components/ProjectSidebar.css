@@ -40,7 +40,7 @@
 
 .sidebar-add-btn {
   border: none;
-  background: var(--bg);
+  background: none;
   color: var(--text-dim);
   border-radius: 8px;
   width: 26px;

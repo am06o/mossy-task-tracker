@@ -169,6 +169,23 @@
   text-decoration: line-through;
 }
 
+/* 드래그가 실제로 시작되면(할 일을 다른 날로 옮기는 중) 살짝 튀어오르는 느낌으로
+   "이제 잡혔다"는 걸 보여준다. */
+.calendar-chip.is-dragging,
+.calendar-unscheduled-item.is-dragging {
+  animation: calendar-drag-pickup 0.18s ease;
+  box-shadow: 0 3px 10px rgba(17, 24, 39, 0.22);
+}
+
+@keyframes calendar-drag-pickup {
+  from {
+    transform: scale(0.92);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
 .calendar-chip--deadline {
   font-weight: 600;
 }

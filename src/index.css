@@ -14,6 +14,19 @@
   --radius-sm: 8px;
 }
 
+/* 대충 만든 다크 모드 — 회색조 변수들만 어둡게 바꾼다. 설정에서 켜고 끌 수 있다. */
+:root[data-theme='dark'] {
+  --bg: #16181c;
+  --panel: #202226;
+  --border: #34373d;
+  --border-strong: #454951;
+  --text: #e8e9ec;
+  --text-dim: #a3a7ae;
+  --text-faint: #74787f;
+  --accent-strong: color-mix(in srgb, var(--accent) 82%, white);
+  --accent-bg: color-mix(in srgb, var(--accent) 22%, black);
+}
+
 * {
   box-sizing: border-box;
 }

@@ -81,6 +81,10 @@ export default function App() {
     document.documentElement.style.setProperty('--accent', settings.themeColor)
   }, [settings.themeColor])
 
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', settings.darkMode ? 'dark' : 'light')
+  }, [settings.darkMode])
+
   function updatePaletteColor(index, hex) {
     setSettings((s) => {
       const palette = [...s.palette]
@@ -394,6 +398,8 @@ export default function App() {
               onChangeThemeColor={(themeColor) => setSettings((s) => ({ ...s, themeColor }))}
               palette={settings.palette}
               onChangePaletteColor={updatePaletteColor}
+              darkMode={settings.darkMode}
+              onChangeDarkMode={(darkMode) => setSettings((s) => ({ ...s, darkMode }))}
               onExport={exportBackup}
               onImport={importBackup}
               account={supabaseConfigured ? session?.user?.email : null}

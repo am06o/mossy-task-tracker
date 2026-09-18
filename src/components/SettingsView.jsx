@@ -43,6 +43,8 @@ export default function SettingsView({
   onChangeThemeColor,
   palette,
   onChangePaletteColor,
+  darkMode,
+  onChangeDarkMode,
   onExport,
   onImport,
   account,
@@ -53,6 +55,19 @@ export default function SettingsView({
       <header className="settings-view-header">
         <h1>설정</h1>
       </header>
+
+      <section className="settings-block">
+        <h2>화면</h2>
+        <label className="settings-toggle-row">
+          <span>다크 모드</span>
+          <input
+            type="checkbox"
+            className="settings-toggle"
+            checked={!!darkMode}
+            onChange={(e) => onChangeDarkMode(e.target.checked)}
+          />
+        </label>
+      </section>
 
       <section className="settings-block">
         <h2>테마 색상</h2>

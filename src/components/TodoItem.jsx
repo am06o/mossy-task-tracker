@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { ArrowRight, Check, ChevronsRight, GripVertical, X } from 'lucide-react'
+import { ArrowRight, Check, ChevronDown, ChevronsRight, GripVertical, X } from 'lucide-react'
 import ProgressControl from './ProgressControl.jsx'
 import DateChip from './DateChip.jsx'
 import LinkMenu from './LinkMenu.jsx'
@@ -23,7 +23,7 @@ export default function TodoItem({
   onEnterAddNext,
   style,
   autoEdit,
-  projectTag
+  projectDot
 }) {
   const [editing, setEditing] = useState(!!autoEdit)
   const [draftTitle, setDraftTitle] = useState(todo.title)
@@ -120,13 +120,12 @@ export default function TodoItem({
         </span>
       )}
 
-      {projectTag && (
-        <span
-          className="todo-project-tag"
-          style={{ color: projectTag.color, background: `color-mix(in srgb, ${projectTag.color} 18%, transparent)` }}
-          title={projectTag.name}
-        >
-          {projectTag.name}
+      {projectDot && (
+        <span className="todo-link-slot">
+          <span className="link-menu-trigger link-menu-trigger--static" title={projectDot.name}>
+            <span className="link-menu-dot" style={{ backgroundColor: projectDot.color }} />
+            <ChevronDown size={13} />
+          </span>
         </span>
       )}
 
@@ -140,6 +139,14 @@ export default function TodoItem({
         </span>
       )}
 
+      <ProgressControl
+        size="sm"
+        value={todo.progress}
+        color={color}
+        onChange={(value) => onChange({ ...todo, progress: value })}
+        onAdjust={(delta) => onAdjustProgress(todo.id, delta)}
+      />
+
       <span className="todo-date-slot">
         <DateChip
           value={todo.dueDate}
@@ -148,14 +155,6 @@ export default function TodoItem({
           title="일정"
         />
       </span>
-
-      <ProgressControl
-        size="sm"
-        value={todo.progress}
-        color={color}
-        onChange={(value) => onChange({ ...todo, progress: value })}
-        onAdjust={(delta) => onAdjustProgress(todo.id, delta)}
-      />
 
       {onPromote && (
         <button className="todo-promote" title={promoteTitle} onClick={onPromote}>

@@ -52,47 +52,53 @@ And honestly, I just wanted to make a ton of to-dos and click a ton of checkboxe
 *You switch between five screens from the vertical menu on the left. Settings (gear icon) sits at the bottom.*
 
 ### 할 일 · Todos
-- 날짜별로 그날의 할 일을 봅니다. 제목 옆의 `<  9월 18일 (금)  >`로 하루씩 넘기고, 날짜를 누르면 그날그날 무엇이 있는지 점으로만 보여주는 미니 달력이 떠서 원하는 날로 바로 이동할 수 있습니다(두 번 누르면 오늘로). 오늘이면 날짜 글자가 테마 색으로 진해집니다.
-  *Shows that day's to-dos. `<  Sep 18 (Fri)  >` next to the title steps a day at a time; clicking the date opens a mini calendar that marks which days have something (as a dot only, no text) so you can jump straight there (double-click jumps back to today). On today's date the text itself turns into the theme color.*
-- 목록 맨 아래(할 일이 없으면 첫 줄)의 흐린 **+** 를 누르면 할 일이 추가됩니다. 이름을 적고 **Enter**를 치면 바로 다음 할 일이 이어서 만들어지고, 빈 줄로 빠져나오면 그 줄은 자동으로 사라집니다.
-  *A faint **+** at the bottom of the list (or the first line, if empty) adds a todo. Type a name and hit **Enter** to keep chaining new todos; leaving a line blank makes it disappear automatically.*
+- 날짜별로 그날의 할 일을 봅니다. 제목 줄 오른쪽 끝의 `<  9월 18일 (금)  >`로 하루씩 넘기고, 날짜를 누르면 그날그날 무엇이 있는지 점으로만 보여주는 미니 달력이 떠서 원하는 날로 바로 이동할 수 있습니다(두 번 누르면 오늘로). 오늘이면 날짜 글자가 테마 색으로 진해집니다.
+  *Shows that day's to-dos. `<  Sep 18 (Fri)  >` at the far right of the title row steps a day at a time; clicking the date opens a mini calendar that marks which days have something (as a dot only, no text) so you can jump straight there (double-click jumps back to today). On today's date the text itself turns into the theme color.*
+- 목록 맨 아래(할 일이 없으면 첫 줄)의 흐린 **+** 를 누르면 할 일이 추가됩니다. 이름을 적고 **Enter**를 치면 바로 다음 할 일이 이어서 만들어지고, 빈 줄로 빠져나오면 그 줄은 자동으로 사라집니다. 목록 안에서는 손잡이(⋮⋮)를 끌어 순서를 바꿀 수 있습니다.
+  *A faint **+** at the bottom of the list (or the first line, if empty) adds a todo. Type a name and hit **Enter** to keep chaining new todos; leaving a line blank makes it disappear automatically. Drag the handle (⋮⋮) to reorder within the list.*
 - 이름을 안 붙인 줄은 "이름 없음"으로 흐리게 보이고, 눌러서 바로 고칠 수 있습니다. 줄을 **우클릭**하면 이름 수정 · 할 일 삭제를 고를 수 있습니다.
   *An unnamed row shows faintly as "Untitled" and can be edited by clicking it. **Right-click** a row for Rename / Delete.*
 - 할 일마다: 체크박스 · 내일로 미루기(»)· 프로젝트 연결 · 날짜 · 진척도 슬라이더.
   *Each todo has: a checkbox · push to tomorrow (») · link to a project · a date · a progress slider.*
-  - 슬라이더는 클릭한 위치로 바로 이동하고, 끌거나 마우스 휠(1%)/↑↓ 키(5%)로도 조절됩니다.
-    *The slider jumps to wherever you click, and can also be dragged, scrolled (1% per notch), or adjusted with ↑↓ (5% per press).*
-  - 날짜가 없는 할 일의 달력 아이콘을 누르면 **오늘 날짜가 먼저 채워지고**, 그 상태에서 세부 날짜를 고칠 수 있습니다.
-    *Clicking the calendar icon on a dateless todo **fills in today's date first**, which you can then adjust.*
+  - 슬라이더는 클릭한 위치로 바로 이동하고, 끌거나 마우스 휠(1%)/↑↓ 키(5%)로도 조절됩니다. 퍼센트 숫자는 평소엔 숨겨져 있다가 그 줄에 마우스를 올려야 보입니다(숫자가 줄마다 빽빽하게 보이지 않도록).
+    *The slider jumps to wherever you click, and can also be dragged, scrolled (1% per notch), or adjusted with ↑↓ (5% per press). The percent number stays hidden until you hover that row, so the list doesn't feel cluttered with numbers.*
+  - 날짜가 없는 할 일의 달력 아이콘을 누르면 **오늘 날짜가 먼저 채워지고**, 프로젝트 시작/마감일을 포함해 날짜를 고르는 곳은 모두 같은 달력 팝업(월 이동 + 클릭으로 선택)을 씁니다. 날짜 칩의 x(지우기)는 마우스를 올렸을 때만 나타납니다.
+    *Clicking the calendar icon on a dateless todo **fills in today's date first**; every date picker in the app (project start/due dates included) shares the same calendar popover (month navigation + click to pick). The date chip's x (clear) only appears on hover.*
   - 프로젝트에 연결한 할 일은 그 프로젝트의 진척도 계산에도 함께 들어갑니다.
     *A todo linked to a project also counts toward that project's progress calculation.*
+- 오늘 마감인 할 일은 "할 일" 보관함뿐 아니라 프로젝트 안에 있는 것도 함께 보입니다 — 프로젝트 소속 할 일은 이름 옆에 그 프로젝트 색 점(연결 드롭다운과 같은 모양)이 붙습니다.
+  *Todos due today show up here whether they live in the "Todos" bucket or inside a project — a project-owned todo gets a color dot next to its name, styled like the same link dropdown used elsewhere.*
 - 보관함에서 할 일을 끌어다 놓으면 지금 보고 있는 날짜의 할 일이 됩니다.
   *Dragging an item from the archive onto this list assigns it to the date currently shown.*
 
 ### 캘린더 · Calendar
 - 월 달력에 할 일과 프로젝트 마감일이 표시됩니다. 프로젝트에 속하지 않은 할 일은 **테마 색**, 프로젝트 할 일은 그 프로젝트 색입니다.
   *The monthly calendar shows todos and project deadlines. A todo with no project uses the **theme color**; a project's todo uses that project's color.*
+- 날짜 칸은 **더블클릭**해야 그날의 할 일 화면으로 이동합니다(한 번 클릭은 드래그와 헷갈리지 않도록 아무 일도 하지 않습니다). 이전/오늘/다음 버튼은 할 일 화면과 같은 테두리 없는 모양입니다.
+  *A day cell needs a **double-click** to jump to that day's Todos screen (a single click does nothing, so it doesn't get confused with dragging). The prev/today/next buttons match the borderless look used on the Todos screen.*
 - 오른쪽 패널: **오늘의 할 일 / 다가오는 마감 / 보관함**.
   *Right-hand panel: **today's todos / upcoming deadlines / archive**.*
   - 다가오는 마감은 기간 제한 없이 **가까운 마감 순으로 5개**만 보여줍니다(같은 날이면 프로젝트 우선순위 순). 이미 끝낸 할 일과 마감한 프로젝트는 빠집니다.
     *Upcoming deadlines have no time-window cutoff — it just shows the **nearest 5**, sorted by date (and then by project priority for ties). Completed todos and closed projects are excluded.*
-- 보관함 항목을 날짜 칸에 끌어다 놓으면 그 날의 할 일이 됩니다.
-  *Dragging an archive item onto a day cell assigns it to that day.*
+- 할 일을 끌어서 다른 날로 옮길 수 있습니다(보관함 항목을 날짜 칸에 끌어다 놓아도 그 날의 할 일이 됩니다). 드래그를 시작하면 원래 있던 항목이 살짝 어두워지고 작아져서, 손에 잡혀 빠져나간 것처럼 보입니다.
+  *Drag a todo to reschedule it onto another day (dropping an archive item onto a day cell works the same way). Once a drag starts, the original item dims and shrinks slightly, like an afterimage of what you just picked up.*
 
 ### 프로젝트 · Projects
-- **사이드바 · Sidebar**: 프로젝트 목록과 진척도 막대. 프로젝트를 다른 프로젝트 위로 끌어다 놓으면 하위 프로젝트가 되고, 사이드바 제목 줄로 끌어오면 다시 최상위로 올라갑니다.
-  *The project list and progress bars. Dragging a project onto another makes it a sub-project; dragging it up to the sidebar's title row promotes it back to top level.*
+- **사이드바 · Sidebar**: 프로젝트 목록과 진척도 막대. 프로젝트를 다른 프로젝트 위로 끌어다 놓으면 하위 프로젝트가 되고, 사이드바 제목 줄로 끌어오면 다시 최상위로 올라갑니다. 줄의 위/아래 가장자리에 놓으면 중첩 대신 그 자리로 **순서만** 바뀝니다. 하위 프로젝트가 있는 줄에는 접기/펼치기 화살표가 붙습니다.
+  *The project list and progress bars. Dragging a project onto another makes it a sub-project; dragging it up to the sidebar's title row promotes it back to top level. Dropping near a row's top/bottom edge instead just **reorders** it there. A row with sub-projects gets a collapse/expand arrow.*
 - **우클릭 메뉴 · Right-click menu**: 프로젝트 생성 · 프로젝트 마감 · 프로젝트 삭제.
   *New project / Close project / Delete project.*
 - **− 버튼 → 지난 프로젝트 · The − button → Past projects**: 사이드바와 프로젝트 화면이 함께 한 톤 어두워지며 뒷면으로 뒤집히고, 마감했거나 마감일이 지난 프로젝트가 보입니다. 우클릭으로 **복구**하거나 삭제할 수 있고, 다시 −를 누르면 원래 목록으로 돌아옵니다.
   *The sidebar and project screen darken a shade and "flip", revealing projects that are closed or past their deadline. Right-click to **restore** or delete one; pressing − again flips back.*
 - **프로젝트 화면 · Project screen**
-  - 제목 줄: 이름(클릭해 수정) · 시작/마감일 · 설정 메뉴(우선순위, 색).
-    *Title row: name (click to edit) · start/due date · a settings menu (priority, color).*
+  - 제목 줄: 이름(클릭해 수정) · 시작/마감일(누르면 오늘 날짜가 바로 채워지고, 그 자리에서 조정) · 설정 메뉴(우선순위, 색). 새 프로젝트는 테마 색을, 하위 프로젝트는 상위 프로젝트의 색을 그대로 물려받습니다.
+    *Title row: name (click to edit) · start/due date (clicking fills in today first, then you adjust from there) · a settings menu (priority, color). A new project starts with the theme color, and a new sub-project inherits its parent's color.*
   - 제목 아래: 메모(마우스를 올리면 "메모 추가"가 드러남), 그리고 전체 진척도 바.
     *Below the title: a note (hover to reveal "Add note") and the overall progress bar.*
-  - 목록 맨 위에는 **하위 프로젝트 폴더**가 있습니다. 펼치면 그 안의 할 일이 그대로 보여서 상위 프로젝트에서 바로 체크하고 진척도를 확인할 수 있습니다. 할 일을 폴더 위로 끌어다 놓으면 그 하위 프로젝트로 옮겨지고, 폴더 칸 자체를 끌어다 놓으면 같은 상위 아래 형제 프로젝트끼리 순서를 바꿀 수 있습니다. **우클릭**하면 이름 수정 · 프로젝트 열기(해당 하위 프로젝트 화면으로 이동) · 프로젝트 마감 · 프로젝트 삭제를 고를 수 있습니다.
-    *At the top of the list are **sub-project folders**. Expanding one shows its todos inline, so you can check them off and see progress right from the parent. Dragging a todo onto a folder moves it into that sub-project; dragging the folder row itself reorders sibling sub-projects under the same parent. **Right-click** for Rename / Open project (jumps to that sub-project's own screen) / Close project / Delete project.*
+  - 목록에는 **하위 프로젝트 폴더**와 이 프로젝트 자신의 할 일이 함께 놓입니다. 폴더를 펼치면 그 안의 할 일이 그대로 보여서 상위 프로젝트에서 바로 체크하고 진척도를 확인할 수 있습니다. 할 일을 폴더 위로 끌어다 놓으면 그 하위 프로젝트로 옮겨지고, 폴더 칸 자체를 끌어다 놓으면 같은 상위 아래 형제 프로젝트끼리 순서를 바꿀 수 있습니다. 할 일을 끌 때 폴더 줄의 **왼쪽 가장자리 가까이**로 가져가면(편입 대신) 그 폴더 위/아래로 순서만 바뀌도록 얇은 안내선이 뜹니다. **우클릭**하면 이름 수정 · 프로젝트 열기(해당 하위 프로젝트 화면으로 이동) · 프로젝트 마감 · 프로젝트 삭제를 고를 수 있습니다.
+    *The list mixes **sub-project folders** with this project's own todos. Expanding a folder shows its todos inline, so you can check them off and see progress right from the parent. Dragging a todo onto a folder moves it into that sub-project; dragging the folder row itself reorders sibling sub-projects under the same parent. Dragging a todo close to a folder row's **left edge** shows a thin divider instead, letting you reorder it above/below the folder rather than nesting it in. **Right-click** for Rename / Open project (jumps to that sub-project's own screen) / Close project / Delete project.*
+  - 목록의 진척도 % 숫자는 평소엔 숨겨져 있다가 그 줄에 마우스를 올렸을 때만 보입니다(전체 진척도 바는 예외로 항상 보입니다).
+    *The percent numbers in the list stay hidden until you hover that row (the overall progress bar at the top is the exception and always shows its number).*
   - 맨 아래 **+** 는 "할 일 추가 / 프로젝트 추가"를 고르는 작은 메뉴를 엽니다(공간에 따라 위/아래로 열림). 하위 프로젝트 안에서는 더 깊게 만들 수 없으므로 바로 할 일이 추가됩니다.
     *The **+** at the bottom opens a small "Add todo / Add project" menu (opening up or down depending on space). Inside a sub-project, nesting further isn't allowed, so it adds a todo directly.*
 
@@ -111,8 +117,8 @@ And honestly, I just wanted to make a ton of to-dos and click a ton of checkboxe
   *The button's position is stored as a **ratio** of the window size, so it stays in the same relative spot (and never off-screen) when you resize the window. The panel picks a left/right and up/down direction based on which side of the screen the button is on, so it always opens fully on-screen.*
 
 ### 설정 · Settings
-- 테마 색, 프로젝트 색 팔레트(5색, 직접 수정 가능), 데이터 내보내기/불러오기.
-  *Theme color, a 5-color project palette (editable), and data export/import.*
+- 화면(다크 모드) · 테마 색 · 프로젝트 색 팔레트(5색, 직접 수정 가능) · 데이터 내보내기/불러오기.
+  *Screen (dark mode) · theme color · a 5-color project palette (editable) · data export/import.*
 
 ## 4. 핵심 규칙 · Core rules
 
@@ -177,12 +183,15 @@ And honestly, I just wanted to make a ton of to-dos and click a ton of checkboxe
       "archived": null,                          // 4-3 참고 · see 4-3
       "progressOverride": null,                  // 전체 진척도를 직접 조절한 값 · manually overridden overall progress
       "expanded": false,                         // 상위 화면에서 폴더가 펼쳐져 있는지 · whether the folder is expanded in the parent view
+      "childrenVisible": true,                   // 사이드바에서 이 프로젝트의 하위 프로젝트 목록을 펼쳐 보이는지 · whether this project's sub-projects are expanded in the sidebar
+      "insertBeforeId": null,                    // 하위 프로젝트가 상위 화면 목록에서 어느 할 일 앞에 놓이는지(없으면 맨 앞) · which of the parent's todos this sub-project renders before (front of the list if unset)
       "todos": [ /* 할 일, 또는 { isGroup: true, todos: [...] } 그룹 · a todo, or a { isGroup: true, todos: [...] } group */ ]
     }
   ],
   "settings": {
     "themeColor": "#4a8a2a",
     "palette": ["#ABE57E", "#8BC7FF", "#FF99CE", "#FBBF24", "#A78BFA"],
+    "darkMode": false,                            // 다크 모드 켜짐 여부 · whether dark mode is on
     "fabPosition": { "fx": 0.95, "fy": 0.5 }     // 떠 있는 보관함 버튼 위치(창 크기 비율) · floating archive button position (ratio of window size)
   }
 }

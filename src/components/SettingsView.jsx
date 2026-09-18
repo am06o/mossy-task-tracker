@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Download, Plus, Upload } from 'lucide-react'
+import { Download, LogOut, Plus, Upload } from 'lucide-react'
 import './ColorPicker.css'
 import './SettingsView.css'
 
@@ -44,7 +44,9 @@ export default function SettingsView({
   palette,
   onChangePaletteColor,
   onExport,
-  onImport
+  onImport,
+  account,
+  onSignOut
 }) {
   return (
     <main className="settings-view">
@@ -83,6 +85,18 @@ export default function SettingsView({
           </button>
         </div>
       </section>
+
+      {account && (
+        <section className="settings-block">
+          <h2>계정</h2>
+          <div className="settings-data-row">
+            <span className="settings-account-email">{account}</span>
+            <button className="settings-action-btn" onClick={onSignOut}>
+              <LogOut size={15} /> 로그아웃
+            </button>
+          </div>
+        </section>
+      )}
     </main>
   )
 }

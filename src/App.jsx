@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { Minus, Square, X } from 'lucide-react'
+import { isTauri } from '@tauri-apps/api/core'
 import NavRail from './components/NavRail.jsx'
 import ProjectSidebar from './components/ProjectSidebar.jsx'
 import ProjectView from './components/ProjectView.jsx'
@@ -9,8 +9,11 @@ import CalendarView from './components/CalendarView.jsx'
 import SettingsView from './components/SettingsView.jsx'
 import ArchivePanel from './components/ArchivePanel.jsx'
 import ResizeHandles from './components/ResizeHandles.jsx'
+import TitleBar from './components/TitleBar.jsx'
+import AuthView from './components/AuthView.jsx'
 import { normalizeSettings } from './lib/theme.js'
-import { loadData, saveData, exportBackup as exportBackupData, importBackup as importBackupData, windowControls } from './lib/platform.js'
+import { loadData, saveData, exportBackup as exportBackupData, importBackup as importBackupData } from './lib/platform.js'
+import { supabase, supabaseConfigured } from './lib/supabase.js'
 import { findNode, removeNode } from './lib/tree.js'
 import { todayStr } from './lib/dateFormat.js'
 import {
@@ -24,6 +27,8 @@ import {
 } from './lib/projectsData.js'
 import './App.css'
 
+const runningInTauri = isTauri()
+
 export default function App() {
   const [projects, setProjects] = useState([])
   const [settings, setSettings] = useState(normalizeSettings())
@@ -32,15 +37,36 @@ export default function App() {
   const [showPastProjects, setShowPastProjects] = useState(false)
   const [todosJumpDate, setTodosJumpDate] = useState(null)
   const [loaded, setLoaded] = useState(false)
+  const [session, setSession] = useState(undefined) // undefined: 확인 중, null: 로그아웃, 객체: 로그인됨
   const saveTimer = useRef(null)
 
+  // Supabase 연결을 안 해뒀으면(.env 미설정) 로그인 없이 예전처럼 로컬 전용으로 돈다.
   useEffect(() => {
+    if (!supabaseConfigured) {
+      setSession(null)
+      return
+    }
+    supabase.auth.getSession().then(
+      ({ data }) => setSession(data.session),
+      () => setSession(null) // 세션 확인이 실패해도(오프라인 등) 로그인 화면은 보여줘야 한다
+    )
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, newSession) => {
+      setSession(newSession)
+    })
+    return () => sub.subscription.unsubscribe()
+  }, [])
+
+  const signedIn = !supabaseConfigured || Boolean(session)
+
+  useEffect(() => {
+    if (!signedIn) return
+    setLoaded(false)
     loadData().then((data) => {
       setProjects(normalizeProjects(data.projects))
       setSettings(normalizeSettings(data.settings))
       setLoaded(true)
     })
-  }, [])
+  }, [signedIn])
 
   useEffect(() => {
     if (!loaded) return
@@ -247,27 +273,26 @@ export default function App() {
     setSelectedProjectId(null)
   }
 
-  if (!loaded) {
-    return <div className="loading-screen">불러오는 중...</div>
+  const authChecked = session !== undefined
+  const needsSignIn = authChecked && supabaseConfigured && !session
+  const stillLoading = !authChecked || (!needsSignIn && !loaded)
+
+  // 데스크톱(Tauri)에서는 로딩·로그인 화면에서도 창을 옮기거나 닫을 수 있어야 하므로,
+  // 어느 화면이든 타이틀바만은 항상 먼저 그린다.
+  if (stillLoading || needsSignIn) {
+    return (
+      <div className="app-shell">
+        {runningInTauri && <ResizeHandles />}
+        {runningInTauri && <TitleBar />}
+        {stillLoading ? <div className="loading-screen">불러오는 중...</div> : <AuthView />}
+      </div>
+    )
   }
 
   return (
     <div className="app-shell">
-      <ResizeHandles />
-      <div className="titlebar" data-tauri-drag-region>
-        <span className="titlebar-title" data-tauri-drag-region>mossy</span>
-        <div className="titlebar-controls">
-          <button type="button" className="titlebar-btn" onClick={() => windowControls.minimize()} aria-label="최소화">
-            <Minus size={14} />
-          </button>
-          <button type="button" className="titlebar-btn" onClick={() => windowControls.toggleMaximize()} aria-label="최대화">
-            <Square size={11} />
-          </button>
-          <button type="button" className="titlebar-btn titlebar-btn-close" onClick={() => windowControls.close()} aria-label="닫기">
-            <X size={14} />
-          </button>
-        </div>
-      </div>
+      {runningInTauri && <ResizeHandles />}
+      {runningInTauri && <TitleBar />}
 
       <div className={`app ${activeView === 'projects' && showPastProjects ? 'is-past-projects' : ''}`}>
         <NavRail activeView={activeView} onChangeView={setActiveView} />
@@ -358,6 +383,8 @@ export default function App() {
               onChangePaletteColor={updatePaletteColor}
               onExport={exportBackup}
               onImport={importBackup}
+              account={supabaseConfigured ? session?.user?.email : null}
+              onSignOut={() => supabase.auth.signOut()}
             />
           )}
         </div>

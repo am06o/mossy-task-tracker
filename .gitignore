@@ -4,3 +4,5 @@ release/
 src-tauri/target/
 src-tauri/gen/
 *.log
+.env
+.env.local

@@ -198,6 +198,8 @@ And honestly, I just wanted to make a ton of to-dos and click a ton of checkboxe
 | 아이콘 · Icons | lucide-react | 선 굵기가 일정한 라인 아이콘으로 톤 통일 · *Consistent-stroke line icons for a unified look.* |
 | 글꼴 · Font | Pretendard (4개 굵기만 내장 · 4 weights only) | 오프라인에서도 동일하게 보이도록, 전체 패키지 대비 용량 약 1/5 · *Looks the same offline, at about 1/5 the size of the full font package.* |
 | 설치 파일 · Installer | Tauri bundler (NSIS) | 설치 경로 선택 가능한 일반 설치 프로그램 · *A standard installer that lets you pick the install path.* |
+| 클라우드 동기화 · Cloud sync | Supabase (Postgres + Auth) | 이메일 로그인과 기기 간 데이터 동기화, 무료로 시작 가능 · *Email login and cross-device sync, free to start with.* |
+| 폰용 웹 버전 · Phone web version | vite-plugin-pwa | 안드로이드에서 "홈 화면에 추가"로 앱처럼 설치되도록 · *Lets Android install it app-like via "Add to Home Screen".* |
 
 - 드래그 앤 드롭은 라이브러리 없이 브라우저 기본 HTML5 DnD로 구현했습니다.
   *Drag and drop uses the browser's native HTML5 DnD, no library.*
@@ -236,17 +238,25 @@ task-tracker/
 │  │  ├─ ProgressControl  진척도 슬라이더 · progress slider
 │  │  ├─ AddRow           목록 끝의 + 추가 줄 · the trailing + row in a list
 │  │  ├─ ContextMenu      우클릭 메뉴(할 일 · 그룹 · 프로젝트 공용) · right-click menu (shared by todos/groups/projects)
+│  │  ├─ TitleBar         데스크톱 전용 커스텀 제목 줄 · desktop-only custom title bar
+│  │  ├─ ResizeHandles    데스크톱 전용, 창 가장자리 크기 조절 · desktop-only window-edge resize handles
+│  │  ├─ AuthView         로그인 / 가입 화면(Supabase) · sign-in / sign-up screen (Supabase)
 │  │  └─ DateChip, LinkMenu, ProjectMenu, SettingsView
 │  └─ lib/
-│     ├─ platform.js      Rust(Tauri) 명령 호출 — 데이터 읽기/쓰기, 창 조작 · calls into Rust (Tauri) — data read/write, window controls
+│     ├─ platform.js      데스크톱(Tauri)·웹 겸용 저장소 계층 — Supabase에 읽고 쓰고, 데스크톱에서는 로컬 캐시도 유지, 창 조작은 Tauri에서만
+│     │                   · storage layer shared by desktop (Tauri) and web — reads/writes Supabase, also keeps a local cache on desktop, window controls are Tauri-only
+│     ├─ supabase.js      Supabase 클라이언트 초기화(.env의 URL·키 사용) · initializes the Supabase client (from .env URL/key)
 │     ├─ projectsData.js  데이터 생성·정규화, 지난 프로젝트 판단 · data creation/normalization, past-project logic
 │     ├─ progress.js      진척도 계산 · progress calculation
 │     ├─ tree.js          할 일 트리 조작(추가·이동·삭제) · todo tree operations (add/move/delete)
 │     ├─ dateFormat.js    로컬 날짜 처리 · local date handling
 │     └─ theme.js         색, 설정 정규화 · color and settings normalization
+├─ supabase/
+│  └─ schema.sql          Supabase에 한 번 실행할 테이블·권한 정의 · table/permissions definition to run once in Supabase
 ├─ scripts/
 │  ├─ make-icon.mjs       build/icon.png, icon.ico 생성 · generates build/icon.png, icon.ico
 │  └─ icon-raw/           아이콘 크기별 원본 PNG · source PNGs per icon size
+├─ public/                PWA(안드로이드 웹앱) 아이콘 · PWA (Android web app) icon
 └─ build/                 앱 아이콘 원본(Tauri 아이콘 생성 시 입력으로 사용) · source app icon (input for generating Tauri icon sets)
 ```
 
@@ -302,7 +312,61 @@ Electron 버전은 `%APPDATA%\mossy\data.json`에, Tauri 버전은 `%APPDATA%\co
 
 *The Electron version stored data at `%APPDATA%\mossy\data.json`; the Tauri version stores it at `%APPDATA%\com.local.mossy\data.json` (the folder name switched from the product name to the app identifier). The first time you run the new version, if nothing exists yet at the new location, it automatically looks for the old Electron location and copies the data over as-is. The old folder isn't deleted, so clean it up yourself later if you want to.*
 
-## 9. 알려진 한계 · Known limitations
+## 9. 클라우드 동기화 (Supabase) · Cloud sync (Supabase)
+
+앱을 여러 기기(예: 노트북 + 안드로이드 폰)에서 같은 데이터로 쓰려면 Supabase 연동이 필요합니다. 연동하지 않으면 예전처럼 이 컴퓨터에만 데이터가 저장되는 로컬 전용 모드로 동작합니다.
+
+*To use the app with the same data across multiple devices (e.g. a laptop + an Android phone), you need to connect Supabase. Without it, the app runs exactly as before — local-only, storing data just on this computer.*
+
+### 설정하기 · Setting it up
+
+1. [supabase.com](https://supabase.com)에서 무료 프로젝트를 하나 만듭니다.
+   *Create a free project at [supabase.com](https://supabase.com).*
+2. 프로젝트의 **SQL Editor**에서 `supabase/schema.sql` 내용을 붙여넣고 실행합니다(데이터를 저장할 테이블과 접근 권한을 만듭니다).
+   *In the project's **SQL Editor**, paste and run the contents of `supabase/schema.sql` (creates the table that stores data, with access rules).*
+3. 프로젝트 설정(Settings → API)에서 **Project URL**과 **anon public key**를 복사합니다.
+   *From Settings → API, copy the **Project URL** and the **anon public key**.*
+4. `.env.example`을 `.env`로 복사하고, 그 두 값을 채워 넣습니다.
+   *Copy `.env.example` to `.env` and fill in those two values.*
+5. 다시 빌드하면(`npm run dev` / `npm run dist`) 앱을 열 때 로그인 화면이 뜹니다. 이메일 + 비밀번호로 가입하면 끝입니다.
+   *Rebuild (`npm run dev` / `npm run dist`) and the app shows a login screen on launch. Sign up with an email and password, and that's it.*
+
+### 데스크톱 ↔ 폰 동기화 방식 · How desktop ↔ phone sync works
+
+- 데스크톱(Tauri) 앱은 오프라인에서도 쓸 수 있도록 로컬 파일에 계속 저장하고, 온라인이면 Supabase에도 함께 저장합니다. 두 기기를 동시에 쓰지만 않으면 "마지막에 저장한 내용이 이긴다" 방식으로 충분합니다.
+  *The desktop (Tauri) app keeps saving to a local file too, so it still works offline, and also saves to Supabase whenever it's online. As long as you're not editing on two devices at the exact same moment, "last save wins" is good enough.*
+- 안드로이드 폰에서는 **웹사이트로 접속**해서 씁니다(아래 10절 참고). 브라우저에서 "홈 화면에 추가"하면 앱처럼 아이콘이 생기고, 로그인 상태도 계속 유지됩니다.
+  *On Android, you use it as a **website** (see section 10 below). "Add to Home Screen" from the browser gives it an app-like icon, and it stays signed in.*
+
+## 10. 폰(안드로이드)에서 쓰기 — PWA · Using it on Android — PWA
+
+mossy 웹 버전은 `dist/` 폴더를 그대로 정적 사이트로 올리면 됩니다. 가장 간단한 방법은 Vercel이나 Netlify입니다(둘 다 무료).
+
+*The web version of mossy is just the `dist/` folder served as a static site. The simplest way to host it is Vercel or Netlify (both free).*
+
+### 배포하기 (Vercel 예시) · Deploying (Vercel example)
+
+1. [vercel.com](https://vercel.com)에 GitHub 계정으로 가입합니다.
+   *Sign up at [vercel.com](https://vercel.com) with your GitHub account.*
+2. "Add New Project" → 이 저장소(`mossy-task-tracker`)를 선택합니다.
+   *"Add New Project" → select this repository (`mossy-task-tracker`).*
+3. **Environment Variables**에 `.env`에 넣었던 `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`를 똑같이 추가합니다.
+   *Under **Environment Variables**, add the same `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` from your `.env`.*
+4. Build Command는 `npm run build`, Output Directory는 `dist`로 지정합니다(보통 자동 감지됩니다).
+   *Set the Build Command to `npm run build` and the Output Directory to `dist` (usually auto-detected).*
+5. 배포되면 `https://프로젝트이름.vercel.app` 같은 주소가 생깁니다.
+   *Once deployed, you'll get a URL like `https://your-project-name.vercel.app`.*
+
+### 폰에 설치하기 · Installing on your phone
+
+1. 안드로이드 폰에서 Chrome으로 그 주소를 엽니다.
+   *Open that URL in Chrome on your Android phone.*
+2. 오른쪽 위 **⋮ 메뉴 → 홈 화면에 추가**(또는 "앱 설치")를 누릅니다.
+   *Tap the **⋮ menu → Add to Home screen** (or "Install app").*
+3. 홈 화면에 mossy 아이콘이 생기고, 눌러서 열면 주소창 없이 일반 앱처럼 열립니다.
+   *An mossy icon appears on your home screen; opening it launches full-screen like a regular app, with no address bar.*
+
+## 11. 알려진 한계 · Known limitations
 
 - 최소화/최대화/닫기 버튼을 직접 그리기 때문에, Windows 11의 스냅 레이아웃(최대화 버튼에 마우스를 올렸을 때 나오는 배치 미리보기)은 지원하지 않습니다.
   *Because the minimize/maximize/close buttons are custom-drawn, Windows 11's Snap Layouts (the layout preview that appears when hovering the maximize button) aren't supported.*
@@ -310,8 +374,12 @@ Electron 버전은 `%APPDATA%\mossy\data.json`에, Tauri 버전은 `%APPDATA%\co
   *A **group** created in an older version still displays and works fine, but new nesting should use sub-projects instead.*
 - 하위 프로젝트는 2단계까지만 만들 수 있습니다(의도된 제한).
   *Sub-projects are capped at two levels deep — this is an intentional limit.*
+- 클라우드 동기화는 "마지막에 저장한 내용이 통째로 이긴다" 방식입니다. 두 기기에서 동시에 고쳐서 저장하면 나중에 저장한 쪽만 남습니다(따로 병합하지 않습니다).
+  *Cloud sync is "whoever saves last wins, wholesale" — if you edit on two devices at the same moment, only the later save survives (nothing is merged).*
+- 안드로이드(PWA) 버전은 인터넷 연결과 로그인이 필요합니다. 로컬 캐시는 데스크톱(Tauri) 버전에만 있습니다.
+  *The Android (PWA) version requires an internet connection and being signed in. The local cache is desktop (Tauri) only.*
 
-## 10. 라이선스 · License
+## 12. 라이선스 · License
 
 MIT License — 자유롭게 쓰고 고치고 배포할 수 있습니다. 자세한 내용은 [LICENSE](LICENSE) 참고.
 

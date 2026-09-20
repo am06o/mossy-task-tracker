@@ -85,6 +85,17 @@ export default function App() {
     document.documentElement.setAttribute('data-theme', settings.darkMode ? 'dark' : 'light')
   }, [settings.darkMode])
 
+  // 사용자가 가져온 커스텀 CSS — 다른 스타일시트보다 나중에 <head>에 붙어서 뭐든 덮어쓸 수 있다.
+  useEffect(() => {
+    let styleEl = document.getElementById('mossy-custom-css')
+    if (!styleEl) {
+      styleEl = document.createElement('style')
+      styleEl.id = 'mossy-custom-css'
+      document.head.appendChild(styleEl)
+    }
+    styleEl.textContent = settings.customCssEnabled ? settings.customCss || '' : ''
+  }, [settings.customCss, settings.customCssEnabled])
+
   function updatePaletteColor(index, hex) {
     setSettings((s) => {
       const palette = [...s.palette]
@@ -400,6 +411,16 @@ export default function App() {
               onChangePaletteColor={updatePaletteColor}
               darkMode={settings.darkMode}
               onChangeDarkMode={(darkMode) => setSettings((s) => ({ ...s, darkMode }))}
+              customCss={settings.customCss}
+              customCssName={settings.customCssName}
+              customCssEnabled={settings.customCssEnabled}
+              onImportCustomCss={(customCss, customCssName) =>
+                setSettings((s) => ({ ...s, customCss, customCssName, customCssEnabled: true }))
+              }
+              onToggleCustomCss={(customCssEnabled) => setSettings((s) => ({ ...s, customCssEnabled }))}
+              onClearCustomCss={() =>
+                setSettings((s) => ({ ...s, customCss: '', customCssName: '', customCssEnabled: true }))
+              }
               onExport={exportBackup}
               onImport={importBackup}
               account={supabaseConfigured ? session?.user?.email : null}

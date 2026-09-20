@@ -14,7 +14,10 @@ export function normalizeSettings(raw) {
   const isRatio = (v) => typeof v === 'number' && v >= 0 && v <= 1
   const fabPosition = pos && isRatio(pos.fx) && isRatio(pos.fy) ? { fx: pos.fx, fy: pos.fy } : null
   const darkMode = !!(raw && raw.darkMode)
-  return { themeColor, palette, fabPosition, darkMode }
+  const customCss = raw && typeof raw.customCss === 'string' ? raw.customCss : ''
+  const customCssName = raw && typeof raw.customCssName === 'string' ? raw.customCssName : ''
+  const customCssEnabled = raw && typeof raw.customCssEnabled === 'boolean' ? raw.customCssEnabled : true
+  return { themeColor, palette, fabPosition, darkMode, customCss, customCssName, customCssEnabled }
 }
 
 export function progressGradient(hex) {

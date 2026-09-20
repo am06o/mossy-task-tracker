@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Download, LogOut, Plus, Upload } from 'lucide-react'
+import { Download, LogOut, Palette, Plus, Upload, X } from 'lucide-react'
 import './ColorPicker.css'
 import './SettingsView.css'
 
@@ -38,6 +38,53 @@ function ColorRow({ value, palette, onChange }) {
   )
 }
 
+function CustomCssRow({ customCss, customCssName, customCssEnabled, onImport, onToggle, onClear }) {
+  const fileInputRef = useRef(null)
+
+  function handleFileChange(e) {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    const reader = new FileReader()
+    reader.onload = () => onImport(String(reader.result || ''), file.name)
+    reader.readAsText(file)
+  }
+
+  return (
+    <div className="settings-customcss">
+      <div className="settings-data-row">
+        <button className="settings-action-btn" onClick={() => fileInputRef.current?.click()}>
+          <Palette size={15} /> CSS 파일 가져오기
+        </button>
+        <input
+          ref={fileInputRef}
+          type="file"
+          accept=".css,text/css"
+          className="settings-file-input"
+          onChange={handleFileChange}
+        />
+      </div>
+
+      {customCss && (
+        <div className="settings-customcss-active">
+          <label className="settings-toggle-row">
+            <span>{customCssName || '커스텀 CSS'} 적용</span>
+            <input
+              type="checkbox"
+              className="settings-toggle"
+              checked={!!customCssEnabled}
+              onChange={(e) => onToggle(e.target.checked)}
+            />
+          </label>
+          <button className="settings-customcss-clear" title="제거" onClick={onClear}>
+            <X size={13} />
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 export default function SettingsView({
   themeColor,
   onChangeThemeColor,
@@ -45,6 +92,12 @@ export default function SettingsView({
   onChangePaletteColor,
   darkMode,
   onChangeDarkMode,
+  customCss,
+  customCssName,
+  customCssEnabled,
+  onImportCustomCss,
+  onToggleCustomCss,
+  onClearCustomCss,
   onExport,
   onImport,
   account,
@@ -87,6 +140,21 @@ export default function SettingsView({
             </label>
           ))}
         </div>
+      </section>
+
+      <section className="settings-block">
+        <h2>꾸미기</h2>
+        <p className="settings-block-desc">
+          CSS 파일을 가져오면 색·글꼴·배치를 원하는 대로 바꿀 수 있어요.
+        </p>
+        <CustomCssRow
+          customCss={customCss}
+          customCssName={customCssName}
+          customCssEnabled={customCssEnabled}
+          onImport={onImportCustomCss}
+          onToggle={onToggleCustomCss}
+          onClear={onClearCustomCss}
+        />
       </section>
 
       <section className="settings-block">

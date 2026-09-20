@@ -117,8 +117,10 @@ And honestly, I just wanted to make a ton of to-dos and click a ton of checkboxe
   *The button's position is stored as a **ratio** of the window size, so it stays in the same relative spot (and never off-screen) when you resize the window. The panel picks a left/right and up/down direction based on which side of the screen the button is on, so it always opens fully on-screen.*
 
 ### 설정 · Settings
-- 화면(다크 모드) · 테마 색 · 프로젝트 색 팔레트(5색, 직접 수정 가능) · 데이터 내보내기/불러오기.
-  *Screen (dark mode) · theme color · a 5-color project palette (editable) · data export/import.*
+- 화면(다크 모드) · 테마 색 · 프로젝트 색 팔레트(5색, 직접 수정 가능) · **꾸미기(CSS 파일 가져오기)** · 데이터 내보내기/불러오기.
+  *Screen (dark mode) · theme color · a 5-color project palette (editable) · **appearance (import a CSS file)** · data export/import.*
+- **꾸미기**: CSS 파일 하나를 가져오면 그 내용이 앱의 다른 모든 스타일보다 나중에 적용되어, 색·글꼴·배치를 원하는 대로 덮어쓸 수 있습니다. 지우지 않고 켜고 끌 수 있는 토글이 함께 있습니다. 무엇을 얼마나 바꿀 수 있는지는 12절 참고.
+  *Import a CSS file and it applies after every other stylesheet in the app, so it can override colors, fonts, and layout. A toggle lets you turn it off without deleting it. See section 12 for what's customizable.*
 
 ## 4. 핵심 규칙 · Core rules
 
@@ -388,7 +390,46 @@ mossy 웹 버전은 `dist/` 폴더를 그대로 정적 사이트로 올리면 �
 - 안드로이드(PWA) 버전은 인터넷 연결과 로그인이 필요합니다. 로컬 캐시는 데스크톱(Tauri) 버전에만 있습니다.
   *The Android (PWA) version requires an internet connection and being signed in. The local cache is desktop (Tauri) only.*
 
-## 12. 라이선스 · License
+## 12. 꾸미기 (커스텀 CSS) · Customizing (custom CSS)
+
+설정 → 꾸미기에서 CSS 파일 하나를 가져오면, 그 내용이 앱의 다른 모든 스타일보다 **나중에** 적용됩니다. 그래서 특별한 문법 없이 **보통의 CSS**로 색·글꼴·여백은 물론, 특정 요소를 숨기거나 순서를 바꾸는 것까지 가능합니다. 파일 내용은 그대로 `settings.customCss`에 저장되고(내보내기/불러오기·클라우드 동기화에도 함께 따라갑니다), 지우지 않고 껐다 켰다 할 수 있는 토글이 따로 있습니다.
+
+*Importing a single CSS file from Settings → Appearance applies it **after** every other stylesheet in the app. That means ordinary CSS — no special syntax — can restyle colors, fonts, and spacing, and even hide elements or reorder them. The file's contents are stored as-is in `settings.customCss` (so it travels with export/import and cloud sync), with a separate toggle to turn it off without deleting it.*
+
+### 색·글꼴 변수 · Color and font variables
+
+`:root`에 다시 선언하면 라이트/다크 모드 양쪽에 적용되고, `:root[data-theme='dark']`에 선언하면 다크 모드에만 적용됩니다.
+
+*Redeclaring these on `:root` affects both light and dark mode; scoping them under `:root[data-theme='dark']` affects dark mode only.*
+
+| 변수 · Variable | 쓰이는 곳 · Used for |
+| --- | --- |
+| `--bg` | 화면 배경 · screen background |
+| `--panel` | 카드·입력창 등 튀어나온 배경 · cards, inputs, raised surfaces |
+| `--border`, `--border-strong` | 옅은/진한 테두리 · light/strong borders |
+| `--text`, `--text-dim`, `--text-faint` | 진한/보통/흐린 글자색 · strong/normal/faint text |
+| `--accent`, `--accent-strong`, `--accent-bg` | 테마 색과 그 강조/배경 변형(설정의 테마 색과 별개로 덮어쓸 수 있음) · the theme color and its stronger/background variants (overridable independently of the in-app theme-color picker) |
+| `--danger` | 삭제 등 위험한 동작의 색 · color for destructive actions |
+| `--dim-bg`, `--dim-panel` | "지난 프로젝트" 화면의 한 톤 어두운 배경 · the dimmed background used on the Past Projects screen |
+| `--radius`, `--radius-sm` | 카드/버튼 모서리 둥글기 · corner radius for cards/buttons |
+| `--font-family` | 전체 글꼴 · the app-wide font |
+
+### 구조 바꾸기 · Restructuring things
+
+화면은 대부분 flexbox라서, 보통의 CSS 트릭이 그대로 통합니다:
+
+*Most screens are plain flexbox, so ordinary CSS tricks just work:*
+
+- **숨기기 · Hiding** — 원치 않는 요소를 `display: none`으로. 예: `.calendar-side { display: none; }` (캘린더 오른쪽 패널 숨기기 · hides the calendar's right-hand panel).
+- **순서 바꾸기 · Reordering** — 같은 flex 부모 안에서 `order`로. 예: `.todos-day-nav { order: -1; }` (할 일 화면의 날짜 이동칸을 제목 왼쪽으로 · moves the Todos date-nav in front of the title).
+- **크기·간격 · Sizing and spacing** — `.sidebar`, `.nav-rail`, `.todo-list` 같은 컨테이너의 `width`/`padding`/`gap`을 직접 덮어쓰면 됩니다.
+  *Override `width`/`padding`/`gap` directly on containers like `.sidebar`, `.nav-rail`, `.todo-list`.*
+
+클래스 이름은 각 컴포넌트의 CSS 파일(`src/components/*.css`)에서 그대로 볼 수 있습니다. 다만 아직 "공개 API"로 고정해둔 것은 아니라서, 앱 버전이 바뀌면 이름이 바뀌거나 없어질 수 있습니다 — 커스텀 CSS를 나눠줄 때 이 점은 미리 알려두는 게 좋습니다.
+
+*Class names are visible as-is in each component's CSS file (`src/components/*.css`). They aren't frozen as a stable public API yet, though, so a version update could rename or remove one — worth a heads-up if you're sharing a custom CSS file with others.*
+
+## 13. 라이선스 · License
 
 MIT License — 자유롭게 쓰고 고치고 배포할 수 있습니다. 자세한 내용은 [LICENSE](LICENSE) 참고.
 

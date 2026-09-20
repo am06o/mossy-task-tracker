@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>mossy 테마 에디터</title>
+<style>
+  :root {
+    --editor-bg: #f4f5f7;
+    --editor-panel: #ffffff;
+    --editor-border: #e2e4e8;
+    --editor-text: #1f2328;
+    --editor-text-dim: #656d76;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0;
+    height: 100%;
+    font-family: -apple-system, 'Malgun Gothic', 'Segoe UI', system-ui, sans-serif;
+    background: var(--editor-bg);
+    color: var(--editor-text);
+  }
+
+  .layout {
+    display: flex;
+    height: 100vh;
+    min-height: 560px;
+  }
+
+  /* ===== 왼쪽: 미리보기 (mossy 실제 화면을 흉내낸 목업) ===== */
+  .preview-wrap {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    overflow: auto;
+    background:
+      linear-gradient(45deg, #00000008 25%, transparent 25%),
+      linear-gradient(-45deg, #00000008 25%, transparent 25%),
+      linear-gradient(45deg, transparent 75%, #00000008 75%),
+      linear-gradient(-45deg, transparent 75%, #00000008 75%);
+    background-size: 20px 20px;
+    background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+  }
+
+  .mossy-preview {
+    width: 720px;
+    max-width: 100%;
+    height: 480px;
+    display: flex;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+    font-family: var(--font-family);
+    background: var(--bg);
+    color: var(--text);
+  }
+
+  .p-navrail {
+    width: var(--nav-width);
+    flex-shrink: 0;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 16px 8px;
+  }
+
+  .p-navrail-icon {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-dim);
+  }
+
+  .p-navrail-icon.is-active {
+    background: color-mix(in srgb, var(--accent) 16%, transparent);
+    color: var(--accent);
+  }
+
+  .p-sidebar {
+    width: var(--sidebar-width);
+    flex-shrink: 0;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+    padding: 14px 10px;
+    overflow: hidden;
+  }
+
+  .p-sidebar-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 4px 12px;
+    font-weight: 700;
+    font-size: 14px;
+  }
+
+  .p-sidebar-header span:last-child {
+    display: flex;
+    gap: 4px;
+    font-weight: 400;
+    color: var(--text-dim);
+  }
+
+  .p-project-item {
+    padding: 9px 8px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 4px;
+  }
+
+  .p-project-item.is-selected {
+    background: color-mix(in srgb, var(--accent) 14%, transparent);
+  }
+
+  .p-project-main {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    font-size: 12.5px;
+  }
+
+  .p-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .p-project-name { flex: 1; }
+  .p-project-pct { color: var(--text-dim); font-size: 11px; }
+
+  .p-bar {
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border);
+    overflow: hidden;
+  }
+
+  .p-bar-fill { height: 100%; }
+
+  .p-main {
+    flex: 1;
+    min-width: 0;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+  }
+
+  .p-main-header {
+    padding: 18px 22px 12px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .p-main-title {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+  }
+
+  .p-daynav {
+    font-size: 12px;
+    color: var(--text-dim);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .p-daynav b { color: var(--accent); }
+
+  .p-todolist {
+    padding: 12px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .p-todo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 9px 10px;
+    border-radius: var(--radius-sm);
+  }
+
+  .p-checkbox {
+    width: 18px;
+    height: 18px;
+    border-radius: 6px;
+    border: 1.5px solid var(--border-strong);
+    flex-shrink: 0;
+    background: var(--panel);
+  }
+
+  .p-checkbox.is-done {
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+
+  .p-todo-title { flex: 1; font-size: 13px; }
+  .p-todo.is-done .p-todo-title { text-decoration: line-through; color: var(--text-faint); }
+
+  .p-date-chip {
+    font-size: 10.5px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--text-dim);
+    flex-shrink: 0;
+  }
+
+  .p-date-chip.is-overdue { background: color-mix(in srgb, var(--danger) 18%, transparent); color: var(--danger); }
+
+  .p-mini-slider {
+    width: 60px;
+    height: 5px;
+    border-radius: 3px;
+    background: var(--border);
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  .p-mini-slider-fill { height: 100%; }
+
+  /* ===== 오른쪽: 조작 패널 ===== */
+  .panel {
+    width: 360px;
+    flex-shrink: 0;
+    background: var(--editor-panel);
+    border-left: 1px solid var(--editor-border);
+    overflow-y: auto;
+    padding: 20px;
+  }
+
+  .panel h1 {
+    font-size: 16px;
+    margin: 0 0 4px;
+  }
+
+  .panel .subtitle {
+    font-size: 12px;
+    color: var(--editor-text-dim);
+    margin: 0 0 18px;
+    line-height: 1.5;
+  }
+
+  .group {
+    margin-bottom: 18px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--editor-border);
+  }
+
+  .group:last-of-type { border-bottom: none; }
+
+  .group h2 {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--editor-text-dim);
+    margin: 0 0 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+
+  .row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 12.5px;
+  }
+
+  .row label { flex-shrink: 0; color: var(--editor-text); }
+
+  .row input[type="color"] {
+    width: 34px;
+    height: 24px;
+    padding: 0;
+    border: 1px solid var(--editor-border);
+    border-radius: 6px;
+    cursor: pointer;
+    background: none;
+  }
+
+  .row input[type="range"] { flex: 1; }
+  .row .value { width: 44px; text-align: right; color: var(--editor-text-dim); font-variant-numeric: tabular-nums; flex-shrink: 0; }
+
+  .row select, .row input[type="text"] {
+    flex: 1;
+    padding: 5px 8px;
+    border: 1px solid var(--editor-border);
+    border-radius: 6px;
+    font-size: 12.5px;
+    font-family: inherit;
+  }
+
+  .actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 6px;
+  }
+
+  .btn {
+    flex: 1;
+    padding: 9px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--editor-border);
+    background: var(--editor-bg);
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    color: var(--editor-text);
+  }
+
+  .btn.primary {
+    background: #4a8a2a;
+    border-color: #4a8a2a;
+    color: #fff;
+  }
+
+  .btn:hover { filter: brightness(0.96); }
+
+  .hint {
+    font-size: 11.5px;
+    color: var(--editor-text-dim);
+    line-height: 1.6;
+    margin-top: 10px;
+  }
+
+  .css-output {
+    width: 100%;
+    height: 140px;
+    margin-top: 10px;
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+    font-size: 11px;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid var(--editor-border);
+    resize: vertical;
+    background: #1e1e1e;
+    color: #d4d4d4;
+  }
+
+  .copied-toast {
+    font-size: 11px;
+    color: #4a8a2a;
+    margin-top: 6px;
+    height: 14px;
+  }
+</style>
+</head>
+<body>
+
+<div class="layout">
+  <div class="preview-wrap">
+    <div class="mossy-preview" id="preview">
+      <div class="p-navrail">
+        <div class="p-navrail-icon is-active">✓</div>
+        <div class="p-navrail-icon">📅</div>
+        <div class="p-navrail-icon">📁</div>
+        <div class="p-navrail-icon">✨</div>
+      </div>
+      <div class="p-sidebar">
+        <div class="p-sidebar-header"><span>프로젝트</span><span>− +</span></div>
+        <div class="p-project-item is-selected">
+          <div class="p-project-main">
+            <span class="p-dot" style="background: var(--proj-color-1)"></span>
+            <span class="p-project-name">글쓰기</span>
+            <span class="p-project-pct">64%</span>
+          </div>
+          <div class="p-bar"><div class="p-bar-fill" style="width:64%; background: var(--proj-color-1)"></div></div>
+        </div>
+        <div class="p-project-item">
+          <div class="p-project-main">
+            <span class="p-dot" style="background: var(--proj-color-2)"></span>
+            <span class="p-project-name">이사 준비</span>
+            <span class="p-project-pct">30%</span>
+          </div>
+          <div class="p-bar"><div class="p-bar-fill" style="width:30%; background: var(--proj-color-2)"></div></div>
+        </div>
+      </div>
+      <div class="p-main">
+        <div class="p-main-header">
+          <h1 class="p-main-title">할 일</h1>
+          <div class="p-daynav">‹ <b>9월 20일 (일)</b> ›</div>
+        </div>
+        <div class="p-todolist">
+          <div class="p-todo is-done">
+            <span class="p-checkbox is-done"></span>
+            <span class="p-todo-title">장보기</span>
+            <span class="p-date-chip">9/20</span>
+            <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:100%; background: var(--accent)"></div></div>
+          </div>
+          <div class="p-todo">
+            <span class="p-checkbox"></span>
+            <span class="p-todo-title">보고서 초안 쓰기</span>
+            <span class="p-date-chip is-overdue">9/18</span>
+            <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:45%; background: var(--accent)"></div></div>
+          </div>
+          <div class="p-todo">
+            <span class="p-checkbox"></span>
+            <span class="p-todo-title">운동하기</span>
+            <span class="p-date-chip">9/20</span>
+            <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:0%; background: var(--accent)"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h1>mossy 테마 에디터</h1>
+    <p class="subtitle">왼쪽 미리보기를 보면서 색·글꼴·크기를 바꿔보세요. 마음에 들면 아래에서 CSS 파일로 내보낸 뒤, mossy의 <b>설정 → 꾸미기 → CSS 파일 가져오기</b>로 넣으면 됩니다.</p>
+
+    <div class="group">
+      <h2>배경 / 표면</h2>
+      <div class="row"><label for="bg">화면 배경</label><input type="color" id="bg" data-var="--bg"></div>
+      <div class="row"><label for="panel">카드/입력창</label><input type="color" id="panel" data-var="--panel"></div>
+      <div class="row"><label for="border">테두리(옅음)</label><input type="color" id="border" data-var="--border"></div>
+      <div class="row"><label for="borderStrong">테두리(진함)</label><input type="color" id="borderStrong" data-var="--border-strong"></div>
+    </div>
+
+    <div class="group">
+      <h2>글자</h2>
+      <div class="row"><label for="text">진한 글자</label><input type="color" id="text" data-var="--text"></div>
+      <div class="row"><label for="textDim">보통 글자</label><input type="color" id="textDim" data-var="--text-dim"></div>
+      <div class="row"><label for="textFaint">흐린 글자</label><input type="color" id="textFaint" data-var="--text-faint"></div>
+    </div>
+
+    <div class="group">
+      <h2>테마 / 강조색</h2>
+      <div class="row"><label for="accent">테마 색(강조)</label><input type="color" id="accent" data-var="--accent"></div>
+      <div class="row"><label for="danger">위험(삭제 등)</label><input type="color" id="danger" data-var="--danger"></div>
+    </div>
+
+    <div class="group">
+      <h2>모양 / 크기</h2>
+      <div class="row">
+        <label for="radius">모서리 둥글기</label>
+        <input type="range" id="radius" min="0" max="28" value="14" data-var="--radius" data-unit="px">
+        <span class="value" id="radiusVal">14px</span>
+      </div>
+      <div class="row">
+        <label for="radiusSm">모서리(작은 것)</label>
+        <input type="range" id="radiusSm" min="0" max="20" value="8" data-var="--radius-sm" data-unit="px">
+        <span class="value" id="radiusSmVal">8px</span>
+      </div>
+      <div class="row">
+        <label for="sidebarWidth">사이드바 너비</label>
+        <input type="range" id="sidebarWidth" min="160" max="360" value="200" data-var="--sidebar-width" data-unit="px">
+        <span class="value" id="sidebarWidthVal">200px</span>
+      </div>
+      <div class="row">
+        <label for="navWidth">왼쪽 메뉴 너비</label>
+        <input type="range" id="navWidth" min="44" max="90" value="56" data-var="--nav-width" data-unit="px">
+        <span class="value" id="navWidthVal">56px</span>
+      </div>
+    </div>
+
+    <div class="group">
+      <h2>글꼴</h2>
+      <div class="row">
+        <select id="fontFamily">
+          <option value="'Pretendard', -apple-system, 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', system-ui, sans-serif" selected>기본(Pretendard)</option>
+          <option value="'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif">맑은 고딕 계열</option>
+          <option value="Georgia, 'Nanum Myeongjo', serif">세리프(명조 느낌)</option>
+          <option value="'Consolas', 'D2Coding', monospace">고정폭(코딩 폰트 느낌)</option>
+          <option value="__custom__">직접 입력...</option>
+        </select>
+      </div>
+      <div class="row" id="customFontRow" style="display:none">
+        <input type="text" id="customFont" placeholder="예: 'Noto Sans KR', sans-serif">
+      </div>
+      <p class="hint">이 에디터에는 Pretendard 글꼴 파일이 없어서 "기본"을 골라도 시스템 글꼴로 대신 보여요. 실제 mossy 앱에는 Pretendard가 들어있으니 거기서는 정상적으로 보입니다.</p>
+    </div>
+
+    <div class="actions">
+      <button class="btn" id="resetBtn">초기화</button>
+      <button class="btn" id="copyBtn">CSS 복사</button>
+      <button class="btn primary" id="downloadBtn">CSS 파일 내보내기</button>
+    </div>
+    <div class="copied-toast" id="copiedToast"></div>
+
+    <h2 style="font-size:12px; font-weight:700; color:var(--editor-text-dim); margin: 16px 0 6px;">생성된 CSS (미리보기)</h2>
+    <textarea class="css-output" id="cssOutput" readonly></textarea>
+  </div>
+</div>
+
+<script>
+(function () {
+  var preview = document.getElementById('preview');
+  var STORAGE_KEY = 'mossy-theme-editor-v1';
+
+  var DEFAULTS = {
+    '--bg': '#f9fafb',
+    '--panel': '#ffffff',
+    '--border': '#e5e7eb',
+    '--border-strong': '#d1d5db',
+    '--text': '#111827',
+    '--text-dim': '#6b7280',
+    '--text-faint': '#9ca3af',
+    '--accent': '#4a8a2a',
+    '--danger': '#c0527a',
+    '--radius': '14px',
+    '--radius-sm': '8px',
+    '--sidebar-width': '200px',
+    '--nav-width': '56px'
+  };
+  var DEFAULT_FONT = "'Pretendard', -apple-system, 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', system-ui, sans-serif";
+
+  // 미리보기 목업 안의 프로젝트 색은 팔레트에서 가져오는 척 — 편집 대상은 아니고 그냥 보기용.
+  preview.style.setProperty('--proj-color-1', '#ABE57E');
+  preview.style.setProperty('--proj-color-2', '#8BC7FF');
+
+  var colorInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="color"]'));
+  var rangeInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="range"]'));
+  var fontSelect = document.getElementById('fontFamily');
+  var customFontRow = document.getElementById('customFontRow');
+  var customFontInput = document.getElementById('customFont');
+
+  function applyVar(name, value) {
+    preview.style.setProperty(name, value);
+  }
+
+  function currentFontValue() {
+    if (fontSelect.value === '__custom__') return customFontInput.value.trim() || DEFAULT_FONT;
+    return fontSelect.value;
+  }
+
+  function buildCss() {
+    // !important가 꼭 필요하다 — mossy 앱이 설정의 테마 색을 --accent에
+    // 자바스크립트로 직접(inline style) 넣어두는데, 인라인 스타일은 보통의
+    // 스타일시트 규칙보다 우선순위가 높아서 !important 없이는 덮어써지지 않는다.
+    var lines = [':root {'];
+    colorInputs.forEach(function (el) {
+      lines.push('  ' + el.dataset.var + ': ' + el.value + ' !important;');
+    });
+    rangeInputs.forEach(function (el) {
+      if (el.dataset.var === '--sidebar-width' || el.dataset.var === '--nav-width') return; // 아래서 별도 처리
+      lines.push('  ' + el.dataset.var + ': ' + el.value + (el.dataset.unit || '') + ' !important;');
+    });
+    var font = currentFontValue();
+    if (font !== DEFAULT_FONT) lines.push('  --font-family: ' + font + ' !important;');
+    lines.push('}');
+
+    var sidebarWidth = document.getElementById('sidebarWidth').value;
+    var navWidth = document.getElementById('navWidth').value;
+    lines.push('');
+    lines.push('.sidebar { width: ' + sidebarWidth + 'px !important; }');
+    lines.push('.nav-rail { width: ' + navWidth + 'px !important; }');
+
+    return lines.join('\n') + '\n';
+  }
+
+  function refresh() {
+    colorInputs.forEach(function (el) { applyVar(el.dataset.var, el.value); });
+    rangeInputs.forEach(function (el) {
+      var unit = el.dataset.unit || '';
+      var valueLabel = document.getElementById(el.id + 'Val');
+      if (valueLabel) valueLabel.textContent = el.value + unit;
+      if (el.dataset.var === '--sidebar-width') { preview.querySelector('.p-sidebar').style.setProperty('--sidebar-width', el.value + unit); return; }
+      if (el.dataset.var === '--nav-width') { preview.querySelector('.p-navrail').style.setProperty('--nav-width', el.value + unit); return; }
+      applyVar(el.dataset.var, el.value + unit);
+    });
+    preview.style.setProperty('--font-family', currentFontValue());
+    document.getElementById('cssOutput').value = buildCss();
+    save();
+  }
+
+  function save() {
+    try {
+      var state = { colors: {}, ranges: {}, font: fontSelect.value, customFont: customFontInput.value };
+      colorInputs.forEach(function (el) { state.colors[el.id] = el.value; });
+      rangeInputs.forEach(function (el) { state.ranges[el.id] = el.value; });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    } catch (e) { /* 저장 실패는 조용히 무시 — 사설 브라우징 등 */ }
+  }
+
+  function restore() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) return;
+      var state = JSON.parse(raw);
+      colorInputs.forEach(function (el) { if (state.colors && state.colors[el.id]) el.value = state.colors[el.id]; });
+      rangeInputs.forEach(function (el) { if (state.ranges && state.ranges[el.id]) el.value = state.ranges[el.id]; });
+      if (state.font) fontSelect.value = state.font;
+      if (state.customFont) customFontInput.value = state.customFont;
+      customFontRow.style.display = fontSelect.value === '__custom__' ? 'flex' : 'none';
+    } catch (e) { /* 무시 */ }
+  }
+
+  function applyDefaults() {
+    colorInputs.forEach(function (el) { el.value = DEFAULTS[el.dataset.var] || '#000000'; });
+    rangeInputs.forEach(function (el) {
+      var num = parseInt((DEFAULTS[el.dataset.var] || '0').replace('px', ''), 10);
+      el.value = isNaN(num) ? el.defaultValue : num;
+    });
+    fontSelect.value = DEFAULT_FONT;
+    customFontInput.value = '';
+    customFontRow.style.display = 'none';
+  }
+
+  function resetAll() {
+    applyDefaults();
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* 무시 */ }
+    refresh();
+  }
+
+  colorInputs.forEach(function (el) { el.addEventListener('input', refresh); });
+  rangeInputs.forEach(function (el) { el.addEventListener('input', refresh); });
+  fontSelect.addEventListener('change', function () {
+    customFontRow.style.display = fontSelect.value === '__custom__' ? 'flex' : 'none';
+    refresh();
+  });
+  customFontInput.addEventListener('input', refresh);
+
+  document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+  document.getElementById('copyBtn').addEventListener('click', function () {
+    var text = document.getElementById('cssOutput').value;
+    var toast = document.getElementById('copiedToast');
+    navigator.clipboard.writeText(text).then(function () {
+      toast.textContent = '복사됐어요!';
+      setTimeout(function () { toast.textContent = ''; }, 1800);
+    }, function () {
+      toast.textContent = '복사에 실패했어요 — 직접 선택해서 복사해주세요.';
+    });
+  });
+
+  document.getElementById('downloadBtn').addEventListener('click', function () {
+    var blob = new Blob([document.getElementById('cssOutput').value], { type: 'text/css' });
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = 'mossy-theme.css';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  applyDefaults();
+  restore();
+  refresh();
+})();
+</script>
+
+</body>
+</html>

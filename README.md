@@ -396,6 +396,16 @@ mossy 웹 버전은 `dist/` 폴더를 그대로 정적 사이트로 올리면 �
 
 *Importing a single CSS file from Settings → Appearance applies it **after** every other stylesheet in the app. That means ordinary CSS — no special syntax — can restyle colors, fonts, and spacing, and even hide elements or reorder them. The file's contents are stored as-is in `settings.customCss` (so it travels with export/import and cloud sync), with a separate toggle to turn it off without deleting it.*
 
+### 실험용 테마 에디터 · The experimental theme editor
+
+`tools/theme-editor.html`을 브라우저로 그냥 열면(설치나 서버 없이) 왼쪽에 mossy 화면을 흉내낸 미리보기가, 오른쪽에 색·모서리 둥글기·사이드바/메뉴 너비·글꼴을 바꾸는 조작판이 뜹니다. 눈으로 결과를 보면서 골랐으면 **CSS 파일 내보내기**를 눌러 받은 파일을 mossy의 설정 → 꾸미기 → CSS 파일 가져오기에 그대로 넣으면 됩니다. 고른 값은 그 브라우저에 기억되어서 다시 열어도 이어서 고칠 수 있습니다.
+
+*Just open `tools/theme-editor.html` in a browser (no install, no server) — a mock-up of the mossy UI sits on the left, with controls for colors, corner radius, sidebar/nav-rail width, and font on the right. Once it looks right, click **Export CSS file** and drop the result straight into mossy's Settings → Appearance → Import CSS file. Your choices are remembered in that browser, so you can pick up where you left off.*
+
+> 이 도구가 만드는 CSS는 값마다 `!important`를 붙입니다 — mossy 앱이 테마 색(`--accent`)을 자바스크립트로 직접 설정해두는데, 인라인 스타일은 보통의 스타일시트 규칙보다 우선순위가 높아서 `!important` 없이는 덮어써지지 않기 때문입니다. 손으로 커스텀 CSS를 쓸 때도 `--accent`를 바꾸려면 이 점을 기억해두세요.
+>
+> *The CSS this tool generates adds `!important` to every value — the app sets the theme color (`--accent`) directly via JavaScript, and an inline style normally outranks an ordinary stylesheet rule, so `!important` is the only way to override it. Keep this in mind if you're hand-writing custom CSS that touches `--accent`.*
+
 ### 색·글꼴 변수 · Color and font variables
 
 `:root`에 다시 선언하면 라이트/다크 모드 양쪽에 적용되고, `:root[data-theme='dark']`에 선언하면 다크 모드에만 적용됩니다.

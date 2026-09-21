@@ -1,5 +1,7 @@
 import { invoke, isTauri } from '@tauri-apps/api/core'
 import { getCurrentWindow } from '@tauri-apps/api/window'
+import { resolveResource } from '@tauri-apps/api/path'
+import { openPath } from '@tauri-apps/plugin-opener'
 import { supabase, supabaseConfigured } from './supabase.js'
 
 const runningInTauri = isTauri()
@@ -119,6 +121,17 @@ export function importBackup() {
     }
     input.click()
   })
+}
+
+// 실험용 테마 에디터(tools/theme-editor.html) — 데스크톱에서는 앱과 함께 묶인 파일을
+// 시스템 기본 브라우저로 열고, 웹 버전에서는 같은 파일을 새 탭으로 연다.
+export async function openThemeEditor() {
+  if (runningInTauri) {
+    const path = await resolveResource('theme-editor.html')
+    await openPath(path)
+    return
+  }
+  window.open('/theme-editor.html', '_blank')
 }
 
 export const windowControls = runningInTauri

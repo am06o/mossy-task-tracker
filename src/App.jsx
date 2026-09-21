@@ -12,7 +12,13 @@ import ResizeHandles from './components/ResizeHandles.jsx'
 import TitleBar from './components/TitleBar.jsx'
 import AuthView from './components/AuthView.jsx'
 import { normalizeSettings } from './lib/theme.js'
-import { loadData, saveData, exportBackup as exportBackupData, importBackup as importBackupData } from './lib/platform.js'
+import {
+  loadData,
+  saveData,
+  exportBackup as exportBackupData,
+  importBackup as importBackupData,
+  openThemeEditor
+} from './lib/platform.js'
 import { supabase, supabaseConfigured } from './lib/supabase.js'
 import { findNode, removeNode } from './lib/tree.js'
 import { todayStr } from './lib/dateFormat.js'
@@ -421,6 +427,7 @@ export default function App() {
               onClearCustomCss={() =>
                 setSettings((s) => ({ ...s, customCss: '', customCssName: '', customCssEnabled: true }))
               }
+              onOpenThemeEditor={openThemeEditor}
               onExport={exportBackup}
               onImport={importBackup}
               account={supabaseConfigured ? session?.user?.email : null}

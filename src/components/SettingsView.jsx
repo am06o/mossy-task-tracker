@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Download, LogOut, Palette, Plus, Upload, X } from 'lucide-react'
+import { Download, LogOut, Palette, Plus, Upload, Wand2, X } from 'lucide-react'
 import './ColorPicker.css'
 import './SettingsView.css'
 
@@ -98,6 +98,7 @@ export default function SettingsView({
   onImportCustomCss,
   onToggleCustomCss,
   onClearCustomCss,
+  onOpenThemeEditor,
   onExport,
   onImport,
   account,
@@ -155,6 +156,11 @@ export default function SettingsView({
           onToggle={onToggleCustomCss}
           onClear={onClearCustomCss}
         />
+        <div className="settings-data-row" style={{ marginTop: 8 }}>
+          <button className="settings-action-btn" onClick={onOpenThemeEditor}>
+            <Wand2 size={15} /> 테마 에디터 열기
+          </button>
+        </div>
       </section>
 
       <section className="settings-block">

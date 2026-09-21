@@ -233,7 +233,8 @@ task-tracker/
 │  │  │                    · window setup, data.json read/write, backup export/import, legacy Electron data migration
 │  │  └─ main.rs           진입점 · entry point
 │  ├─ icons/                앱 아이콘(여러 크기) · app icons (various sizes)
-│  ├─ capabilities/          창에 허용한 권한(dialog 등) · permissions granted to the window (dialog, etc.)
+│  ├─ capabilities/          창에 허용한 권한(dialog, opener 등) · permissions granted to the window (dialog, opener, etc.)
+│  ├─ resources/             테마 에디터(theme-editor.html)를 앱과 함께 묶어 배포 · bundles the theme editor (theme-editor.html) with the app
 │  └─ tauri.conf.json        창 크기, 번들(NSIS) 설정 · window size, bundle (NSIS) config
 ├─ src/
 │  ├─ App.jsx             전체 상태(프로젝트·설정), 화면 전환, 프로젝트 생명주기 · global state (projects/settings), view switching, project lifecycle
@@ -267,7 +268,9 @@ task-tracker/
 ├─ scripts/
 │  ├─ make-icon.mjs       build/icon.png, icon.ico 생성 · generates build/icon.png, icon.ico
 │  └─ icon-raw/           아이콘 크기별 원본 PNG · source PNGs per icon size
-├─ public/                PWA(안드로이드 웹앱) 아이콘 · PWA (Android web app) icon
+├─ tools/
+│  └─ theme-editor.html   실험용 테마 에디터(독립 실행형, 설치 불필요) · the experimental theme editor (standalone, no install needed)
+├─ public/                PWA(안드로이드 웹앱) 아이콘, theme-editor.html 사본(웹 빌드용) · PWA (Android web app) icon, a copy of theme-editor.html (for the web build)
 └─ build/                 앱 아이콘 원본(Tauri 아이콘 생성 시 입력으로 사용) · source app icon (input for generating Tauri icon sets)
 ```
 
@@ -398,9 +401,9 @@ mossy 웹 버전은 `dist/` 폴더를 그대로 정적 사이트로 올리면 �
 
 ### 실험용 테마 에디터 · The experimental theme editor
 
-`tools/theme-editor.html`을 브라우저로 그냥 열면(설치나 서버 없이) 왼쪽에 mossy 화면을 흉내낸 미리보기가, 오른쪽에 색·모서리 둥글기·사이드바/메뉴 너비·글꼴을 바꾸는 조작판이 뜹니다. 왼쪽 위 아이콘을 눌러 **할 일 / 캘린더 / 프로젝트 / 보관함** 화면을 실제 앱처럼 하나씩 바꿔가며 볼 수 있고, **기본 / 다크 / 레트로**(Windows XP·98 느낌) 프리셋 버튼도 있습니다. 글꼴은 미리 만들어둔 것 중 고르거나 "직접 업로드"로 파일(.ttf/.otf/.woff/.woff2)을 올릴 수도 있는데, 업로드한 글꼴은 파일 데이터를 통째로 CSS 안에 담아 내보내서 mossy 쪽에 별도 설치가 필요 없습니다. 눈으로 결과를 보면서 골랐으면 **CSS 내보내기**를 눌러 받은 파일을 mossy의 설정 → 꾸미기 → CSS 파일 가져오기에 그대로 넣으면 됩니다. 고른 값은 그 브라우저에 기억되어서 다시 열어도 이어서 고칠 수 있습니다.
+설정 → 꾸미기 → **테마 에디터 열기**를 누르면 바로 뜹니다(데스크톱에서는 시스템 기본 브라우저로, 웹 버전에서는 새 탭으로). 또는 `tools/theme-editor.html`을 브라우저로 그냥 열어도 됩니다(설치나 서버 없이). 왼쪽에 mossy 화면을 흉내낸 미리보기가, 오른쪽에 색·모서리 둥글기·사이드바/메뉴 너비·글꼴을 바꾸는 조작판이 뜹니다. 왼쪽 위 아이콘을 눌러 **할 일 / 캘린더 / 프로젝트 / 보관함** 화면을 실제 앱처럼 하나씩 바꿔가며 볼 수 있고, **기본 / 다크 / 레트로**(Windows XP·98 느낌) 프리셋 버튼도 있습니다. 글꼴은 미리 만들어둔 것 중 고르거나 "직접 업로드"로 파일(.ttf/.otf/.woff/.woff2)을 올릴 수도 있는데, 업로드한 글꼴은 파일 데이터를 통째로 CSS 안에 담아 내보내서 mossy 쪽에 별도 설치가 필요 없습니다. 눈으로 결과를 보면서 골랐으면 **CSS 내보내기**를 눌러 받은 파일을 mossy의 설정 → 꾸미기 → CSS 파일 가져오기에 그대로 넣으면 됩니다. 고른 값은 그 브라우저에 기억되어서 다시 열어도 이어서 고칠 수 있습니다.
 
-*Just open `tools/theme-editor.html` in a browser (no install, no server) — a mock-up of the mossy UI sits on the left, with controls for colors, corner radius, sidebar/nav-rail width, and font on the right. Click the icons at the top-left of the mock-up to switch between **Todos / Calendar / Projects / Archive**, just like the real app, and there are **Default / Dark / Retro** (Windows XP/98-styled) presets. For fonts, pick one of the built-ins or choose "Upload your own" for a file (.ttf/.otf/.woff/.woff2) — it gets embedded directly into the exported CSS, so mossy doesn't need it installed separately. Once it looks right, click **Export CSS** and drop the result straight into mossy's Settings → Appearance → Import CSS file. Your choices are remembered in that browser, so you can pick up where you left off.*
+*Click Settings → Appearance → **Open theme editor** and it launches right there (in your system's default browser on desktop, or a new tab on the web version) — or just open `tools/theme-editor.html` in a browser yourself (no install, no server). A mock-up of the mossy UI sits on the left, with controls for colors, corner radius, sidebar/nav-rail width, and font on the right. Click the icons at the top-left of the mock-up to switch between **Todos / Calendar / Projects / Archive**, just like the real app, and there are **Default / Dark / Retro** (Windows XP/98-styled) presets. For fonts, pick one of the built-ins or choose "Upload your own" for a file (.ttf/.otf/.woff/.woff2) — it gets embedded directly into the exported CSS, so mossy doesn't need it installed separately. Once it looks right, click **Export CSS** and drop the result straight into mossy's Settings → Appearance → Import CSS file. Your choices are remembered in that browser, so you can pick up where you left off.*
 
 > "제목·섹션 글자"/"할 일 이름 등 보통 글자"와 레트로 프리셋이 만드는 CSS는 색상 변수가 아니라 `.project-name-title`, `.todo-title`, `.titlebar` 같은 실제 클래스를 직접 겨냥합니다 — mossy는 제목과 일반 항목 이름을 원래 같은 변수(`--text`) 하나로 관리하고, 레트로의 베벨 테두리·제목줄 색도 변수만으로는 안 되기 때문입니다.
 >

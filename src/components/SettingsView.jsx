@@ -129,6 +129,7 @@ export default function SettingsView({
     <main className="settings-view">
       <header className="settings-view-header">
         <h1>설정</h1>
+        <span className="settings-version-badge">v{__APP_VERSION__}</span>
       </header>
 
       <section className="settings-block">

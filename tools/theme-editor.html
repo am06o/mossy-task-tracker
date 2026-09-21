@@ -84,7 +84,7 @@
   .p-navrail-icon {
     width: 32px;
     height: 32px;
-    border-radius: var(--radius-sm);
+    border-radius: var(--radius);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -162,7 +162,7 @@
     overflow: hidden;
   }
 
-  .p-bar-fill { height: 100%; background: var(--progress-color); }
+  .p-bar-fill { height: 100%; }
 
   .p-view { flex: 1; min-width: 0; display: none; }
   .p-view.is-active { display: flex; }
@@ -252,7 +252,7 @@
     overflow: hidden;
   }
 
-  .p-mini-slider-fill { height: 100%; background: var(--progress-color); }
+  .p-mini-slider-fill { height: 100%; background: var(--accent); }
 
   .p-arrow {
     width: 20px;
@@ -371,7 +371,7 @@
     font-size: 12.5px;
   }
 
-  .row label { flex-shrink: 0; color: var(--editor-text); }
+  .row label { flex-shrink: 0; max-width: 96px; color: var(--editor-text); line-height: 1.3; }
 
   .row input[type="color"] {
     width: 34px;
@@ -563,7 +563,7 @@
               <span class="p-project-name">글쓰기</span>
               <span class="p-project-pct">64%</span>
             </div>
-            <div class="p-bar"><div class="p-bar-fill" style="width:64%"></div></div>
+            <div class="p-bar"><div class="p-bar-fill" style="width:64%; background: var(--proj-color-1)"></div></div>
           </div>
           <div class="p-project-item">
             <div class="p-project-main">
@@ -571,7 +571,7 @@
               <span class="p-project-name">이사 준비</span>
               <span class="p-project-pct">30%</span>
             </div>
-            <div class="p-bar"><div class="p-bar-fill" style="width:30%"></div></div>
+            <div class="p-bar"><div class="p-bar-fill" style="width:30%; background: var(--proj-color-2)"></div></div>
           </div>
         </div>
         <div class="p-main">
@@ -615,12 +615,11 @@
         </div>
       </div>
     </div>
-    <p class="preview-note">위 아이콘을 눌러 할 일 / 캘린더 / 프로젝트 / 보관함 화면을 각각 미리 볼 수 있어요 (실제 앱처럼 한 번에 하나씩만 보여요).</p>
   </div>
 
   <div class="panel">
     <h1>mossy 테마 에디터</h1>
-    <p class="subtitle">왼쪽 미리보기를 보면서 색·글꼴·크기를 바꿔보세요. 마음에 들면 아래에서 CSS를 내보낸 뒤, mossy의 <b>설정 → 꾸미기 → CSS 파일 가져오기</b>로 넣으면 됩니다.</p>
+    <p class="subtitle">색, 글꼴, 크기를 선택한 후 CSS를 내보내 mossy의 <b>설정 → 꾸미기 → CSS 파일 가져오기</b>로 넣으면 됩니다.</p>
 
     <div class="group">
       <h2>프리셋</h2>
@@ -629,7 +628,6 @@
         <button class="btn" id="presetDark">다크</button>
         <button class="btn" id="presetRetro">레트로</button>
       </div>
-      <p class="hint" id="retroHint" style="display:none">레트로는 Windows XP/98 느낌을 CSS로 흉내낸 것이라, 실제 그 시절 UI와 똑같지는 않아요(둥근 모서리 없애기, 베벨 테두리, 파란 제목줄 정도).</p>
     </div>
 
     <div class="group">
@@ -642,17 +640,16 @@
 
     <div class="group">
       <h2>글자</h2>
-      <div class="row"><label for="text">진한 글자</label><input type="color" id="text" data-var="--text"></div>
-      <div class="row"><label for="textDim">보통 글자</label><input type="color" id="textDim" data-var="--text-dim"></div>
+      <div class="row"><label for="text">제목·섹션 글자</label><input type="color" id="text" data-var="--text"></div>
+      <div class="row"><label for="textDim">할 일 이름 등 보통 글자</label><input type="color" id="textDim" data-var="--text-dim"></div>
       <div class="row"><label for="textFaint">흐린 글자</label><input type="color" id="textFaint" data-var="--text-faint"></div>
+      <p class="hint">"제목·섹션 글자"는 프로젝트 이름, "할 일", "2026년 9월", "오늘의 할 일" 같은 큰 제목들이고, "할 일 이름 등 보통 글자"는 장보기·운동하기 같은 평범한 항목 이름들이에요. mossy는 원래 이 둘을 같은 색 하나로 관리해서, 여기서 나누어 고르면 실제로는 각 요소를 직접 겨냥해서 다른 색을 줍니다.</p>
     </div>
 
     <div class="group">
       <h2>테마 / 강조색</h2>
       <div class="row"><label for="accent">테마 색(강조)</label><input type="color" id="accent" data-var="--accent"></div>
       <div class="row"><label for="danger">위험(삭제 등)</label><input type="color" id="danger" data-var="--danger"></div>
-      <div class="row"><label for="progressColor">진척도 바 색</label><input type="color" id="progressColor" data-var="--progress-color"></div>
-      <p class="hint">진척도 바는 원래 할 일마다(테마 색이나 프로젝트 색으로) 색이 다른데, 여기서 고르면 프로젝트 색과 상관없이 전부 이 색 하나로 통일돼요.</p>
     </div>
 
     <div class="group">
@@ -668,12 +665,12 @@
         <span class="value" id="radiusSmVal">8px</span>
       </div>
       <div class="row">
-        <label for="sidebarWidth">사이드바 너비</label>
+        <label for="sidebarWidth">프로젝트 사이드바 너비</label>
         <input type="range" id="sidebarWidth" min="160" max="360" value="200" data-var="--sidebar-width" data-unit="px">
         <span class="value" id="sidebarWidthVal">200px</span>
       </div>
       <div class="row">
-        <label for="navWidth">왼쪽 메뉴 너비</label>
+        <label for="navWidth">메뉴 너비</label>
         <input type="range" id="navWidth" min="44" max="90" value="56" data-var="--nav-width" data-unit="px">
         <span class="value" id="navWidthVal">56px</span>
       </div>
@@ -684,24 +681,21 @@
       <div class="row">
         <select id="fontFamily">
           <option value="'Pretendard', -apple-system, 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', system-ui, sans-serif" selected>기본(Pretendard)</option>
-          <option value="'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif">맑은 고딕 계열</option>
-          <option value="Georgia, 'Nanum Myeongjo', serif">세리프(명조 느낌)</option>
-          <option value="'Consolas', 'D2Coding', monospace">고정폭(코딩 폰트 느낌)</option>
-          <option value="__custom__">직접 입력...</option>
+          <option value="'Malgun Gothic', 'Apple SD Gothic Neo', sans-serif">맑은 고딕</option>
+          <option value="Georgia, 'Nanum Myeongjo', serif">명조</option>
+          <option value="'Consolas', 'D2Coding', monospace">모노스페이스</option>
+          <option value="__upload__">직접 업로드</option>
         </select>
       </div>
-      <div class="row" id="customFontRow" style="display:none">
-        <input type="text" id="customFont" placeholder="예: 'Noto Sans KR', sans-serif">
-      </div>
-      <div class="row">
-        <label class="btn file-btn" for="fontFileInput" style="text-align:center">글꼴 파일 업로드(.ttf/.otf/.woff/.woff2)</label>
+      <div class="row" id="uploadFontRow" style="display:none">
+        <label class="btn file-btn" for="fontFileInput" style="text-align:center">파일 선택(.ttf/.otf/.woff/.woff2)</label>
         <input type="file" id="fontFileInput" accept=".ttf,.otf,.woff,.woff2" style="display:none">
       </div>
       <div class="font-file-info" id="fontFileInfo" style="display:none">
         <span id="fontFileName"></span>
         <button type="button" id="fontFileRemove">제거</button>
       </div>
-      <p class="hint">글꼴 파일을 올리면 그 파일 데이터가 내보낼 CSS 안에 통째로 들어가서, mossy에 가져왔을 때 별도 설치 없이 바로 그 글꼴이 보여요. "기본"을 고르면 이 에디터에는 Pretendard가 없어서 시스템 글꼴로 대신 보이지만, 실제 mossy 앱에는 Pretendard가 들어있어서 거기서는 정상적으로 보입니다.</p>
+      <p class="hint">기본 선택 시 에디터에서 시스템 글꼴로 보이나, 실제 앱에서는 Pretendard가 적용되어 보입니다.</p>
     </div>
 
     <div class="actions">
@@ -731,7 +725,6 @@
     '--text-faint': '#9ca3af',
     '--accent': '#4a8a2a',
     '--danger': '#c0527a',
-    '--progress-color': '#4a8a2a',
     '--radius': '14px',
     '--radius-sm': '8px',
     '--sidebar-width': '200px',
@@ -756,7 +749,6 @@
     '--text-faint': '#666666',
     '--accent': '#245edb',
     '--danger': '#aa0000',
-    '--progress-color': '#245edb',
     '--radius': '0',
     '--radius-sm': '0'
   };
@@ -799,6 +791,7 @@
 
   var uploadedFont = null; // { dataUrl, format, fileName }
   var retroExtras = false;
+  var activeFontOverride = null; // 프리셋(레트로)이 고르는 글꼴 — 드롭다운과 별개로 우선 적용된다.
 
   // 미리보기 목업 안의 프로젝트 색은 팔레트에서 가져오는 척 — 편집 대상은 아니고 그냥 보기용.
   preview.style.setProperty('--proj-color-1', '#ABE57E');
@@ -807,9 +800,7 @@
   var colorInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="color"]'));
   var rangeInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="range"]'));
   var fontSelect = document.getElementById('fontFamily');
-  var customFontRow = document.getElementById('customFontRow');
-  var customFontInput = document.getElementById('customFont');
-  var retroHint = document.getElementById('retroHint');
+  var uploadFontRow = document.getElementById('uploadFontRow');
 
   // ----- 화면 전환(할 일/캘린더/프로젝트/보관함) -----
   var navButtons = Array.prototype.slice.call(document.querySelectorAll('.p-navrail-icon[data-view]'));
@@ -846,23 +837,10 @@
   }
 
   function currentFontValue() {
-    if (fontSelect.value === '__uploaded__' && uploadedFont) return "'" + UPLOADED_FONT_NAME + "'";
-    if (fontSelect.value === '__custom__') return customFontInput.value.trim() || DEFAULT_FONT;
+    if (activeFontOverride) return activeFontOverride;
+    if (fontSelect.value === '__upload__' && uploadedFont) return "'" + UPLOADED_FONT_NAME + "'";
+    if (fontSelect.value === '__upload__') return DEFAULT_FONT; // 아직 파일을 안 골랐을 때
     return fontSelect.value;
-  }
-
-  function ensureUploadedFontOption() {
-    var existing = fontSelect.querySelector('option[value="__uploaded__"]');
-    if (!uploadedFont) {
-      if (existing) existing.remove();
-      return;
-    }
-    if (!existing) {
-      existing = document.createElement('option');
-      existing.value = '__uploaded__';
-      fontSelect.insertBefore(existing, fontSelect.querySelector('option[value="__custom__"]'));
-    }
-    existing.textContent = '업로드한 글꼴 사용 (' + uploadedFont.fileName + ')';
   }
 
   function applyUploadedFontFace() {
@@ -891,14 +869,13 @@
     // 우선순위가 높아서 !important 없이는 덮어써지지 않는다.
     var lines = [];
 
-    if (fontSelect.value === '__uploaded__' && uploadedFont) {
+    if (fontSelect.value === '__upload__' && uploadedFont) {
       lines.push("@font-face { font-family: '" + UPLOADED_FONT_NAME + "'; src: url(" + uploadedFont.dataUrl + ") format('" + uploadedFont.format + "'); }");
       lines.push('');
     }
 
     lines.push(':root {');
     colorInputs.forEach(function (el) {
-      if (el.dataset.var === '--progress-color') return; // 아래서 별도 처리(실제 앱엔 이런 변수가 없음)
       lines.push('  ' + el.dataset.var + ': ' + el.value + ' !important;');
     });
     rangeInputs.forEach(function (el) {
@@ -915,13 +892,16 @@
     lines.push('.sidebar { width: ' + sidebarWidth + 'px !important; }');
     lines.push('.nav-rail { width: ' + navWidth + 'px !important; }');
 
-    var progressColor = document.getElementById('progressColor').value;
+    var titleColor = document.getElementById('text').value;
+    var normalColor = document.getElementById('textDim').value;
     lines.push('');
-    lines.push('/* 진척도 바 색 — mossy는 이걸 변수가 아니라 코드에서 직접 그려서, 아래처럼 요소를 직접 겨냥해야 한다 */');
-    lines.push('.progress-slider { background-image: linear-gradient(' + progressColor + ', ' + progressColor + ') !important; }');
-    lines.push('.todo-group-bar-fill,');
-    lines.push('.project-bar-fill {');
-    lines.push('  background: ' + progressColor + ' !important;');
+    lines.push('/* "제목·섹션 글자"·"할 일 이름 등 보통 글자"는 변수 하나가 아니라 이 요소들을 직접 겨냥한다 */');
+    lines.push('.project-name-title, .calendar-title, .calendar-side-title, .sidebar-title,');
+    lines.push('.archive-panel-title, .settings-view-header h1, .todo-group-title, .project-child-name {');
+    lines.push('  color: ' + titleColor + ' !important;');
+    lines.push('}');
+    lines.push('.todo-title, .project-name, .archive-item-title {');
+    lines.push('  color: ' + normalColor + ' !important;');
     lines.push('}');
 
     if (retroExtras) {
@@ -943,7 +923,6 @@
       applyVar(el.dataset.var, el.value + unit);
     });
     preview.style.setProperty('--font-family', currentFontValue());
-    retroHint.style.display = retroExtras ? 'block' : 'none';
     document.getElementById('cssOutput').value = buildCss();
     save();
   }
@@ -951,7 +930,7 @@
   function save() {
     try {
       var state = {
-        colors: {}, ranges: {}, font: fontSelect.value, customFont: customFontInput.value,
+        colors: {}, ranges: {}, font: fontSelect.value,
         uploadedFont: uploadedFont, retroExtras: retroExtras
       };
       colorInputs.forEach(function (el) { state.colors[el.id] = el.value; });
@@ -967,11 +946,11 @@
       var state = JSON.parse(raw);
       colorInputs.forEach(function (el) { if (state.colors && state.colors[el.id]) el.value = state.colors[el.id]; });
       rangeInputs.forEach(function (el) { if (state.ranges && state.ranges[el.id]) el.value = state.ranges[el.id]; });
-      if (state.uploadedFont) { uploadedFont = state.uploadedFont; ensureUploadedFontOption(); applyUploadedFontFace(); }
+      if (state.uploadedFont) { uploadedFont = state.uploadedFont; applyUploadedFontFace(); }
       if (state.font) fontSelect.value = state.font;
-      if (state.customFont) customFontInput.value = state.customFont;
       retroExtras = !!state.retroExtras;
-      customFontRow.style.display = fontSelect.value === '__custom__' ? 'flex' : 'none';
+      activeFontOverride = retroExtras ? RETRO_FONT : null;
+      uploadFontRow.style.display = fontSelect.value === '__upload__' ? 'flex' : 'none';
       updateFontFileInfo();
     } catch (e) { /* 무시 */ }
   }
@@ -983,9 +962,9 @@
       el.value = isNaN(num) ? el.defaultValue : num;
     });
     fontSelect.value = DEFAULT_FONT;
-    customFontInput.value = '';
-    customFontRow.style.display = 'none';
+    uploadFontRow.style.display = 'none';
     retroExtras = false;
+    activeFontOverride = null;
   }
 
   function applyOverrides(map) {
@@ -1002,9 +981,9 @@
 
   function removeUploadedFont() {
     uploadedFont = null;
-    ensureUploadedFontOption();
     applyUploadedFontFace();
-    if (fontSelect.value === '__uploaded__') fontSelect.value = DEFAULT_FONT;
+    fontSelect.value = DEFAULT_FONT;
+    uploadFontRow.style.display = 'none';
     updateFontFileInfo();
   }
 
@@ -1022,10 +1001,12 @@
   colorInputs.forEach(function (el) { el.addEventListener('input', refresh); });
   rangeInputs.forEach(function (el) { el.addEventListener('input', refresh); });
   fontSelect.addEventListener('change', function () {
-    customFontRow.style.display = fontSelect.value === '__custom__' ? 'flex' : 'none';
+    activeFontOverride = null; // 드롭다운을 직접 만지면 프리셋이 고른 글꼴은 풀린다
+    var isUpload = fontSelect.value === '__upload__';
+    uploadFontRow.style.display = isUpload ? 'flex' : 'none';
+    if (isUpload && !uploadedFont) document.getElementById('fontFileInput').click();
     refresh();
   });
-  customFontInput.addEventListener('input', refresh);
 
   document.getElementById('fontFileInput').addEventListener('change', function (e) {
     var file = e.target.files && e.target.files[0];
@@ -1034,10 +1015,9 @@
     var reader = new FileReader();
     reader.onload = function () {
       uploadedFont = { dataUrl: String(reader.result || ''), format: fontFormatFromFileName(file.name), fileName: file.name };
-      ensureUploadedFontOption();
       applyUploadedFontFace();
-      fontSelect.value = '__uploaded__';
-      customFontRow.style.display = 'none';
+      fontSelect.value = '__upload__';
+      uploadFontRow.style.display = 'flex';
       updateFontFileInfo();
       refresh();
     };
@@ -1059,14 +1039,13 @@
   document.getElementById('presetDark').addEventListener('click', function () {
     applyOverrides(DARK_OVERRIDES);
     retroExtras = false;
+    activeFontOverride = null;
     refresh();
   });
 
   document.getElementById('presetRetro').addEventListener('click', function () {
     applyOverrides(RETRO_OVERRIDES);
-    fontSelect.value = '__custom__';
-    customFontInput.value = RETRO_FONT;
-    customFontRow.style.display = 'flex';
+    activeFontOverride = RETRO_FONT;
     retroExtras = true;
     refresh();
   });

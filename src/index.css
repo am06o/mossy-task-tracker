@@ -19,20 +19,24 @@
     sans-serif;
 }
 
-/* 대충 만든 다크 모드 — 회색조 변수들만 어둡게 바꾼다. 설정에서 켜고 끌 수 있다. */
+/* 대충 만든 다크 모드 — 회색조 변수들만 어둡게 바꾼다. 설정에서 켜고 끌 수 있다.
+   각 값에 !important를 붙인 이유: 커스텀 CSS가 (특정도가 더 낮은) 일반 :root에
+   !important로 색을 덮어써도, 다크 모드를 켜면 이 블록이 이겨서 기본 다크 배색이
+   실제로 보이도록 하기 위해서다(안 그러면 커스텀 CSS 때문에 다크 모드를 켜도
+   아무 변화가 없어 보일 수 있다). */
 :root[data-theme='dark'] {
-  --bg: #16181c;
-  --panel: #202226;
-  --border: #34373d;
-  --border-strong: #454951;
-  --text: #e8e9ec;
-  --text-dim: #a3a7ae;
-  --text-faint: #74787f;
-  --accent-strong: color-mix(in srgb, var(--accent) 82%, white);
-  --accent-bg: color-mix(in srgb, var(--accent) 22%, black);
-  --dim-bg: #101114;
-  --dim-panel: #1a1c20;
-  --progress-track: #34373d;
+  --bg: #16181c !important;
+  --panel: #202226 !important;
+  --border: #34373d !important;
+  --border-strong: #454951 !important;
+  --text: #e8e9ec !important;
+  --text-dim: #a3a7ae !important;
+  --text-faint: #74787f !important;
+  --accent-strong: color-mix(in srgb, var(--accent) 82%, white) !important;
+  --accent-bg: color-mix(in srgb, var(--accent) 22%, black) !important;
+  --dim-bg: #101114 !important;
+  --dim-panel: #1a1c20 !important;
+  --progress-track: #34373d !important;
 }
 
 * {

@@ -129,7 +129,7 @@ export default function SettingsView({
       </section>
 
       <section className="settings-block">
-        <h2>색상 팔레트</h2>
+        <h2>프로젝트 색상</h2>
         <div className="settings-palette-row">
           {palette.map((hex, i) => (
             <label key={i} className="settings-palette-swatch" style={{ backgroundColor: hex }}>
@@ -145,9 +145,6 @@ export default function SettingsView({
 
       <section className="settings-block">
         <h2>꾸미기</h2>
-        <p className="settings-block-desc">
-          CSS 파일을 가져오면 색·글꼴·배치를 원하는 대로 바꿀 수 있어요.
-        </p>
         <CustomCssRow
           customCss={customCss}
           customCssName={customCssName}

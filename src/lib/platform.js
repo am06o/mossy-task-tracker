@@ -1,7 +1,5 @@
 import { invoke, isTauri } from '@tauri-apps/api/core'
 import { getCurrentWindow } from '@tauri-apps/api/window'
-import { resolveResource } from '@tauri-apps/api/path'
-import { openPath } from '@tauri-apps/plugin-opener'
 import { supabase, supabaseConfigured } from './supabase.js'
 
 const runningInTauri = isTauri()
@@ -123,12 +121,24 @@ export function importBackup() {
   })
 }
 
-// 실험용 테마 에디터(tools/theme-editor.html) — 데스크톱에서는 앱과 함께 묶인 파일을
-// 시스템 기본 브라우저로 열고, 웹 버전에서는 같은 파일을 새 탭으로 연다.
+// 실험용 테마 에디터(tools/theme-editor.html) — 데스크톱에서는 앱 안에 새 창으로 띄우고
+// (OS 기본 브라우저나 파일 경로에 의존하지 않아서 더 안정적이다), 웹 버전에서는 새 탭으로 연다.
 export async function openThemeEditor() {
   if (runningInTauri) {
-    const path = await resolveResource('theme-editor.html')
-    await openPath(path)
+    const { WebviewWindow } = await import('@tauri-apps/api/webviewWindow')
+    const existing = await WebviewWindow.getByLabel('theme-editor')
+    if (existing) {
+      await existing.setFocus()
+      return
+    }
+    new WebviewWindow('theme-editor', {
+      url: 'theme-editor.html',
+      title: 'mossy 테마 에디터',
+      width: 1200,
+      height: 820,
+      minWidth: 900,
+      minHeight: 600
+    })
     return
   }
   window.open('/theme-editor.html', '_blank')

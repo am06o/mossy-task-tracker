@@ -100,6 +100,15 @@ export default function App() {
       document.head.appendChild(styleEl)
     }
     styleEl.textContent = settings.customCssEnabled ? settings.customCss || '' : ''
+
+    // 커스텀 CSS가 --accent를 다른 색으로 덮어썼다면, 설정 화면의 테마 색 선택과
+    // 테마 색을 그대로 쓰는 할 일들(예: TodosView)도 실제 보이는 색에 맞춰 같이 바뀌게 한다.
+    if (settings.customCssEnabled && settings.customCss) {
+      const applied = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
+      if (/^#[0-9a-fA-F]{6}$/.test(applied) && applied.toLowerCase() !== settings.themeColor.toLowerCase()) {
+        setSettings((s) => ({ ...s, themeColor: applied }))
+      }
+    }
   }, [settings.customCss, settings.customCssEnabled])
 
   function updatePaletteColor(index, hex) {

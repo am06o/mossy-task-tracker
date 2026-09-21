@@ -398,9 +398,13 @@ mossy 웹 버전은 `dist/` 폴더를 그대로 정적 사이트로 올리면 �
 
 ### 실험용 테마 에디터 · The experimental theme editor
 
-`tools/theme-editor.html`을 브라우저로 그냥 열면(설치나 서버 없이) 왼쪽에 mossy 화면을 흉내낸 미리보기가, 오른쪽에 색·모서리 둥글기·사이드바/메뉴 너비·글꼴을 바꾸는 조작판이 뜹니다. 눈으로 결과를 보면서 골랐으면 **CSS 파일 내보내기**를 눌러 받은 파일을 mossy의 설정 → 꾸미기 → CSS 파일 가져오기에 그대로 넣으면 됩니다. 고른 값은 그 브라우저에 기억되어서 다시 열어도 이어서 고칠 수 있습니다.
+`tools/theme-editor.html`을 브라우저로 그냥 열면(설치나 서버 없이) 왼쪽에 mossy 화면을 흉내낸 미리보기가, 오른쪽에 색·모서리 둥글기·사이드바/메뉴 너비·글꼴·진척도 바 색을 바꾸는 조작판이 뜹니다. 왼쪽 위 아이콘을 눌러 **할 일 / 캘린더 / 프로젝트 / 보관함** 화면을 실제 앱처럼 하나씩 바꿔가며 볼 수 있고, **기본 / 다크 / 레트로**(Windows XP·98 느낌) 프리셋 버튼도 있습니다. 글꼴은 미리 만들어둔 것 중 고르거나 직접 파일(.ttf/.otf/.woff/.woff2)을 올릴 수도 있는데, 업로드한 글꼴은 파일 데이터를 통째로 CSS 안에 담아 내보내서 mossy 쪽에 별도 설치가 필요 없습니다. 눈으로 결과를 보면서 골랐으면 **CSS 내보내기**를 눌러 받은 파일을 mossy의 설정 → 꾸미기 → CSS 파일 가져오기에 그대로 넣으면 됩니다. 고른 값은 그 브라우저에 기억되어서 다시 열어도 이어서 고칠 수 있습니다.
 
-*Just open `tools/theme-editor.html` in a browser (no install, no server) — a mock-up of the mossy UI sits on the left, with controls for colors, corner radius, sidebar/nav-rail width, and font on the right. Once it looks right, click **Export CSS file** and drop the result straight into mossy's Settings → Appearance → Import CSS file. Your choices are remembered in that browser, so you can pick up where you left off.*
+*Just open `tools/theme-editor.html` in a browser (no install, no server) — a mock-up of the mossy UI sits on the left, with controls for colors, corner radius, sidebar/nav-rail width, font, and progress-bar color on the right. Click the icons at the top-left of the mock-up to switch between **Todos / Calendar / Projects / Archive**, just like the real app, and there are **Default / Dark / Retro** (Windows XP/98-styled) presets. For fonts, pick one of the built-ins or upload your own file (.ttf/.otf/.woff/.woff2) — an uploaded font gets embedded directly into the exported CSS, so mossy doesn't need it installed separately. Once it looks right, click **Export CSS** and drop the result straight into mossy's Settings → Appearance → Import CSS file. Your choices are remembered in that browser, so you can pick up where you left off.*
+
+> 진척도 바 색과 레트로 프리셋이 만드는 CSS는 색상 변수가 아니라 `.progress-slider`, `.todo-group-bar-fill`, `.project-bar-fill`, `.titlebar` 같은 실제 클래스를 직접 겨냥합니다 — 진척도 바 색은 원래 항목마다(테마색 또는 프로젝트 색으로) 다르게 코드에서 직접 그려지고, 레트로의 베벨 테두리·제목줄 색도 변수만으로는 안 되기 때문입니다. 레트로는 어디까지나 CSS로 흉내낸 것이라 실제 그 시절 UI와 완전히 같지는 않습니다.
+>
+> *The CSS for progress-bar color and the retro preset targets real classes directly — `.progress-slider`, `.todo-group-bar-fill`, `.project-bar-fill`, `.titlebar` — rather than a color variable, since progress-bar fills are drawn per-item in code (theme or project color) and retro's beveled borders and title-bar color go beyond what a variable alone can do. Retro is a CSS approximation, not a pixel-perfect recreation of that era's UI.*
 
 > 이 도구가 만드는 CSS는 값마다 `!important`를 붙입니다 — mossy 앱이 테마 색(`--accent`)을 자바스크립트로 직접 설정해두는데, 인라인 스타일은 보통의 스타일시트 규칙보다 우선순위가 높아서 `!important` 없이는 덮어써지지 않기 때문입니다. 손으로 커스텀 CSS를 쓸 때도 `--accent`를 바꾸려면 이 점을 기억해두세요.
 >

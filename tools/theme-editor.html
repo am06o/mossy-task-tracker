@@ -34,8 +34,10 @@
     flex: 1;
     min-width: 0;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
+    gap: 12px;
     padding: 24px;
     overflow: auto;
     background:
@@ -47,8 +49,13 @@
     background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
   }
 
+  .preview-note {
+    font-size: 11.5px;
+    color: #6b7280;
+  }
+
   .mossy-preview {
-    width: 720px;
+    width: 760px;
     max-width: 100%;
     height: 480px;
     display: flex;
@@ -68,9 +75,11 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
     padding: 16px 8px;
   }
+
+  .p-navrail-top { display: flex; flex-direction: column; gap: 6px; }
 
   .p-navrail-icon {
     width: 32px;
@@ -80,7 +89,13 @@
     align-items: center;
     justify-content: center;
     color: var(--text-dim);
+    border: none;
+    background: none;
+    padding: 0;
+    cursor: pointer;
   }
+
+  .p-navrail-icon svg { width: 18px; height: 18px; }
 
   .p-navrail-icon.is-active {
     background: color-mix(in srgb, var(--accent) 16%, transparent);
@@ -147,7 +162,10 @@
     overflow: hidden;
   }
 
-  .p-bar-fill { height: 100%; }
+  .p-bar-fill { height: 100%; background: var(--progress-color); }
+
+  .p-view { flex: 1; min-width: 0; display: none; }
+  .p-view.is-active { display: flex; }
 
   .p-main {
     flex: 1;
@@ -186,6 +204,7 @@
     display: flex;
     flex-direction: column;
     gap: 4px;
+    overflow: hidden;
   }
 
   .p-todo {
@@ -233,11 +252,80 @@
     overflow: hidden;
   }
 
-  .p-mini-slider-fill { height: 100%; }
+  .p-mini-slider-fill { height: 100%; background: var(--progress-color); }
+
+  .p-arrow {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-faint);
+  }
+  .p-arrow svg { width: 14px; height: 14px; }
+
+  /* --- 캘린더 화면 --- */
+  .p-cal-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 16px 18px;
+    gap: 10px;
+    overflow: hidden;
+  }
+  .p-cal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .p-cal-title { font-size: 17px; font-weight: 700; margin: 0; }
+  .p-cal-nav { font-size: 12px; color: var(--text-dim); }
+  .p-cal-body { flex: 1; display: flex; gap: 14px; min-height: 0; }
+  .p-cal-grid {
+    flex: 1;
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+  }
+  .p-cal-cell {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--panel);
+    padding: 4px;
+    font-size: 9px;
+    color: var(--text-dim);
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .p-cal-cell.is-today { border-color: var(--text); }
+  .p-cal-chip {
+    border-radius: 4px;
+    padding: 1px 4px;
+    font-size: 8px;
+    color: #fff;
+  }
+  .p-cal-side {
+    width: 120px;
+    flex-shrink: 0;
+    font-size: 10.5px;
+  }
+  .p-cal-side h3 { font-size: 10px; margin: 0 0 6px; color: var(--text-dim); }
+  .p-cal-side-item {
+    padding: 4px 6px;
+    border-radius: 6px;
+    background: var(--panel);
+    margin-bottom: 4px;
+  }
+
+  /* --- 보관함 화면 --- */
+  .p-archive-main { flex: 1; min-width: 0; display: flex; flex-direction: column; }
 
   /* ===== 오른쪽: 조작 패널 ===== */
   .panel {
-    width: 360px;
+    width: 380px;
     flex-shrink: 0;
     background: var(--editor-panel);
     border-left: 1px solid var(--editor-border);
@@ -307,6 +395,8 @@
     font-family: inherit;
   }
 
+  .preset-row { display: flex; gap: 8px; }
+
   .actions {
     display: flex;
     gap: 8px;
@@ -333,11 +423,37 @@
 
   .btn:hover { filter: brightness(0.96); }
 
+  .file-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
   .hint {
     font-size: 11.5px;
     color: var(--editor-text-dim);
     line-height: 1.6;
     margin-top: 10px;
+  }
+
+  .font-file-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 6px 8px;
+    border-radius: 6px;
+    background: var(--editor-bg);
+    font-size: 11.5px;
+  }
+
+  .font-file-info button {
+    border: none;
+    background: none;
+    color: #b91c1c;
+    cursor: pointer;
+    font-size: 11px;
   }
 
   .css-output {
@@ -368,62 +484,153 @@
   <div class="preview-wrap">
     <div class="mossy-preview" id="preview">
       <div class="p-navrail">
-        <div class="p-navrail-icon is-active">✓</div>
-        <div class="p-navrail-icon">📅</div>
-        <div class="p-navrail-icon">📁</div>
-        <div class="p-navrail-icon">✨</div>
-      </div>
-      <div class="p-sidebar">
-        <div class="p-sidebar-header"><span>프로젝트</span><span>− +</span></div>
-        <div class="p-project-item is-selected">
-          <div class="p-project-main">
-            <span class="p-dot" style="background: var(--proj-color-1)"></span>
-            <span class="p-project-name">글쓰기</span>
-            <span class="p-project-pct">64%</span>
-          </div>
-          <div class="p-bar"><div class="p-bar-fill" style="width:64%; background: var(--proj-color-1)"></div></div>
+        <div class="p-navrail-top">
+          <button type="button" class="p-navrail-icon is-active" data-view="todos" title="할 일">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+          </button>
+          <button type="button" class="p-navrail-icon" data-view="calendar" title="캘린더">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 2v4"/><path d="M16 2v4"/><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M3 10h18"/></svg>
+          </button>
+          <button type="button" class="p-navrail-icon" data-view="projects" title="프로젝트">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
+          </button>
+          <button type="button" class="p-navrail-icon" data-view="archive" title="보관함">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+          </button>
         </div>
-        <div class="p-project-item">
-          <div class="p-project-main">
-            <span class="p-dot" style="background: var(--proj-color-2)"></span>
-            <span class="p-project-name">이사 준비</span>
-            <span class="p-project-pct">30%</span>
-          </div>
-          <div class="p-bar"><div class="p-bar-fill" style="width:30%; background: var(--proj-color-2)"></div></div>
+        <div class="p-navrail-icon" title="설정 (미리보기 대상 아님)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </div>
       </div>
-      <div class="p-main">
-        <div class="p-main-header">
-          <h1 class="p-main-title">할 일</h1>
-          <div class="p-daynav">‹ <b>9월 20일 (일)</b> ›</div>
+
+      <!-- 할 일 -->
+      <div class="p-view is-active" data-view="todos">
+        <div class="p-main">
+          <div class="p-main-header">
+            <h1 class="p-main-title">할 일</h1>
+            <div class="p-daynav">‹ <b>9월 20일 (일)</b> ›</div>
+          </div>
+          <div class="p-todolist">
+            <div class="p-todo is-done">
+              <span class="p-checkbox is-done"></span>
+              <span class="p-todo-title">장보기</span>
+              <span class="p-date-chip">9/20</span>
+              <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:100%"></div></div>
+            </div>
+            <div class="p-todo">
+              <span class="p-checkbox"></span>
+              <span class="p-todo-title">보고서 초안 쓰기</span>
+              <span class="p-date-chip is-overdue">9/18</span>
+              <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:45%"></div></div>
+            </div>
+            <div class="p-todo">
+              <span class="p-checkbox"></span>
+              <span class="p-todo-title">운동하기</span>
+              <span class="p-date-chip">9/20</span>
+              <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:0%"></div></div>
+            </div>
+          </div>
         </div>
-        <div class="p-todolist">
-          <div class="p-todo is-done">
-            <span class="p-checkbox is-done"></span>
-            <span class="p-todo-title">장보기</span>
-            <span class="p-date-chip">9/20</span>
-            <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:100%; background: var(--accent)"></div></div>
+      </div>
+
+      <!-- 캘린더 -->
+      <div class="p-view" data-view="calendar">
+        <div class="p-cal-main">
+          <div class="p-cal-header">
+            <h1 class="p-cal-title">2026년 9월</h1>
+            <div class="p-cal-nav">‹ 오늘 ›</div>
           </div>
-          <div class="p-todo">
-            <span class="p-checkbox"></span>
-            <span class="p-todo-title">보고서 초안 쓰기</span>
-            <span class="p-date-chip is-overdue">9/18</span>
-            <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:45%; background: var(--accent)"></div></div>
+          <div class="p-cal-body">
+            <div class="p-cal-grid" id="calGrid"></div>
+            <div class="p-cal-side">
+              <h3>오늘의 할 일</h3>
+              <div class="p-cal-side-item">장보기</div>
+              <div class="p-cal-side-item">운동하기</div>
+              <h3 style="margin-top:10px">다가오는 마감</h3>
+              <div class="p-cal-side-item">글쓰기 마감</div>
+            </div>
           </div>
-          <div class="p-todo">
-            <span class="p-checkbox"></span>
-            <span class="p-todo-title">운동하기</span>
-            <span class="p-date-chip">9/20</span>
-            <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:0%; background: var(--accent)"></div></div>
+        </div>
+      </div>
+
+      <!-- 프로젝트 -->
+      <div class="p-view" data-view="projects">
+        <div class="p-sidebar">
+          <div class="p-sidebar-header"><span>프로젝트</span><span>− +</span></div>
+          <div class="p-project-item is-selected">
+            <div class="p-project-main">
+              <span class="p-dot" style="background: var(--proj-color-1)"></span>
+              <span class="p-project-name">글쓰기</span>
+              <span class="p-project-pct">64%</span>
+            </div>
+            <div class="p-bar"><div class="p-bar-fill" style="width:64%"></div></div>
+          </div>
+          <div class="p-project-item">
+            <div class="p-project-main">
+              <span class="p-dot" style="background: var(--proj-color-2)"></span>
+              <span class="p-project-name">이사 준비</span>
+              <span class="p-project-pct">30%</span>
+            </div>
+            <div class="p-bar"><div class="p-bar-fill" style="width:30%"></div></div>
+          </div>
+        </div>
+        <div class="p-main">
+          <div class="p-main-header">
+            <h1 class="p-main-title">글쓰기</h1>
+            <div class="p-daynav">시작 9/1 · 마감 12/1</div>
+          </div>
+          <div class="p-todolist">
+            <div class="p-todo">
+              <span class="p-checkbox"></span>
+              <span class="p-todo-title">1장 초안</span>
+              <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:80%"></div></div>
+            </div>
+            <div class="p-todo">
+              <span class="p-checkbox"></span>
+              <span class="p-todo-title">2장 자료조사</span>
+              <div class="p-mini-slider"><div class="p-mini-slider-fill" style="width:20%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 보관함 -->
+      <div class="p-view" data-view="archive">
+        <div class="p-main p-archive-main">
+          <div class="p-main-header">
+            <h1 class="p-main-title">보관함</h1>
+          </div>
+          <div class="p-todolist">
+            <div class="p-todo">
+              <span class="p-checkbox"></span>
+              <span class="p-todo-title">여행 계획 짜기</span>
+              <span class="p-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
+            <div class="p-todo">
+              <span class="p-checkbox"></span>
+              <span class="p-todo-title">책 추천 목록</span>
+              <span class="p-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></span>
+            </div>
           </div>
         </div>
       </div>
     </div>
+    <p class="preview-note">위 아이콘을 눌러 할 일 / 캘린더 / 프로젝트 / 보관함 화면을 각각 미리 볼 수 있어요 (실제 앱처럼 한 번에 하나씩만 보여요).</p>
   </div>
 
   <div class="panel">
     <h1>mossy 테마 에디터</h1>
-    <p class="subtitle">왼쪽 미리보기를 보면서 색·글꼴·크기를 바꿔보세요. 마음에 들면 아래에서 CSS 파일로 내보낸 뒤, mossy의 <b>설정 → 꾸미기 → CSS 파일 가져오기</b>로 넣으면 됩니다.</p>
+    <p class="subtitle">왼쪽 미리보기를 보면서 색·글꼴·크기를 바꿔보세요. 마음에 들면 아래에서 CSS를 내보낸 뒤, mossy의 <b>설정 → 꾸미기 → CSS 파일 가져오기</b>로 넣으면 됩니다.</p>
+
+    <div class="group">
+      <h2>프리셋</h2>
+      <div class="preset-row">
+        <button class="btn" id="presetDefault">기본</button>
+        <button class="btn" id="presetDark">다크</button>
+        <button class="btn" id="presetRetro">레트로</button>
+      </div>
+      <p class="hint" id="retroHint" style="display:none">레트로는 Windows XP/98 느낌을 CSS로 흉내낸 것이라, 실제 그 시절 UI와 똑같지는 않아요(둥근 모서리 없애기, 베벨 테두리, 파란 제목줄 정도).</p>
+    </div>
 
     <div class="group">
       <h2>배경 / 표면</h2>
@@ -444,6 +651,8 @@
       <h2>테마 / 강조색</h2>
       <div class="row"><label for="accent">테마 색(강조)</label><input type="color" id="accent" data-var="--accent"></div>
       <div class="row"><label for="danger">위험(삭제 등)</label><input type="color" id="danger" data-var="--danger"></div>
+      <div class="row"><label for="progressColor">진척도 바 색</label><input type="color" id="progressColor" data-var="--progress-color"></div>
+      <p class="hint">진척도 바는 원래 할 일마다(테마 색이나 프로젝트 색으로) 색이 다른데, 여기서 고르면 프로젝트 색과 상관없이 전부 이 색 하나로 통일돼요.</p>
     </div>
 
     <div class="group">
@@ -484,13 +693,21 @@
       <div class="row" id="customFontRow" style="display:none">
         <input type="text" id="customFont" placeholder="예: 'Noto Sans KR', sans-serif">
       </div>
-      <p class="hint">이 에디터에는 Pretendard 글꼴 파일이 없어서 "기본"을 골라도 시스템 글꼴로 대신 보여요. 실제 mossy 앱에는 Pretendard가 들어있으니 거기서는 정상적으로 보입니다.</p>
+      <div class="row">
+        <label class="btn file-btn" for="fontFileInput" style="text-align:center">글꼴 파일 업로드(.ttf/.otf/.woff/.woff2)</label>
+        <input type="file" id="fontFileInput" accept=".ttf,.otf,.woff,.woff2" style="display:none">
+      </div>
+      <div class="font-file-info" id="fontFileInfo" style="display:none">
+        <span id="fontFileName"></span>
+        <button type="button" id="fontFileRemove">제거</button>
+      </div>
+      <p class="hint">글꼴 파일을 올리면 그 파일 데이터가 내보낼 CSS 안에 통째로 들어가서, mossy에 가져왔을 때 별도 설치 없이 바로 그 글꼴이 보여요. "기본"을 고르면 이 에디터에는 Pretendard가 없어서 시스템 글꼴로 대신 보이지만, 실제 mossy 앱에는 Pretendard가 들어있어서 거기서는 정상적으로 보입니다.</p>
     </div>
 
     <div class="actions">
       <button class="btn" id="resetBtn">초기화</button>
       <button class="btn" id="copyBtn">CSS 복사</button>
-      <button class="btn primary" id="downloadBtn">CSS 파일 내보내기</button>
+      <button class="btn primary" id="downloadBtn">CSS 내보내기</button>
     </div>
     <div class="copied-toast" id="copiedToast"></div>
 
@@ -502,7 +719,7 @@
 <script>
 (function () {
   var preview = document.getElementById('preview');
-  var STORAGE_KEY = 'mossy-theme-editor-v1';
+  var STORAGE_KEY = 'mossy-theme-editor-v2';
 
   var DEFAULTS = {
     '--bg': '#f9fafb',
@@ -514,12 +731,74 @@
     '--text-faint': '#9ca3af',
     '--accent': '#4a8a2a',
     '--danger': '#c0527a',
+    '--progress-color': '#4a8a2a',
     '--radius': '14px',
     '--radius-sm': '8px',
     '--sidebar-width': '200px',
     '--nav-width': '56px'
   };
+  var DARK_OVERRIDES = {
+    '--bg': '#16181c',
+    '--panel': '#202226',
+    '--border': '#34373d',
+    '--border-strong': '#454951',
+    '--text': '#e8e9ec',
+    '--text-dim': '#a3a7ae',
+    '--text-faint': '#74787f'
+  };
+  var RETRO_OVERRIDES = {
+    '--bg': '#ece9d8',
+    '--panel': '#ffffff',
+    '--border': '#7f9db9',
+    '--border-strong': '#0a246a',
+    '--text': '#000000',
+    '--text-dim': '#333333',
+    '--text-faint': '#666666',
+    '--accent': '#245edb',
+    '--danger': '#aa0000',
+    '--progress-color': '#245edb',
+    '--radius': '0',
+    '--radius-sm': '0'
+  };
+  var RETRO_FONT = "'Tahoma', 'MS Sans Serif', Geneva, sans-serif";
+  var RETRO_EXTRA_CSS = [
+    '/* ─── 레트로(Windows XP/98 느낌) 보너스 스타일 ─── */',
+    '.titlebar {',
+    '  background: linear-gradient(to bottom, #0a58f0, #3f93ff) !important;',
+    '  color: #fff !important;',
+    '  font-weight: 700 !important;',
+    '}',
+    '.titlebar-btn:hover { background: rgba(255,255,255,0.25) !important; }',
+    '.sidebar-add-btn,',
+    '.settings-action-btn,',
+    '.todo-add-row-btn,',
+    '.date-chip,',
+    '.date-chip-add {',
+    '  border: 2px outset #d4d0c8 !important;',
+    '  border-radius: 0 !important;',
+    '  box-shadow: none !important;',
+    '  background: #ece9d8 !important;',
+    '}',
+    '.sidebar-add-btn:active,',
+    '.settings-action-btn:active {',
+    '  border-style: inset !important;',
+    '}',
+    '.project-item,',
+    '.todo-item,',
+    '.project-child-row {',
+    '  border-radius: 0 !important;',
+    '}',
+    '.nav-rail-item.is-active {',
+    '  border: 2px inset #d4d0c8 !important;',
+    '  border-radius: 0 !important;',
+    '}'
+  ].join('\n');
+
   var DEFAULT_FONT = "'Pretendard', -apple-system, 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', system-ui, sans-serif";
+  var UPLOADED_FONT_NAME = 'MossyUploadedFont';
+
+  var uploadedFont = null; // { dataUrl, format, fileName }
+  var retroExtras = false;
 
   // 미리보기 목업 안의 프로젝트 색은 팔레트에서 가져오는 척 — 편집 대상은 아니고 그냥 보기용.
   preview.style.setProperty('--proj-color-1', '#ABE57E');
@@ -530,22 +809,96 @@
   var fontSelect = document.getElementById('fontFamily');
   var customFontRow = document.getElementById('customFontRow');
   var customFontInput = document.getElementById('customFont');
+  var retroHint = document.getElementById('retroHint');
+
+  // ----- 화면 전환(할 일/캘린더/프로젝트/보관함) -----
+  var navButtons = Array.prototype.slice.call(document.querySelectorAll('.p-navrail-icon[data-view]'));
+  var viewBlocks = Array.prototype.slice.call(document.querySelectorAll('.p-view'));
+  navButtons.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var target = btn.dataset.view;
+      navButtons.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
+      viewBlocks.forEach(function (v) { v.classList.toggle('is-active', v.dataset.view === target); });
+    });
+  });
+
+  // 캘린더 목업 격자 채우기
+  (function buildCalendarGrid() {
+    var grid = document.getElementById('calGrid');
+    var todayIndex = 12;
+    for (var i = 1; i <= 21; i++) {
+      var cell = document.createElement('div');
+      cell.className = 'p-cal-cell' + (i === todayIndex ? ' is-today' : '');
+      cell.textContent = i;
+      if (i === 5 || i === 12) {
+        var chip = document.createElement('span');
+        chip.className = 'p-cal-chip';
+        chip.style.background = 'var(--accent)';
+        chip.textContent = '할 일';
+        cell.appendChild(chip);
+      }
+      grid.appendChild(cell);
+    }
+  })();
 
   function applyVar(name, value) {
     preview.style.setProperty(name, value);
   }
 
   function currentFontValue() {
+    if (fontSelect.value === '__uploaded__' && uploadedFont) return "'" + UPLOADED_FONT_NAME + "'";
     if (fontSelect.value === '__custom__') return customFontInput.value.trim() || DEFAULT_FONT;
     return fontSelect.value;
   }
 
+  function ensureUploadedFontOption() {
+    var existing = fontSelect.querySelector('option[value="__uploaded__"]');
+    if (!uploadedFont) {
+      if (existing) existing.remove();
+      return;
+    }
+    if (!existing) {
+      existing = document.createElement('option');
+      existing.value = '__uploaded__';
+      fontSelect.insertBefore(existing, fontSelect.querySelector('option[value="__custom__"]'));
+    }
+    existing.textContent = '업로드한 글꼴 사용 (' + uploadedFont.fileName + ')';
+  }
+
+  function applyUploadedFontFace() {
+    var styleEl = document.getElementById('uploaded-font-style');
+    if (!styleEl) {
+      styleEl = document.createElement('style');
+      styleEl.id = 'uploaded-font-style';
+      document.head.appendChild(styleEl);
+    }
+    styleEl.textContent = uploadedFont
+      ? "@font-face { font-family: '" + UPLOADED_FONT_NAME + "'; src: url(" + uploadedFont.dataUrl + ") format('" + uploadedFont.format + "'); }"
+      : '';
+  }
+
+  function fontFormatFromFileName(name) {
+    var ext = (name.split('.').pop() || '').toLowerCase();
+    if (ext === 'otf') return 'opentype';
+    if (ext === 'woff') return 'woff';
+    if (ext === 'woff2') return 'woff2';
+    return 'truetype';
+  }
+
   function buildCss() {
-    // !important가 꼭 필요하다 — mossy 앱이 설정의 테마 색을 --accent에
-    // 자바스크립트로 직접(inline style) 넣어두는데, 인라인 스타일은 보통의
-    // 스타일시트 규칙보다 우선순위가 높아서 !important 없이는 덮어써지지 않는다.
-    var lines = [':root {'];
+    // !important가 꼭 필요하다 — mossy 앱이 테마 색을 --accent에 자바스크립트로
+    // 직접(inline style) 넣어두는데, 인라인 스타일은 보통의 스타일시트 규칙보다
+    // 우선순위가 높아서 !important 없이는 덮어써지지 않는다.
+    var lines = [];
+
+    if (fontSelect.value === '__uploaded__' && uploadedFont) {
+      lines.push("@font-face { font-family: '" + UPLOADED_FONT_NAME + "'; src: url(" + uploadedFont.dataUrl + ") format('" + uploadedFont.format + "'); }");
+      lines.push('');
+    }
+
+    lines.push(':root {');
     colorInputs.forEach(function (el) {
+      if (el.dataset.var === '--progress-color') return; // 아래서 별도 처리(실제 앱엔 이런 변수가 없음)
       lines.push('  ' + el.dataset.var + ': ' + el.value + ' !important;');
     });
     rangeInputs.forEach(function (el) {
@@ -562,6 +915,20 @@
     lines.push('.sidebar { width: ' + sidebarWidth + 'px !important; }');
     lines.push('.nav-rail { width: ' + navWidth + 'px !important; }');
 
+    var progressColor = document.getElementById('progressColor').value;
+    lines.push('');
+    lines.push('/* 진척도 바 색 — mossy는 이걸 변수가 아니라 코드에서 직접 그려서, 아래처럼 요소를 직접 겨냥해야 한다 */');
+    lines.push('.progress-slider { background-image: linear-gradient(' + progressColor + ', ' + progressColor + ') !important; }');
+    lines.push('.todo-group-bar-fill,');
+    lines.push('.project-bar-fill {');
+    lines.push('  background: ' + progressColor + ' !important;');
+    lines.push('}');
+
+    if (retroExtras) {
+      lines.push('');
+      lines.push(RETRO_EXTRA_CSS);
+    }
+
     return lines.join('\n') + '\n';
   }
 
@@ -576,17 +943,21 @@
       applyVar(el.dataset.var, el.value + unit);
     });
     preview.style.setProperty('--font-family', currentFontValue());
+    retroHint.style.display = retroExtras ? 'block' : 'none';
     document.getElementById('cssOutput').value = buildCss();
     save();
   }
 
   function save() {
     try {
-      var state = { colors: {}, ranges: {}, font: fontSelect.value, customFont: customFontInput.value };
+      var state = {
+        colors: {}, ranges: {}, font: fontSelect.value, customFont: customFontInput.value,
+        uploadedFont: uploadedFont, retroExtras: retroExtras
+      };
       colorInputs.forEach(function (el) { state.colors[el.id] = el.value; });
       rangeInputs.forEach(function (el) { state.ranges[el.id] = el.value; });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    } catch (e) { /* 저장 실패는 조용히 무시 — 사설 브라우징 등 */ }
+    } catch (e) { /* 저장 실패는 조용히 무시 — 사설 브라우징, 용량 초과 등 */ }
   }
 
   function restore() {
@@ -596,9 +967,12 @@
       var state = JSON.parse(raw);
       colorInputs.forEach(function (el) { if (state.colors && state.colors[el.id]) el.value = state.colors[el.id]; });
       rangeInputs.forEach(function (el) { if (state.ranges && state.ranges[el.id]) el.value = state.ranges[el.id]; });
+      if (state.uploadedFont) { uploadedFont = state.uploadedFont; ensureUploadedFontOption(); applyUploadedFontFace(); }
       if (state.font) fontSelect.value = state.font;
       if (state.customFont) customFontInput.value = state.customFont;
+      retroExtras = !!state.retroExtras;
       customFontRow.style.display = fontSelect.value === '__custom__' ? 'flex' : 'none';
+      updateFontFileInfo();
     } catch (e) { /* 무시 */ }
   }
 
@@ -611,12 +985,38 @@
     fontSelect.value = DEFAULT_FONT;
     customFontInput.value = '';
     customFontRow.style.display = 'none';
+    retroExtras = false;
+  }
+
+  function applyOverrides(map) {
+    colorInputs.forEach(function (el) { if (map[el.dataset.var]) el.value = map[el.dataset.var]; });
+    rangeInputs.forEach(function (el) { if (map[el.dataset.var] !== undefined) el.value = parseInt(map[el.dataset.var], 10); });
   }
 
   function resetAll() {
     applyDefaults();
+    removeUploadedFont();
     try { localStorage.removeItem(STORAGE_KEY); } catch (e) { /* 무시 */ }
     refresh();
+  }
+
+  function removeUploadedFont() {
+    uploadedFont = null;
+    ensureUploadedFontOption();
+    applyUploadedFontFace();
+    if (fontSelect.value === '__uploaded__') fontSelect.value = DEFAULT_FONT;
+    updateFontFileInfo();
+  }
+
+  function updateFontFileInfo() {
+    var info = document.getElementById('fontFileInfo');
+    var nameEl = document.getElementById('fontFileName');
+    if (uploadedFont) {
+      info.style.display = 'flex';
+      nameEl.textContent = uploadedFont.fileName;
+    } else {
+      info.style.display = 'none';
+    }
   }
 
   colorInputs.forEach(function (el) { el.addEventListener('input', refresh); });
@@ -627,7 +1027,49 @@
   });
   customFontInput.addEventListener('input', refresh);
 
+  document.getElementById('fontFileInput').addEventListener('change', function (e) {
+    var file = e.target.files && e.target.files[0];
+    e.target.value = '';
+    if (!file) return;
+    var reader = new FileReader();
+    reader.onload = function () {
+      uploadedFont = { dataUrl: String(reader.result || ''), format: fontFormatFromFileName(file.name), fileName: file.name };
+      ensureUploadedFontOption();
+      applyUploadedFontFace();
+      fontSelect.value = '__uploaded__';
+      customFontRow.style.display = 'none';
+      updateFontFileInfo();
+      refresh();
+    };
+    reader.readAsDataURL(file);
+  });
+
+  document.getElementById('fontFileRemove').addEventListener('click', function () {
+    removeUploadedFont();
+    refresh();
+  });
+
   document.getElementById('resetBtn').addEventListener('click', resetAll);
+
+  document.getElementById('presetDefault').addEventListener('click', function () {
+    applyDefaults();
+    refresh();
+  });
+
+  document.getElementById('presetDark').addEventListener('click', function () {
+    applyOverrides(DARK_OVERRIDES);
+    retroExtras = false;
+    refresh();
+  });
+
+  document.getElementById('presetRetro').addEventListener('click', function () {
+    applyOverrides(RETRO_OVERRIDES);
+    fontSelect.value = '__custom__';
+    customFontInput.value = RETRO_FONT;
+    customFontRow.style.display = 'flex';
+    retroExtras = true;
+    refresh();
+  });
 
   document.getElementById('copyBtn').addEventListener('click', function () {
     var text = document.getElementById('cssOutput').value;

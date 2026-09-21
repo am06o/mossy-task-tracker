@@ -405,9 +405,9 @@ mossy 웹 버전은 `dist/` 폴더를 그대로 정적 사이트로 올리면 �
 
 *Click Settings → Appearance → **Open theme editor** and it launches right there (in your system's default browser on desktop, or a new tab on the web version) — or just open `tools/theme-editor.html` in a browser yourself (no install, no server). A mock-up of the mossy UI sits on the left, with controls for colors, corner radius, sidebar/nav-rail width, and font on the right. Click the icons at the top-left of the mock-up to switch between **Todos / Calendar / Projects / Archive**, just like the real app, and there are **Default / Dark / Retro** (Windows XP/98-styled) presets. For fonts, pick one of the built-ins or choose "Upload your own" for a file (.ttf/.otf/.woff/.woff2) — it gets embedded directly into the exported CSS, so mossy doesn't need it installed separately. Once it looks right, click **Export CSS** and drop the result straight into mossy's Settings → Appearance → Import CSS file. Your choices are remembered in that browser, so you can pick up where you left off.*
 
-> "제목·섹션 글자"/"할 일 이름 등 보통 글자"와 레트로 프리셋이 만드는 CSS는 색상 변수가 아니라 `.project-name-title`, `.todo-title`, `.titlebar` 같은 실제 클래스를 직접 겨냥합니다 — mossy는 제목과 일반 항목 이름을 원래 같은 변수(`--text`) 하나로 관리하고, 레트로의 베벨 테두리·제목줄 색도 변수만으로는 안 되기 때문입니다.
+> "글자" 항목의 4개 색(글자 분류 1~4)과 레트로 프리셋이 만드는 CSS는 색상 변수가 아니라 `.project-name-title`, `.todo-title`, `.calendar-chip`, `.titlebar` 같은 실제 클래스를 직접 겨냥합니다 — mossy가 원래 제목과 일반 항목 이름을 같은 변수(`--text`) 하나로 관리하거나, 캘린더의 "오늘의 할 일" 항목처럼 아예 변수가 아니라 프로젝트 색에서 계산해 쓰는 부분이 있고, 레트로의 베벨 테두리·제목줄 색도 변수만으로는 안 되기 때문입니다.
 >
-> *The CSS for "title/section text" vs. "everyday item text" and for the retro preset targets real classes directly — `.project-name-title`, `.todo-title`, `.titlebar` — rather than a color variable, since mossy normally colors titles and everyday item names with the same variable (`--text`), and retro's beveled borders and title-bar color go beyond what a variable alone can do.*
+> *The CSS for the four "text" color pickers and for the retro preset targets real classes directly — `.project-name-title`, `.todo-title`, `.calendar-chip`, `.titlebar` — rather than a color variable, since mossy normally colors titles and everyday item names with the same variable (`--text`), some text (like the calendar's "today's todos" list) is computed from the project's own color rather than a variable at all, and retro's beveled borders and title-bar color go beyond what a variable alone can do.*
 
 > 이 도구가 만드는 CSS는 값마다 `!important`를 붙입니다 — mossy 앱이 테마 색(`--accent`)을 자바스크립트로 직접 설정해두는데, 인라인 스타일은 보통의 스타일시트 규칙보다 우선순위가 높아서 `!important` 없이는 덮어써지지 않기 때문입니다. 손으로 커스텀 CSS를 쓸 때도 `--accent`를 바꾸려면 이 점을 기억해두세요.
 >
@@ -428,6 +428,7 @@ mossy 웹 버전은 `dist/` 폴더를 그대로 정적 사이트로 올리면 �
 | `--accent`, `--accent-strong`, `--accent-bg` | 테마 색과 그 강조/배경 변형(설정의 테마 색과 별개로 덮어쓸 수 있음) · the theme color and its stronger/background variants (overridable independently of the in-app theme-color picker) |
 | `--danger` | 삭제 등 위험한 동작의 색 · color for destructive actions |
 | `--dim-bg`, `--dim-panel` | "지난 프로젝트" 화면의 한 톤 어두운 배경 · the dimmed background used on the Past Projects screen |
+| `--progress-track` | 진척도 바(슬라이더)의 채워지지 않은 배경 — `--border`와 별개 · the unfilled background of the progress slider, independent of `--border` |
 | `--radius`, `--radius-sm` | 카드/버튼 모서리 둥글기 · corner radius for cards/buttons |
 | `--font-family` | 전체 글꼴 · the app-wide font |
 

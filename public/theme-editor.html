@@ -59,6 +59,7 @@
     max-width: 100%;
     height: 480px;
     display: flex;
+    position: relative;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
@@ -66,6 +67,27 @@
     background: var(--bg);
     color: var(--text);
   }
+
+  .p-archive-fab {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+    box-shadow: 0 4px 12px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+
+  .p-archive-fab svg { width: 16px; height: 16px; }
+  .p-archive-fab.is-hidden { display: none; }
 
   .p-navrail {
     width: var(--nav-width);
@@ -158,7 +180,7 @@
   .p-bar {
     height: 4px;
     border-radius: 2px;
-    background: var(--border);
+    background: color-mix(in srgb, var(--text) 14%, var(--bg));
     overflow: hidden;
   }
 
@@ -247,7 +269,7 @@
     width: 60px;
     height: 5px;
     border-radius: 3px;
-    background: var(--border);
+    background: color-mix(in srgb, var(--text) 14%, var(--bg));
     flex-shrink: 0;
     overflow: hidden;
   }
@@ -314,10 +336,11 @@
   }
   .p-cal-side h3 { font-size: 10px; margin: 0 0 6px; font-weight: 700; color: var(--text); }
   .p-cal-side-item {
-    padding: 4px 6px;
-    border-radius: 6px;
-    background: var(--panel);
+    padding: 3px 6px;
+    border-radius: 5px;
     margin-bottom: 4px;
+    background: color-mix(in srgb, var(--chip-color) 22%, white);
+    color: var(--mock-chip-text);
   }
 
   /* --- 보관함 화면 --- */
@@ -495,13 +518,17 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z"/></svg>
           </button>
           <button type="button" class="p-navrail-icon" data-view="archive" title="보관함">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
           </button>
         </div>
         <div class="p-navrail-icon" title="설정 (미리보기 대상 아님)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
         </div>
       </div>
+
+      <button type="button" class="p-archive-fab" id="archiveFab" title="보관함 (테마 색이 적용된 곳)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"/><path d="M20 3v4"/><path d="M22 5h-4"/><path d="M4 17v2"/><path d="M5 18H3"/></svg>
+      </button>
 
       <!-- 할 일 -->
       <div class="p-view is-active" data-view="todos">
@@ -544,10 +571,10 @@
             <div class="p-cal-grid" id="calGrid"></div>
             <div class="p-cal-side">
               <h3>오늘의 할 일</h3>
-              <div class="p-cal-side-item">장보기</div>
-              <div class="p-cal-side-item">운동하기</div>
+              <div class="p-cal-side-item" style="--chip-color: var(--proj-color-2)">장보기</div>
+              <div class="p-cal-side-item" style="--chip-color: var(--proj-color-1)">운동하기</div>
               <h3 style="margin-top:10px">다가오는 마감</h3>
-              <div class="p-cal-side-item">글쓰기 마감</div>
+              <div class="p-cal-side-item" style="--chip-color: var(--proj-color-1)">글쓰기 마감</div>
             </div>
           </div>
         </div>
@@ -634,16 +661,16 @@
       <h2>배경 / 표면</h2>
       <div class="row"><label for="bg">화면 배경</label><input type="color" id="bg" data-var="--bg"></div>
       <div class="row"><label for="panel">카드/입력창</label><input type="color" id="panel" data-var="--panel"></div>
-      <div class="row"><label for="border">테두리(옅음)</label><input type="color" id="border" data-var="--border"></div>
-      <div class="row"><label for="borderStrong">테두리(진함)</label><input type="color" id="borderStrong" data-var="--border-strong"></div>
+      <div class="row"><label for="border">테두리 1</label><input type="color" id="border" data-var="--border"></div>
+      <div class="row"><label for="borderStrong">테두리 2</label><input type="color" id="borderStrong" data-var="--border-strong"></div>
     </div>
 
     <div class="group">
       <h2>글자</h2>
-      <div class="row"><label for="text">제목·섹션 글자</label><input type="color" id="text" data-var="--text"></div>
-      <div class="row"><label for="textDim">할 일 이름 등 보통 글자</label><input type="color" id="textDim" data-var="--text-dim"></div>
-      <div class="row"><label for="textFaint">흐린 글자</label><input type="color" id="textFaint" data-var="--text-faint"></div>
-      <p class="hint">"제목·섹션 글자"는 프로젝트 이름, "할 일", "2026년 9월", "오늘의 할 일" 같은 큰 제목들이고, "할 일 이름 등 보통 글자"는 장보기·운동하기 같은 평범한 항목 이름들이에요. mossy는 원래 이 둘을 같은 색 하나로 관리해서, 여기서 나누어 고르면 실제로는 각 요소를 직접 겨냥해서 다른 색을 줍니다.</p>
+      <div class="row"><label for="text">글자 분류 1</label><input type="color" id="text" data-var="--text"></div>
+      <div class="row"><label for="textDim">글자 분류 2</label><input type="color" id="textDim" data-var="--text-dim"></div>
+      <div class="row"><label for="textFaint">글자 분류 3</label><input type="color" id="textFaint" data-var="--text-faint"></div>
+      <div class="row"><label for="calChipText">글자 분류 4</label><input type="color" id="calChipText"></div>
     </div>
 
     <div class="group">
@@ -655,17 +682,17 @@
     <div class="group">
       <h2>모양 / 크기</h2>
       <div class="row">
-        <label for="radius">모서리 둥글기</label>
+        <label for="radius">모서리 1</label>
         <input type="range" id="radius" min="0" max="28" value="14" data-var="--radius" data-unit="px">
         <span class="value" id="radiusVal">14px</span>
       </div>
       <div class="row">
-        <label for="radiusSm">모서리(작은 것)</label>
+        <label for="radiusSm">모서리 2</label>
         <input type="range" id="radiusSm" min="0" max="20" value="8" data-var="--radius-sm" data-unit="px">
         <span class="value" id="radiusSmVal">8px</span>
       </div>
       <div class="row">
-        <label for="sidebarWidth">프로젝트 사이드바 너비</label>
+        <label for="sidebarWidth">프로젝트 바</label>
         <input type="range" id="sidebarWidth" min="160" max="360" value="200" data-var="--sidebar-width" data-unit="px">
         <span class="value" id="sidebarWidthVal">200px</span>
       </div>
@@ -695,7 +722,7 @@
         <span id="fontFileName"></span>
         <button type="button" id="fontFileRemove">제거</button>
       </div>
-      <p class="hint">기본 선택 시 에디터에서 시스템 글꼴로 보이나, 실제 앱에서는 Pretendard가 적용되어 보입니다.</p>
+      <p class="hint">기본 선택 시 앱 내에서 Pretendard 적용</p>
     </div>
 
     <div class="actions">
@@ -792,24 +819,30 @@
   var uploadedFont = null; // { dataUrl, format, fileName }
   var retroExtras = false;
   var activeFontOverride = null; // 프리셋(레트로)이 고르는 글꼴 — 드롭다운과 별개로 우선 적용된다.
+  var CHIP_TEXT_DEFAULT = '#374151';
+  var CHIP_TEXT_RETRO = '#000000';
 
   // 미리보기 목업 안의 프로젝트 색은 팔레트에서 가져오는 척 — 편집 대상은 아니고 그냥 보기용.
   preview.style.setProperty('--proj-color-1', '#ABE57E');
   preview.style.setProperty('--proj-color-2', '#8BC7FF');
 
-  var colorInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="color"]'));
+  var colorInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="color"][data-var]'));
   var rangeInputs = Array.prototype.slice.call(document.querySelectorAll('input[type="range"]'));
+  var calChipTextInput = document.getElementById('calChipText');
   var fontSelect = document.getElementById('fontFamily');
   var uploadFontRow = document.getElementById('uploadFontRow');
 
   // ----- 화면 전환(할 일/캘린더/프로젝트/보관함) -----
   var navButtons = Array.prototype.slice.call(document.querySelectorAll('.p-navrail-icon[data-view]'));
   var viewBlocks = Array.prototype.slice.call(document.querySelectorAll('.p-view'));
+  var archiveFab = document.getElementById('archiveFab');
   navButtons.forEach(function (btn) {
     btn.addEventListener('click', function () {
       var target = btn.dataset.view;
       navButtons.forEach(function (b) { b.classList.toggle('is-active', b === btn); });
       viewBlocks.forEach(function (v) { v.classList.toggle('is-active', v.dataset.view === target); });
+      // 실제 앱에서도 보관함 화면 자체에서는 떠 있는 보관함 버튼이 보이지 않는다.
+      archiveFab.classList.toggle('is-hidden', target === 'archive');
     });
   });
 
@@ -894,14 +927,18 @@
 
     var titleColor = document.getElementById('text').value;
     var normalColor = document.getElementById('textDim').value;
+    var chipTextColor = calChipTextInput.value;
     lines.push('');
-    lines.push('/* "제목·섹션 글자"·"할 일 이름 등 보통 글자"는 변수 하나가 아니라 이 요소들을 직접 겨냥한다 */');
+    lines.push('/* 글자 분류 1·2·4는 색상 변수가 아니라 아래 요소들을 직접 겨냥한다 */');
     lines.push('.project-name-title, .calendar-title, .calendar-side-title, .sidebar-title,');
     lines.push('.archive-panel-title, .settings-view-header h1, .todo-group-title, .project-child-name {');
     lines.push('  color: ' + titleColor + ' !important;');
     lines.push('}');
     lines.push('.todo-title, .project-name, .archive-item-title {');
     lines.push('  color: ' + normalColor + ' !important;');
+    lines.push('}');
+    lines.push('.calendar-chip {');
+    lines.push('  color: ' + chipTextColor + ' !important;');
     lines.push('}');
 
     if (retroExtras) {
@@ -923,6 +960,7 @@
       applyVar(el.dataset.var, el.value + unit);
     });
     preview.style.setProperty('--font-family', currentFontValue());
+    preview.style.setProperty('--mock-chip-text', calChipTextInput.value);
     document.getElementById('cssOutput').value = buildCss();
     save();
   }
@@ -931,7 +969,8 @@
     try {
       var state = {
         colors: {}, ranges: {}, font: fontSelect.value,
-        uploadedFont: uploadedFont, retroExtras: retroExtras
+        uploadedFont: uploadedFont, retroExtras: retroExtras,
+        calChipText: calChipTextInput.value
       };
       colorInputs.forEach(function (el) { state.colors[el.id] = el.value; });
       rangeInputs.forEach(function (el) { state.ranges[el.id] = el.value; });
@@ -946,6 +985,7 @@
       var state = JSON.parse(raw);
       colorInputs.forEach(function (el) { if (state.colors && state.colors[el.id]) el.value = state.colors[el.id]; });
       rangeInputs.forEach(function (el) { if (state.ranges && state.ranges[el.id]) el.value = state.ranges[el.id]; });
+      if (state.calChipText) calChipTextInput.value = state.calChipText;
       if (state.uploadedFont) { uploadedFont = state.uploadedFont; applyUploadedFontFace(); }
       if (state.font) fontSelect.value = state.font;
       retroExtras = !!state.retroExtras;
@@ -965,6 +1005,7 @@
     uploadFontRow.style.display = 'none';
     retroExtras = false;
     activeFontOverride = null;
+    calChipTextInput.value = CHIP_TEXT_DEFAULT;
   }
 
   function applyOverrides(map) {
@@ -1000,6 +1041,7 @@
 
   colorInputs.forEach(function (el) { el.addEventListener('input', refresh); });
   rangeInputs.forEach(function (el) { el.addEventListener('input', refresh); });
+  calChipTextInput.addEventListener('input', refresh);
   fontSelect.addEventListener('change', function () {
     activeFontOverride = null; // 드롭다운을 직접 만지면 프리셋이 고른 글꼴은 풀린다
     var isUpload = fontSelect.value === '__upload__';
@@ -1047,6 +1089,7 @@
     applyOverrides(RETRO_OVERRIDES);
     activeFontOverride = RETRO_FONT;
     retroExtras = true;
+    calChipTextInput.value = CHIP_TEXT_RETRO;
     refresh();
   });
 

@@ -9,7 +9,7 @@
   appearance: none;
   height: 6px;
   border-radius: 3px;
-  background-color: var(--border);
+  background-color: var(--progress-track);
   background-image: var(--fill);
   background-size: var(--pct) 100%;
   background-repeat: no-repeat;

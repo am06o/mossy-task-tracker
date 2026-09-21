@@ -14,6 +14,7 @@
   --radius-sm: 8px;
   --dim-bg: #eceef1;
   --dim-panel: #f3f4f6;
+  --progress-track: #e5e7eb;
   --font-family: 'Pretendard', -apple-system, 'Malgun Gothic', 'Apple SD Gothic Neo', 'Segoe UI', system-ui,
     sans-serif;
 }
@@ -31,6 +32,7 @@
   --accent-bg: color-mix(in srgb, var(--accent) 22%, black);
   --dim-bg: #101114;
   --dim-panel: #1a1c20;
+  --progress-track: #34373d;
 }
 
 * {

@@ -1,5 +1,5 @@
 import { useRef } from 'react'
-import { Download, LogOut, Palette, Plus, Upload, Wand2, X } from 'lucide-react'
+import { Download, LogOut, Palette, Plus, RotateCcw, Upload, Wand2, X } from 'lucide-react'
 import './ColorPicker.css'
 import './SettingsView.css'
 
@@ -54,7 +54,7 @@ function CustomCssRow({ customCss, customCssName, customCssEnabled, onImport, on
     <div className="settings-customcss">
       <div className="settings-data-row">
         <button className="settings-action-btn" onClick={() => fileInputRef.current?.click()}>
-          <Palette size={15} /> CSS 파일 가져오기
+          <Palette size={15} /> CSS 적용하기
         </button>
         <input
           ref={fileInputRef}
@@ -145,6 +145,11 @@ export default function SettingsView({
 
       <section className="settings-block">
         <h2>꾸미기</h2>
+        <div className="settings-data-row">
+          <button className="settings-action-btn" onClick={onOpenThemeEditor}>
+            <Wand2 size={15} /> 테마 에디터 열기
+          </button>
+        </div>
         <CustomCssRow
           customCss={customCss}
           customCssName={customCssName}
@@ -154,8 +159,8 @@ export default function SettingsView({
           onClear={onClearCustomCss}
         />
         <div className="settings-data-row" style={{ marginTop: 8 }}>
-          <button className="settings-action-btn" onClick={onOpenThemeEditor}>
-            <Wand2 size={15} /> 테마 에디터 열기
+          <button className="settings-action-btn" onClick={onClearCustomCss}>
+            <RotateCcw size={15} /> 기본값으로 되돌리기
           </button>
         </div>
       </section>

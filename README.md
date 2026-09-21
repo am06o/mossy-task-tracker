@@ -264,7 +264,8 @@ task-tracker/
 │  └─ schema.sql          Supabase에 한 번 실행할 테이블·권한 정의 · table/permissions definition to run once in Supabase
 ├─ scripts/
 │  ├─ make-icon.mjs       build/icon.png, icon.ico 생성 · generates build/icon.png, icon.ico
-│  └─ icon-raw/           아이콘 크기별 원본 PNG · source PNGs per icon size
+│  ├─ icon-raw/           아이콘 크기별 원본 PNG · source PNGs per icon size
+│  └─ update.bat          git pull → npm install → npm run dist를 한 번에 · runs git pull → npm install → npm run dist in one go
 ├─ tools/
 │  └─ theme-editor.html   실험용 테마 에디터(독립 실행형, 설치 불필요) · the experimental theme editor (standalone, no install needed)
 ├─ public/                PWA(안드로이드 웹앱) 아이콘, theme-editor.html 사본(웹 빌드용) · PWA (Android web app) icon, a copy of theme-editor.html (for the web build)
@@ -273,9 +274,9 @@ task-tracker/
 
 ## 7. 설치해서 쓰기 · Installing it
 
-`npm run dist`로 만든 `src-tauri/target/release/bundle/nsis/mossy_1.0.0_x64-setup.exe`를 실행하면 설치됩니다(설치 위치를 고를 수 있는 일반 설치 프로그램). 서명하지 않은 앱이라 Windows SmartScreen이 막으면 **추가 정보 → 실행**을 누르면 됩니다.
+`npm run dist`로 만든 `src-tauri/target/release/bundle/nsis/mossy_1.2.2_x64-setup.exe`를 실행하면 설치됩니다(설치 위치를 고를 수 있는 일반 설치 프로그램). 서명하지 않은 앱이라 Windows SmartScreen이 막으면 **추가 정보 → 실행**을 누르면 됩니다.
 
-*Run `src-tauri/target/release/bundle/nsis/mossy_1.0.0_x64-setup.exe`, produced by `npm run dist`, to install (a standard installer that lets you pick the install path). The app is unsigned, so if Windows SmartScreen blocks it, click **More info → Run anyway**.*
+*Run `src-tauri/target/release/bundle/nsis/mossy_1.2.2_x64-setup.exe`, produced by `npm run dist`, to install (a standard installer that lets you pick the install path). The app is unsigned, so if Windows SmartScreen blocks it, click **More info → Run anyway**.*
 
 ## 8. 실행과 빌드 · Running and building
 
@@ -303,6 +304,10 @@ npm run dist
 화면과 Rust 앱을 빌드해 `src-tauri/target/release/bundle/nsis/`에 Windows 설치 파일을 만듭니다.
 
 *Builds the UI and the Rust app, producing a Windows installer under `src-tauri/target/release/bundle/nsis/`.*
+
+새 커밋을 받아와서 설치 파일까지 새로 만드는 걸 한 번에 하고 싶으면 `scripts/update.bat`을 더블클릭하면 됩니다(`git pull` → `npm install` → `npm run dist`를 순서대로 실행).
+
+*To pull the latest commits and rebuild the installer in one go, double-click `scripts/update.bat` (runs `git pull` → `npm install` → `npm run dist` in order).*
 
 > **PowerShell에서 `npm`이 막힐 때 · If PowerShell blocks `npm`** — "이 시스템에서 스크립트를 실행할 수 없으므로…" 오류가 나면 `npm.cmd run dev`처럼 `.cmd`를 붙여 쓰거나, `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned`를 한 번 실행합니다.
 >

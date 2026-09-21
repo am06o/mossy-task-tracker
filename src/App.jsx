@@ -100,16 +100,19 @@ export default function App() {
       document.head.appendChild(styleEl)
     }
     styleEl.textContent = settings.customCssEnabled ? settings.customCss || '' : ''
-
-    // 커스텀 CSS가 --accent를 다른 색으로 덮어썼다면, 설정 화면의 테마 색 선택과
-    // 테마 색을 그대로 쓰는 할 일들(예: TodosView)도 실제 보이는 색에 맞춰 같이 바뀌게 한다.
-    if (settings.customCssEnabled && settings.customCss) {
-      const applied = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim()
-      if (/^#[0-9a-fA-F]{6}$/.test(applied) && applied.toLowerCase() !== settings.themeColor.toLowerCase()) {
-        setSettings((s) => ({ ...s, themeColor: applied }))
-      }
-    }
   }, [settings.customCss, settings.customCssEnabled])
+
+  // 커스텀 CSS가 --accent를 덮어쓰는 중이면, 실제 화면에 보이는 색(effectiveThemeColor)은
+  // 저장된 settings.themeColor가 아니라 이 값을 따라야 한다 — 설정의 테마 색 선택 표시나
+  // 테마 색을 그대로 쓰는 할 일들(예: TodosView)이 실제 색과 어긋나지 않도록. settings.themeColor
+  // 자체는 건드리지 않아서, 커스텀 CSS를 끄거나 초기화하면 원래 골랐던 색으로 그대로 돌아온다.
+  const effectiveThemeColor = useMemo(() => {
+    if (settings.customCssEnabled && settings.customCss) {
+      const matches = [...settings.customCss.matchAll(/--accent\s*:\s*(#[0-9a-fA-F]{6})\b/g)]
+      if (matches.length) return matches[matches.length - 1][1]
+    }
+    return settings.themeColor
+  }, [settings.customCss, settings.customCssEnabled, settings.themeColor])
 
   function updatePaletteColor(index, hex) {
     setSettings((s) => {
@@ -171,7 +174,7 @@ export default function App() {
     const trimmed = name.trim()
     if (!trimmed) return null
     const parent = parentProjectId ? projects.find((p) => p.id === parentProjectId) : null
-    const color = parent ? parent.color : settings.themeColor
+    const color = parent ? parent.color : effectiveThemeColor
     const p = { ...makeProject(trimmed), parentProjectId, color }
     setProjects((prev) => [...prev, p])
     return p
@@ -389,7 +392,7 @@ export default function App() {
               project={todosProject}
               onChange={(updater) => updateProject(TODOS_ID, updater)}
               linkableProjects={activeProjects}
-              themeColor={settings.themeColor}
+              themeColor={effectiveThemeColor}
             />
           )}
 
@@ -400,7 +403,7 @@ export default function App() {
               onUpdateProject={updateProject}
               linkableProjects={activeProjects}
               allProjects={projects}
-              themeColor={settings.themeColor}
+              themeColor={effectiveThemeColor}
               onAssignDate={setTodoDueDate}
               initialDate={todosJumpDate}
               onConsumeInitialDate={() => setTodosJumpDate(null)}
@@ -414,13 +417,13 @@ export default function App() {
               onJumpTo={goToOwner}
               onJumpToDate={jumpToDate}
               onAssignDate={setTodoDueDate}
-              themeColor={settings.themeColor}
+              themeColor={effectiveThemeColor}
             />
           )}
 
           {activeView === 'settings' && (
             <SettingsView
-              themeColor={settings.themeColor}
+              themeColor={effectiveThemeColor}
               onChangeThemeColor={(themeColor) => setSettings((s) => ({ ...s, themeColor }))}
               palette={settings.palette}
               onChangePaletteColor={updatePaletteColor}

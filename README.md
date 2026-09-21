@@ -278,6 +278,17 @@ task-tracker/
 
 *Run `src-tauri/target/release/bundle/nsis/mossy_1.2.2_x64-setup.exe`, produced by `npm run dist`, to install (a standard installer that lets you pick the install path). The app is unsigned, so if Windows SmartScreen blocks it, click **More info → Run anyway**.*
 
+### 업데이트했는데 화면이 그대로일 때 · If the screen doesn't change after updating
+
+예전 버전을 한 번이라도 실행했던 컴퓨터에서는, 새 설치 파일로 덮어 설치해도 내장 브라우저(WebView2)가 예전 화면을 캐시해둔 채로 계속 보여주는 경우가 있습니다. 설정 화면에 버전 번호(`v1.2.2` 등)가 실제로 새 버전과 다르게 보인다면 이 문제입니다. mossy를 끄고 아래 폴더를 지운 뒤(할 일 데이터는 안 건드리므로 안전합니다) 다시 설치하면 해결됩니다.
+
+```powershell
+Remove-Item -Recurse -Force "$env:LOCALAPPDATA\mossy\EBWebView" -ErrorAction SilentlyContinue
+Remove-Item -Recurse -Force "$env:APPDATA\com.local.mossy\EBWebView" -ErrorAction SilentlyContinue
+```
+
+*On a computer that has run an older version of mossy before, overwrite-installing a new build sometimes still shows the old screen because the embedded browser (WebView2) kept a cached copy. You'll notice this if the version number shown in Settings (e.g. `v1.2.2`) doesn't match what you just installed. Close mossy, delete the folder(s) above (this doesn't touch your todo data), then reinstall.*
+
 ## 8. 실행과 빌드 · Running and building
 
 ### 준비물 · Prerequisites

@@ -38,7 +38,16 @@ function ColorRow({ value, palette, onChange }) {
   )
 }
 
-function CustomCssRow({ customCss, customCssName, customCssEnabled, onImport, onToggle, onClear }) {
+function CustomCssRow({
+  customCss,
+  customCssName,
+  customCssEnabled,
+  darkMode,
+  onChangeDarkMode,
+  onImport,
+  onToggle,
+  onClear
+}) {
   const fileInputRef = useRef(null)
 
   function handleFileChange(e) {
@@ -63,6 +72,18 @@ function CustomCssRow({ customCss, customCssName, customCssEnabled, onImport, on
           className="settings-file-input"
           onChange={handleFileChange}
         />
+      </div>
+
+      <div className="settings-customcss-active">
+        <label className="settings-toggle-row">
+          <span>다크 모드 적용</span>
+          <input
+            type="checkbox"
+            className="settings-toggle"
+            checked={!!darkMode}
+            onChange={(e) => onChangeDarkMode(e.target.checked)}
+          />
+        </label>
       </div>
 
       {customCss && (
@@ -111,19 +132,6 @@ export default function SettingsView({
       </header>
 
       <section className="settings-block">
-        <h2>화면</h2>
-        <label className="settings-toggle-row">
-          <span>다크 모드</span>
-          <input
-            type="checkbox"
-            className="settings-toggle"
-            checked={!!darkMode}
-            onChange={(e) => onChangeDarkMode(e.target.checked)}
-          />
-        </label>
-      </section>
-
-      <section className="settings-block">
         <h2>테마 색상</h2>
         <ColorRow value={themeColor} palette={palette} onChange={onChangeThemeColor} />
       </section>
@@ -154,6 +162,8 @@ export default function SettingsView({
           customCss={customCss}
           customCssName={customCssName}
           customCssEnabled={customCssEnabled}
+          darkMode={darkMode}
+          onChangeDarkMode={onChangeDarkMode}
           onImport={onImportCustomCss}
           onToggle={onToggleCustomCss}
           onClear={onClearCustomCss}

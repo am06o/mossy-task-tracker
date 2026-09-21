@@ -145,6 +145,32 @@ fn import_backup(app: AppHandle) -> ImportResult {
     }
 }
 
+#[tauri::command]
+fn export_theme_css(app: AppHandle, css: String, default_file_name: String) -> ExportResult {
+    let picked = app
+        .dialog()
+        .file()
+        .set_title("CSS 내보내기")
+        .add_filter("CSS", &["css"])
+        .set_file_name(&default_file_name)
+        .blocking_save_file();
+
+    let Some(picked) = picked else {
+        return ExportResult { ok: false, file_path: None };
+    };
+    let Ok(path) = picked.into_path() else {
+        return ExportResult { ok: false, file_path: None };
+    };
+
+    match fs::write(&path, css) {
+        Ok(()) => ExportResult {
+            ok: true,
+            file_path: Some(path.to_string_lossy().into_owned()),
+        },
+        Err(_) => ExportResult { ok: false, file_path: None },
+    }
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -163,7 +189,8 @@ pub fn run() {
             load_data,
             save_data,
             export_backup,
-            import_backup
+            import_backup,
+            export_theme_css
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

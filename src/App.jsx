@@ -114,6 +114,23 @@ export default function App() {
     return settings.themeColor
   }, [settings.customCss, settings.customCssEnabled, settings.themeColor])
 
+  // 테마 에디터 창(같은 앱 안의 별도 창)에서 "적용하기"를 누르면, 파일을 거치지 않고
+  // 이 이벤트로 바로 커스텀 CSS를 받아 적용한다.
+  useEffect(() => {
+    if (!runningInTauri) return
+    let unlisten
+    import('@tauri-apps/api/event').then(({ listen }) => {
+      listen('mossy-apply-theme', (event) => {
+        const { css, name } = event.payload || {}
+        if (typeof css !== 'string') return
+        setSettings((s) => ({ ...s, customCss: css, customCssName: name || '', customCssEnabled: true }))
+      }).then((fn) => {
+        unlisten = fn
+      })
+    })
+    return () => unlisten?.()
+  }, [])
+
   function updatePaletteColor(index, hex) {
     setSettings((s) => {
       const palette = [...s.palette]
